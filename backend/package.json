@@ -1,0 +1,38 @@
+{
+  "name": "@transport/backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "lint": "eslint \"src/**/*.ts\"",
+    "prisma:generate": "HOME=../.prisma-home prisma generate",
+    "prisma:migrate": "HOME=../.prisma-home prisma migrate deploy",
+    "prisma:migrate:dev": "HOME=../.prisma-home prisma migrate dev",
+    "prisma:studio": "HOME=../.prisma-home prisma studio"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.4.15",
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/core": "^10.4.15",
+    "@nestjs/platform-express": "^10.4.15",
+    "@prisma/client": "^6.1.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^10.4.8",
+    "@nestjs/schematics": "^10.2.3",
+    "@nestjs/testing": "^10.4.15",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "eslint": "^9.17.0",
+    "prisma": "^6.1.0",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.5.4"
+  }
+}

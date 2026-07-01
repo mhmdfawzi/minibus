@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: transport_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: transport
+      POSTGRES_PASSWORD: transport
+      POSTGRES_DB: transport_dev
+    ports:
+      - "55432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U transport -d transport_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:

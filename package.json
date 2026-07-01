@@ -1,0 +1,26 @@
+{
+  "name": "transportation-system",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "lint": "npm run lint --workspace backend && npm run lint --workspace frontend",
+    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "prisma:migrate": "npm run prisma:migrate --workspace backend",
+    "dev:backend": "npm run start:dev --workspace backend",
+    "dev:frontend": "npm run start --workspace frontend"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "overrides": {
+    "typescript": "5.5.4"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4"
+  }
+}

@@ -1,0 +1,20 @@
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+:root {
+  --ion-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ion-color-primary: #0f766e;
+  --ion-color-primary-rgb: 15, 118, 110;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-secondary: #2563eb;
+  --ion-background-color: #f8fafc;
+  --ion-text-color: #111827;
+}
+
+html,
+body {
+  direction: rtl;
+}

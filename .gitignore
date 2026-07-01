@@ -1,0 +1,12 @@
+node_modules
+.npm-cache
+.prisma-home
+.prisma-cache
+.docker-home
+dist
+www
+.angular
+.env
+.env.local
+coverage
+*.log

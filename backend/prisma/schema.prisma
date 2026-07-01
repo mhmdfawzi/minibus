@@ -1,0 +1,230 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  passenger
+  driver
+  admin
+}
+
+enum DriverStatus {
+  pending
+  approved
+  suspended
+  rejected
+}
+
+enum RouteDirection {
+  outbound
+  returnDirection @map("return")
+}
+
+enum TripStatus {
+  open
+  started
+  completed
+  cancelled
+}
+
+enum BookingStatus {
+  pending
+  accepted
+  rejected
+  cancelled
+  completed
+  expired
+}
+
+enum DevicePlatform {
+  android
+  ios
+}
+
+enum NotificationType {
+  booking_created
+  booking_accepted
+  booking_rejected
+  booking_cancelled
+  trip_cancelled
+  trip_started
+}
+
+model User {
+  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firebaseUid     String          @unique @map("firebase_uid")
+  phone           String?         @unique
+  fullName        String?         @map("full_name")
+  role            UserRole        @default(passenger)
+  isActive        Boolean         @default(true) @map("is_active")
+  preferredLocale String          @default("ar") @map("preferred_locale")
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  driver          Driver?
+  bookings        Booking[]       @relation("PassengerBookings")
+  ratings         Rating[]        @relation("PassengerRatings")
+  refreshTokens   RefreshToken[]
+  deviceTokens    DeviceToken[]
+  notifications   Notification[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @map("token_hash")
+  deviceId  String?   @map("device_id")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
+}
+
+model Driver {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String       @unique @map("user_id") @db.Uuid
+  nationalId      String       @unique @map("national_id")
+  licenseNumber   String       @unique @map("license_number")
+  carModel        String       @map("car_model")
+  carPlate        String       @map("car_plate")
+  carColor        String       @map("car_color")
+  docUrls         Json         @default("[]") @map("doc_urls")
+  status          DriverStatus @default(pending)
+  rejectionReason String?      @map("rejection_reason")
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trips           Trip[]
+  ratings         Rating[]
+
+  @@index([status])
+  @@map("drivers")
+}
+
+model Route {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  direction RouteDirection
+  isActive  Boolean        @default(true) @map("is_active")
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  stops     RouteStop[]
+  trips     Trip[]
+
+  @@index([isActive])
+  @@map("routes")
+}
+
+model RouteStop {
+  id                     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  routeId                String    @map("route_id") @db.Uuid
+  name                   String
+  orderIndex             Int       @map("order_index")
+  estimatedOffsetMinutes Int       @default(0) @map("estimated_offset_minutes")
+  isActive               Boolean   @default(true) @map("is_active")
+  route                  Route     @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  pickupBookings         Booking[] @relation("PickupStop")
+  dropoffBookings        Booking[] @relation("DropoffStop")
+
+  @@unique([routeId, orderIndex])
+  @@index([routeId, isActive])
+  @@map("route_stops")
+}
+
+model Trip {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  routeId       String        @map("route_id") @db.Uuid
+  driverId      String        @map("driver_id") @db.Uuid
+  tripDate      DateTime      @map("trip_date") @db.Date
+  startTime     DateTime      @map("start_time") @db.Time(0)
+  totalSeats    Int           @map("total_seats")
+  availableSeats Int          @map("available_seats")
+  pricePerSeat  Decimal       @map("price_per_seat") @db.Decimal(10, 2)
+  status        TripStatus    @default(open)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  route         Route         @relation(fields: [routeId], references: [id], onDelete: Restrict)
+  driver        Driver        @relation(fields: [driverId], references: [id], onDelete: Restrict)
+  bookings      Booking[]
+  ratings       Rating[]
+
+  @@index([routeId, tripDate, status])
+  @@index([driverId, status])
+  @@map("trips")
+}
+
+model Booking {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tripId        String        @map("trip_id") @db.Uuid
+  passengerId   String        @map("passenger_id") @db.Uuid
+  pickupStopId  String        @map("pickup_stop_id") @db.Uuid
+  dropoffStopId String        @map("dropoff_stop_id") @db.Uuid
+  seatsCount    Int           @map("seats_count")
+  price         Decimal       @db.Decimal(10, 2)
+  status        BookingStatus @default(pending)
+  holdExpiresAt DateTime?     @map("hold_expires_at") @db.Timestamptz(6)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  trip          Trip          @relation(fields: [tripId], references: [id], onDelete: Restrict)
+  passenger     User          @relation("PassengerBookings", fields: [passengerId], references: [id], onDelete: Restrict)
+  pickupStop    RouteStop     @relation("PickupStop", fields: [pickupStopId], references: [id], onDelete: Restrict)
+  dropoffStop   RouteStop     @relation("DropoffStop", fields: [dropoffStopId], references: [id], onDelete: Restrict)
+
+  @@index([passengerId, status])
+  @@index([tripId, status])
+  @@index([status, holdExpiresAt])
+  @@map("bookings")
+}
+
+model Rating {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tripId      String   @map("trip_id") @db.Uuid
+  passengerId String   @map("passenger_id") @db.Uuid
+  driverId    String   @map("driver_id") @db.Uuid
+  rate        Int
+  comment     String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Restrict)
+  passenger   User     @relation("PassengerRatings", fields: [passengerId], references: [id], onDelete: Restrict)
+  driver      Driver   @relation(fields: [driverId], references: [id], onDelete: Restrict)
+
+  @@unique([tripId, passengerId])
+  @@index([driverId])
+  @@map("ratings")
+}
+
+model DeviceToken {
+  id        String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String         @map("user_id") @db.Uuid
+  token     String         @unique
+  platform  DevicePlatform
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastSeenAt DateTime      @default(now()) @map("last_seen_at") @db.Timestamptz(6)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("device_tokens")
+}
+
+model Notification {
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  title     String
+  body      String
+  type      NotificationType
+  isRead    Boolean          @default(false) @map("is_read")
+  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}

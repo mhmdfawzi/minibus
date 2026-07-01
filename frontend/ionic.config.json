@@ -1,0 +1,7 @@
+{
+  "name": "Transport MVP",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
