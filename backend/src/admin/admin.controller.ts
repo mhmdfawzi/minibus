@@ -1,0 +1,56 @@
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { AdminGuard } from '../auth/admin.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RouteResponse, RouteStopResponse } from '../routes/route.types';
+import { AdminService } from './admin.service';
+import { CreateRouteDto } from './dto/create-route.dto';
+import { CreateStopDto } from './dto/create-stop.dto';
+import { DriverDecisionDto } from './dto/driver-decision.dto';
+import { UpdateRouteDto } from './dto/update-route.dto';
+import { UpdateStopDto } from './dto/update-stop.dto';
+
+@Controller('admin')
+@UseGuards(JwtAuthGuard, AdminGuard)
+export class AdminController {
+  constructor(private readonly adminService: AdminService) {}
+
+  @Post('routes')
+  createRoute(@Body() dto: CreateRouteDto): Promise<RouteResponse> {
+    return this.adminService.createRoute(dto);
+  }
+
+  @Patch('routes/:id')
+  updateRoute(@Param('id') routeId: string, @Body() dto: UpdateRouteDto): Promise<RouteResponse> {
+    return this.adminService.updateRoute(routeId, dto);
+  }
+
+  @Post('routes/:id/stops')
+  createStop(@Param('id') routeId: string, @Body() dto: CreateStopDto): Promise<RouteStopResponse> {
+    return this.adminService.createStop(routeId, dto);
+  }
+
+  @Patch('stops/:id')
+  updateStop(@Param('id') stopId: string, @Body() dto: UpdateStopDto): Promise<RouteStopResponse> {
+    return this.adminService.updateStop(stopId, dto);
+  }
+
+  @Get('drivers/pending')
+  listPendingDrivers() {
+    return this.adminService.listPendingDrivers();
+  }
+
+  @Patch('drivers/:id/approve')
+  approveDriver(@Param('id') driverId: string) {
+    return this.adminService.approveDriver(driverId);
+  }
+
+  @Patch('drivers/:id/suspend')
+  suspendDriver(@Param('id') driverId: string, @Body() dto: DriverDecisionDto) {
+    return this.adminService.suspendDriver(driverId, dto);
+  }
+
+  @Patch('drivers/:id/reject')
+  rejectDriver(@Param('id') driverId: string, @Body() dto: DriverDecisionDto) {
+    return this.adminService.rejectDriver(driverId, dto);
+  }
+}

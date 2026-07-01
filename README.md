@@ -47,6 +47,32 @@ New first-login users are created as inactive passenger placeholders because `us
 
 Before pilot use, test sign-in on a physical Android device with real Egyptian numbers, including at least Vodafone Egypt, Orange Egypt, Etisalat Misr, and WE where available.
 
+## Admin Bootstrap
+
+There is no self-serve admin signup. For a fresh environment, first sign in once through Firebase so a `users` row exists, then promote exactly one known Firebase UID:
+
+```sql
+UPDATE users
+SET role = 'admin',
+    is_active = true,
+    full_name = COALESCE(full_name, 'Admin')
+WHERE firebase_uid = '<firebase_uid>';
+```
+
+Confirm there is only one admin:
+
+```sql
+SELECT id, phone, firebase_uid, role, is_active
+FROM users
+WHERE role = 'admin';
+```
+
+All `/admin/*` endpoints require a valid app access token for an active user with `role = admin`.
+
+## Driver Documents
+
+`POST /drivers/documents` accepts multipart image files under the field name `documents`. Local development stores them under `backend/uploads/driver-documents` and saves `/uploads/...` URLs in `drivers.doc_urls`. Configure S3-compatible object storage before production/pilot use; approval requires at least two uploaded document URLs.
+
 ## Notes
 
 - `specs/database-schema-v2.md` is the source of truth for the Prisma schema.

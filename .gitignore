@@ -10,3 +10,4 @@ www
 .env.local
 coverage
 *.log
+backend/uploads
