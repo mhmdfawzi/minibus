@@ -18,3 +18,15 @@ html,
 body {
   direction: rtl;
 }
+
+.auth-form,
+.profile-summary {
+  display: grid;
+  gap: 16px;
+  max-width: 420px;
+  margin: 32px auto 0;
+}
+
+.recaptcha-container {
+  min-height: 78px;
+}
