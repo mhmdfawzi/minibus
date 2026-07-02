@@ -6,12 +6,13 @@ import { BookingView, BookingsService } from './api/bookings.service';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { NotificationBadgeComponent } from './shared/notification-badge.component';
 import { StatusBadgeComponent } from './shared/status-badge.component';
 
 @Component({
   selector: 'app-passenger-booking-detail',
   standalone: true,
-  imports: [IonContent, IonSpinner, StatusBadgeComponent],
+  imports: [IonContent, IonSpinner, NotificationBadgeComponent, StatusBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-flow-page" fullscreen>
       <header class="passenger-topbar">
@@ -19,7 +20,10 @@ import { StatusBadgeComponent } from './shared/status-badge.component';
           <span class="material-symbols-outlined">arrow_forward</span>
         </button>
         <h1>حالة الحجز</h1>
-        <span></span>
+        <button class="stitch-icon-button notification-nav-button" type="button" aria-label="التنبيهات" (click)="openNotifications()">
+          <span class="material-symbols-outlined">notifications</span>
+          <app-notification-badge />
+        </button>
       </header>
 
       @if (isLoading) {
@@ -211,6 +215,10 @@ export class PassengerBookingDetailPage implements OnDestroy {
 
   goBack(): void {
     void this.router.navigateByUrl('/passenger/bookings');
+  }
+
+  openNotifications(): void {
+    void this.router.navigateByUrl('/notifications');
   }
 
   routeName(routeId: string): string {

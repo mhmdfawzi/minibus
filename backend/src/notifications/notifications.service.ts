@@ -11,6 +11,11 @@ interface NotificationPayload {
   title: string;
   body: string;
   type: NotificationType;
+  data?: {
+    bookingId?: string;
+    tripId?: string;
+    targetRole?: 'driver' | 'passenger';
+  };
 }
 
 @Injectable()
@@ -93,7 +98,12 @@ export class NotificationsService {
       userId: booking.trip.driver.userId,
       title: 'طلب حجز جديد',
       body: `${booking.passenger.fullName ?? 'راكب'} طلب حجز ${booking.seatsCount} مقعد على رحلة ${booking.trip.route.name}`,
-      type: NotificationType.booking_created
+      type: NotificationType.booking_created,
+      data: {
+        bookingId: booking.id,
+        tripId: booking.tripId,
+        targetRole: 'driver'
+      }
     });
   }
 
@@ -109,7 +119,12 @@ export class NotificationsService {
       userId: booking.passengerId,
       title: 'تم قبول الحجز',
       body: `تم قبول حجزك على رحلة ${booking.trip.route.name}`,
-      type: NotificationType.booking_accepted
+      type: NotificationType.booking_accepted,
+      data: {
+        bookingId: booking.id,
+        tripId: booking.tripId,
+        targetRole: 'passenger'
+      }
     });
   }
 
@@ -125,7 +140,51 @@ export class NotificationsService {
       userId: booking.passengerId,
       title: 'تم رفض الحجز',
       body: `تم رفض طلب حجزك على رحلة ${booking.trip.route.name}`,
-      type: NotificationType.booking_rejected
+      type: NotificationType.booking_rejected,
+      data: {
+        bookingId: booking.id,
+        tripId: booking.tripId,
+        targetRole: 'passenger'
+      }
+    });
+  }
+
+  async notifyBookingCancelled(bookingId: string, cancelledBy: 'driver' | 'passenger'): Promise<void> {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        passenger: { select: { fullName: true } },
+        trip: { include: { driver: true, route: true } }
+      }
+    });
+
+    if (!booking) return;
+
+    if (cancelledBy === 'passenger') {
+      await this.createAndSend({
+        userId: booking.trip.driver.userId,
+        title: 'تم إلغاء حجز',
+        body: `${booking.passenger.fullName ?? 'راكب'} ألغى حجزه على رحلة ${booking.trip.route.name}`,
+        type: NotificationType.booking_cancelled,
+        data: {
+          bookingId: booking.id,
+          tripId: booking.tripId,
+          targetRole: 'driver'
+        }
+      });
+      return;
+    }
+
+    await this.createAndSend({
+      userId: booking.passengerId,
+      title: 'تم إلغاء الحجز',
+      body: `تم إلغاء حجزك على رحلة ${booking.trip.route.name}`,
+      type: NotificationType.booking_cancelled,
+      data: {
+        bookingId: booking.id,
+        tripId: booking.tripId,
+        targetRole: 'passenger'
+      }
     });
   }
 
@@ -136,7 +195,7 @@ export class NotificationsService {
         route: true,
         bookings: {
           where: { status: { in: [BookingStatus.pending, BookingStatus.accepted] } },
-          select: { passengerId: true }
+          select: { id: true, passengerId: true }
         }
       }
     });
@@ -148,7 +207,12 @@ export class NotificationsService {
         userId: booking.passengerId,
         title: 'تم إلغاء الرحلة',
         body: `تم إلغاء رحلة ${trip.route.name}`,
-        type: NotificationType.trip_cancelled
+        type: NotificationType.trip_cancelled,
+        data: {
+          bookingId: booking.id,
+          tripId: trip.id,
+          targetRole: 'passenger'
+        }
       }))
     );
   }
@@ -160,7 +224,7 @@ export class NotificationsService {
         route: true,
         bookings: {
           where: { status: BookingStatus.accepted },
-          select: { passengerId: true }
+          select: { id: true, passengerId: true }
         }
       }
     });
@@ -172,7 +236,12 @@ export class NotificationsService {
         userId: booking.passengerId,
         title: 'بدأت الرحلة',
         body: `بدأت رحلة ${trip.route.name}`,
-        type: NotificationType.trip_started
+        type: NotificationType.trip_started,
+        data: {
+          bookingId: booking.id,
+          tripId: trip.id,
+          targetRole: 'passenger'
+        }
       }))
     );
   }
@@ -190,6 +259,7 @@ export class NotificationsService {
         title: payload.title,
         body: payload.body,
         type: payload.type,
+        data: payload.data ?? {},
         isRead: false
       }
     });
@@ -208,7 +278,10 @@ export class NotificationsService {
           body: payload.body
         },
         data: {
-          type: payload.type
+          type: payload.type,
+          ...(payload.data?.bookingId ? { bookingId: payload.data.bookingId } : {}),
+          ...(payload.data?.tripId ? { tripId: payload.data.tripId } : {}),
+          ...(payload.data?.targetRole ? { targetRole: payload.data.targetRole } : {})
         }
       });
 

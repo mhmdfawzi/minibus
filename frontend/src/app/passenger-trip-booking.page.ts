@@ -7,11 +7,12 @@ import { BookingsService } from './api/bookings.service';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
 @Component({
   selector: 'app-passenger-trip-booking',
   standalone: true,
-  imports: [IonContent, IonSpinner],
+  imports: [IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-booking-stitch" fullscreen>
       <header class="booking-detail-topbar">
@@ -19,7 +20,10 @@ import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
           <span class="material-symbols-outlined">arrow_forward</span>
         </button>
         <h1>تفاصيل الرحلة</h1>
-        <span></span>
+        <button class="notification-nav-button" type="button" aria-label="التنبيهات" (click)="openNotifications()">
+          <span class="material-symbols-outlined">notifications</span>
+          <app-notification-badge />
+        </button>
       </header>
 
       @if (isLoading) {
@@ -283,6 +287,10 @@ export class PassengerTripBookingPage {
 
   goBack(): void {
     this.searchAgain();
+  }
+
+  openNotifications(): void {
+    void this.router.navigateByUrl('/notifications');
   }
 
   routeName(routeId: string): string {

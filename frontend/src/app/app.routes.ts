@@ -8,6 +8,7 @@ import { DriverTripFormPage } from './driver-trip-form.page';
 import { DriverTripsPage } from './driver-trips.page';
 import { FoundationPreviewPage } from './foundation-preview.page';
 import { HomePage } from './home.page';
+import { NotificationsPage } from './notifications.page';
 import { OtpVerificationPage } from './otp-verification.page';
 import { PassengerBookingDetailPage } from './passenger-booking-detail.page';
 import { PassengerBookingsPage } from './passenger-bookings.page';
@@ -99,6 +100,10 @@ export const routes: Routes = [
   {
     path: 'foundation-preview',
     component: FoundationPreviewPage
+  },
+  {
+    path: 'notifications',
+    component: NotificationsPage
   },
   {
     path: '**',

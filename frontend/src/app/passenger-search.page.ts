@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
 @Component({
   selector: 'app-passenger-search',
   standalone: true,
-  imports: [FormsModule, IonContent, IonSpinner],
+  imports: [FormsModule, IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-home-stitch" fullscreen>
       <header class="passenger-home-topbar">
@@ -134,8 +135,9 @@ import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
         </button>
-        <button type="button">
+        <button class="notification-nav-button" type="button" (click)="openNotifications()">
           <span class="material-symbols-outlined">notifications</span>
+          <app-notification-badge />
           <small>التنبيهات</small>
         </button>
         <button type="button">
@@ -224,6 +226,10 @@ export class PassengerSearchPage {
 
   openMyBookings(): void {
     void this.router.navigateByUrl('/passenger/bookings');
+  }
+
+  openNotifications(): void {
+    void this.router.navigateByUrl('/notifications');
   }
 
   swapStops(): void {

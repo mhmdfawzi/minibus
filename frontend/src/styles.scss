@@ -3878,6 +3878,289 @@ ion-segment {
   }
 }
 
+.notification-nav-button {
+  position: relative;
+}
+
+.notification-badge {
+  align-items: center;
+  background: var(--app-color-accent);
+  border: 2px solid var(--app-color-surface);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-color-primary-strong);
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 700;
+  height: 18px;
+  justify-content: center;
+  min-width: 18px;
+  padding-inline: 4px;
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  z-index: 2;
+}
+
+.notifications-stitch {
+  --padding-bottom: 112px;
+  font-family: "Be Vietnam Pro", "Noto Sans Arabic", var(--app-font-family);
+}
+
+.notifications-topbar {
+  align-items: center;
+  background: var(--app-color-background);
+  display: flex;
+  flex-direction: row-reverse;
+  height: var(--app-touch-target);
+  justify-content: space-between;
+  padding-inline: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.notifications-topbar h1 {
+  color: var(--app-color-primary-strong);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+  margin: 0;
+}
+
+.notifications-topbar button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--app-color-primary-strong);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+}
+
+.notifications-canvas {
+  display: grid;
+  gap: var(--app-space-md);
+  padding: var(--app-space-md) 20px 112px;
+}
+
+.notifications-summary {
+  align-items: center;
+  background: var(--app-color-primary-strong);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 26, 71, 0.16);
+  color: var(--app-color-surface);
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: var(--app-space-md);
+  position: relative;
+}
+
+.notifications-summary::before {
+  background: rgba(242, 194, 48, 0.12);
+  border-radius: var(--app-radius-pill);
+  content: "";
+  height: 112px;
+  left: -40px;
+  position: absolute;
+  top: -40px;
+  width: 112px;
+}
+
+.notifications-summary p,
+.notifications-summary h2 {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.notifications-summary p {
+  color: var(--app-color-on-primary-soft);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.notifications-summary h2 {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+  margin-top: 4px;
+}
+
+.notifications-summary > .material-symbols-outlined {
+  color: var(--app-color-accent);
+  font-size: 44px;
+  position: relative;
+  z-index: 1;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.notification-feed {
+  display: grid;
+  gap: var(--app-space-sm);
+}
+
+.notification-item {
+  align-items: flex-start;
+  appearance: none;
+  background: var(--app-color-surface);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 26, 71, 0.08);
+  color: inherit;
+  display: flex;
+  font-family: inherit;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-sm);
+  text-align: start;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+  width: 100%;
+}
+
+.notification-item:active {
+  transform: scale(0.98);
+}
+
+.notification-item.is-unread {
+  border-color: rgba(242, 194, 48, 0.7);
+}
+
+.notification-icon {
+  align-items: center;
+  background: var(--app-color-surface-muted);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-color-primary-strong);
+  display: flex;
+  flex: 0 0 auto;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.notification-item.is-unread .notification-icon {
+  background: var(--app-color-pending-bg);
+  color: var(--app-color-primary-strong);
+}
+
+.notification-icon[data-type='booking_accepted'],
+.notification-icon[data-type='trip_started'] {
+  color: var(--app-color-accepted);
+}
+
+.notification-icon[data-type='booking_rejected'],
+.notification-icon[data-type='booking_cancelled'],
+.notification-icon[data-type='trip_cancelled'] {
+  color: var(--app-color-rejected);
+}
+
+.notification-item > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title-row {
+  align-items: center;
+  display: flex;
+  gap: var(--app-space-xs);
+  justify-content: space-between;
+}
+
+.notification-title-row h2,
+.notification-item p,
+.notification-item small {
+  margin: 0;
+}
+
+.notification-title-row h2 {
+  color: var(--app-color-primary-strong);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.notification-title-row i {
+  background: var(--app-color-accent);
+  border-radius: var(--app-radius-pill);
+  display: block;
+  height: 10px;
+  width: 10px;
+}
+
+.notification-item p {
+  color: var(--app-color-text-muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.notification-item small {
+  color: var(--app-color-outline-strong);
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+  margin-top: 6px;
+}
+
+.notifications-empty {
+  align-items: center;
+  display: grid;
+  gap: var(--app-space-xs);
+  justify-items: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.notifications-empty div {
+  align-items: center;
+  background: var(--app-color-surface-container);
+  border-radius: var(--app-radius-pill);
+  display: flex;
+  height: 128px;
+  justify-content: center;
+  width: 128px;
+}
+
+.notifications-empty .material-symbols-outlined {
+  color: var(--app-color-outline-strong);
+  font-size: 56px;
+}
+
+.notifications-empty h2,
+.notifications-empty p {
+  margin: 0;
+}
+
+.notifications-empty h2 {
+  color: var(--app-color-primary-strong);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.notifications-empty p {
+  color: var(--app-color-text-muted);
+  font-size: 14px;
+  line-height: 20px;
+  max-width: 280px;
+}
+
+.notification-toast {
+  --background: var(--app-color-primary-strong);
+  --border-radius: 12px;
+  --button-color: var(--app-color-accent);
+  --color: var(--app-color-surface);
+}
+
 .trip-secondary-action,
 .trip-danger-action,
 .trip-readonly-action {

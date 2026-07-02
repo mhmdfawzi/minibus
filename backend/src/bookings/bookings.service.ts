@@ -264,6 +264,13 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       });
     });
 
+    await this.safeNotify('booking_cancelled', () =>
+      this.notifications.notifyBookingCancelled(
+        booking.id,
+        driver ? 'driver' : 'passenger'
+      )
+    );
+
     return toBookingResponse(booking);
   }
 

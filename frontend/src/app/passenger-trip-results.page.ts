@@ -6,6 +6,7 @@ import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
 import { EmptyStateComponent } from './shared/empty-state.component';
+import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
 interface SearchTripResult {
   trip: DriverTrip;
@@ -15,7 +16,7 @@ interface SearchTripResult {
 @Component({
   selector: 'app-passenger-trip-results',
   standalone: true,
-  imports: [EmptyStateComponent, IonContent, IonSpinner],
+  imports: [EmptyStateComponent, IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-results-stitch" fullscreen>
       <header class="results-topbar">
@@ -116,8 +117,9 @@ interface SearchTripResult {
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
         </button>
-        <button type="button">
+        <button class="notification-nav-button" type="button" (click)="openNotifications()">
           <span class="material-symbols-outlined">notifications</span>
+          <app-notification-badge />
           <small>التنبيهات</small>
         </button>
         <button type="button">
@@ -225,6 +227,10 @@ export class PassengerTripResultsPage {
 
   goBack(): void {
     void this.router.navigateByUrl('/passenger/home');
+  }
+
+  openNotifications(): void {
+    void this.router.navigateByUrl('/notifications');
   }
 
   stopName(stopId: string): string {

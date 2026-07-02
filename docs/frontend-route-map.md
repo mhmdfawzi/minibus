@@ -30,5 +30,5 @@ This route map matches the 17 Stitch screens for the Damietta Transit mobile MVP
 
 ## Shared
 
-- `/notifications` — Notifications
+- `/notifications` — Notifications (implemented)
 - `/foundation-preview` — Phase 0 component and RTL verification surface

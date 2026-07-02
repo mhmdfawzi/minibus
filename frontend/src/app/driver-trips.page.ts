@@ -4,6 +4,7 @@ import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { PilotApiService, RouteSummary } from './pilot-api.service';
 import { DriverTrip, DriverTripStatus, TripsService } from './api/trips.service';
 import { EmptyStateComponent } from './shared/empty-state.component';
+import { NotificationBadgeComponent } from './shared/notification-badge.component';
 import { StatusBadgeComponent } from './shared/status-badge.component';
 import { TripCardComponent, TripCardViewModel } from './shared/trip-card.component';
 
@@ -12,7 +13,7 @@ type TripFilter = 'all' | DriverTripStatus;
 @Component({
   selector: 'app-driver-trips',
   standalone: true,
-  imports: [EmptyStateComponent, IonContent, IonSpinner, StatusBadgeComponent, TripCardComponent],
+  imports: [EmptyStateComponent, IonContent, IonSpinner, NotificationBadgeComponent, StatusBadgeComponent, TripCardComponent],
   template: `
     <ion-content class="stitch-auth-page driver-trips-page" fullscreen>
       <header class="driver-trips-topbar">
@@ -75,8 +76,9 @@ type TripFilter = 'all' | DriverTripStatus;
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
         </button>
-        <button type="button">
+        <button class="notification-nav-button" type="button" (click)="openNotifications()">
           <span class="material-symbols-outlined">notifications</span>
+          <app-notification-badge />
         </button>
         <button type="button">
           <span class="material-symbols-outlined">person</span>
@@ -171,6 +173,10 @@ export class DriverTripsPage {
 
   openTrip(tripId: string): void {
     void this.router.navigateByUrl(`/driver/trips/${tripId}`);
+  }
+
+  openNotifications(): void {
+    void this.router.navigateByUrl('/notifications');
   }
 
   goBack(): void {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+import { ToastController } from '@ionic/angular';
 import {
   ActionPerformed,
   PushNotificationSchema,
@@ -7,13 +8,20 @@ import {
   Token
 } from '@capacitor/push-notifications';
 import { AuthApiService, DevicePlatform } from './auth-api.service';
+import { NotificationsService } from './api/notifications.service';
+import { NotificationNavigationService } from './notification-navigation.service';
 
 @Injectable({ providedIn: 'root' })
 export class PushNotificationsService {
   private currentToken: string | null = null;
   private hasInitialized = false;
 
-  constructor(private readonly authApi: AuthApiService) {
+  constructor(
+    private readonly authApi: AuthApiService,
+    private readonly notificationNavigation: NotificationNavigationService,
+    private readonly notificationsService: NotificationsService,
+    private readonly toastController: ToastController
+  ) {
     this.authApi.sessionStored$.subscribe(() => this.registerCurrentDevice());
   }
 
@@ -35,13 +43,14 @@ export class PushNotificationsService {
     await PushNotifications.addListener(
       'pushNotificationReceived',
       (notification: PushNotificationSchema) => {
-        console.info('Push notification received', notification);
+        this.notificationsService.incrementUnreadCount();
+        void this.showForegroundToast(notification);
       }
     );
     await PushNotifications.addListener(
       'pushNotificationActionPerformed',
       (action: ActionPerformed) => {
-        console.info('Push notification opened', action.notification);
+        this.notificationNavigation.openFromPush(action.notification.data);
       }
     );
 
@@ -86,5 +95,27 @@ export class PushNotificationsService {
 
   private platform(): DevicePlatform {
     return Capacitor.getPlatform() === 'ios' ? 'ios' : 'android';
+  }
+
+  private async showForegroundToast(notification: PushNotificationSchema): Promise<void> {
+    const toast = await this.toastController.create({
+      header: notification.title || 'تنبيه جديد',
+      message: notification.body || '',
+      duration: 6000,
+      position: 'top',
+      cssClass: 'notification-toast',
+      buttons: [
+        {
+          text: 'فتح',
+          handler: () => this.notificationNavigation.openFromPush(notification.data)
+        },
+        {
+          text: 'إغلاق',
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await toast.present();
   }
 }

@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { BookingUiStatus, BookingView, BookingsService } from './api/bookings.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
 interface PassengerBookingRow {
   booking: BookingView;
@@ -16,7 +17,7 @@ type BookingFilter = 'all' | 'pending' | 'accepted' | 'completed';
 @Component({
   selector: 'app-passenger-bookings',
   standalone: true,
-  imports: [IonContent, IonSpinner],
+  imports: [IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-flow-page my-bookings-stitch" fullscreen>
       <header class="my-bookings-topbar">
@@ -121,8 +122,9 @@ type BookingFilter = 'all' | 'pending' | 'accepted' | 'completed';
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
         </button>
-        <button type="button">
+        <button class="notification-nav-button" type="button" (click)="openNotifications()">
           <span class="material-symbols-outlined">notifications</span>
+          <app-notification-badge />
           <small>التنبيهات</small>
         </button>
         <button type="button">
@@ -199,6 +201,10 @@ export class PassengerBookingsPage implements OnDestroy {
 
   openBooking(bookingId: string): void {
     void this.router.navigateByUrl(`/passenger/bookings/${bookingId}/status`);
+  }
+
+  openNotifications(): void {
+    void this.router.navigateByUrl('/notifications');
   }
 
   handleCardAction(row: PassengerBookingRow): void {
