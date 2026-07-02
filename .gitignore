@@ -11,3 +11,8 @@ www
 coverage
 *.log
 backend/uploads
+frontend/android/signing.properties
+frontend/android/local.properties
+frontend/android/app/*.jks
+frontend/android/app/*.keystore
+frontend/android/app/google-services.json

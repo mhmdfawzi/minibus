@@ -1,0 +1,4 @@
+storeFile=app/transport-pilot-release.jks
+storePassword=replace-with-keystore-password
+keyAlias=transport-pilot
+keyPassword=replace-with-key-password

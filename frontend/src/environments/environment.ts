@@ -6,5 +6,6 @@ export const environment = {
     authDomain: '',
     projectId: '',
     appId: ''
-  }
+  },
+  sentryDsn: ''
 };

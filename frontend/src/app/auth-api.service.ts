@@ -104,7 +104,7 @@ export class AuthApiService {
     localStorage.setItem(this.refreshTokenKey, response.refreshToken);
   }
 
-  private authHeaders(): Record<string, string> {
+  authHeaders(): Record<string, string> {
     const token = this.getAccessToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
   }

@@ -19,6 +19,18 @@ body {
   direction: rtl;
 }
 
+body {
+  text-align: start;
+}
+
+ion-content {
+  --padding-bottom: 24px;
+}
+
+ion-item {
+  --border-color: #d1d5db;
+}
+
 .auth-form,
 .profile-summary {
   display: grid;
@@ -29,4 +41,97 @@ body {
 
 .recaptcha-container {
   min-height: 78px;
+}
+
+.pilot-shell {
+  display: grid;
+  gap: 16px;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.topline,
+.booking-row,
+.trip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topline h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+
+.topline p,
+.booking-row p,
+.trip-row p,
+ion-card-content p {
+  margin: 4px 0 0;
+  color: #475569;
+}
+
+.workspace {
+  display: grid;
+  gap: 14px;
+}
+
+.dense-form {
+  display: grid;
+  gap: 12px;
+}
+
+.result-list {
+  display: grid;
+  gap: 10px;
+  background: transparent;
+}
+
+.booking-row,
+.trip-row,
+.rating-box {
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.screen-note {
+  display: block;
+  max-width: 920px;
+  margin: 14px auto 0;
+}
+
+ion-card {
+  margin-inline: 0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+ion-segment {
+  direction: rtl;
+}
+
+@media (max-width: 560px) {
+  .topline,
+  .booking-row,
+  .trip-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions ion-button {
+    flex: 1 1 90px;
+  }
 }
