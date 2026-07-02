@@ -170,7 +170,7 @@ export class TripsService {
       throw new BadRequestException('Only started trips can be completed');
     }
 
-    return this.updateStatus(tripId, TripStatus.completed);
+    return this.completeTripAndBookings(tripId);
   }
 
   async cancelTrip(user: AuthenticatedUser, tripId: string): Promise<TripResponse> {
@@ -194,6 +194,31 @@ export class TripsService {
       where: { id: tripId },
       data: { status },
       include: { driver: true }
+    });
+
+    return toTripResponse(trip);
+  }
+
+  private async completeTripAndBookings(tripId: string): Promise<TripResponse> {
+    const trip = await this.prisma.$transaction(async (tx) => {
+      const completedTrip = await tx.trip.update({
+        where: { id: tripId },
+        data: { status: TripStatus.completed },
+        include: { driver: true }
+      });
+
+      await tx.booking.updateMany({
+        where: {
+          tripId,
+          status: BookingStatus.accepted
+        },
+        data: {
+          status: BookingStatus.completed,
+          holdExpiresAt: null
+        }
+      });
+
+      return completedTrip;
     });
 
     return toTripResponse(trip);

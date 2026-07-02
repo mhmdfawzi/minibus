@@ -13,9 +13,18 @@ import {
   toApiRouteStop,
   toPrismaRouteDirection
 } from '../routes/route.types';
+import {
+  AdminBookingResponse,
+  AdminTripResponse,
+  PaginatedResponse,
+  toAdminBookingResponse,
+  toAdminTripResponse
+} from './admin-oversight.types';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { CreateStopDto } from './dto/create-stop.dto';
 import { DriverDecisionDto } from './dto/driver-decision.dto';
+import { ListAdminBookingsDto } from './dto/list-admin-bookings.dto';
+import { ListAdminTripsDto } from './dto/list-admin-trips.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { UpdateStopDto } from './dto/update-stop.dto';
 
@@ -98,6 +107,126 @@ export class AdminService {
     }
   }
 
+  async listTrips(query: ListAdminTripsDto): Promise<PaginatedResponse<AdminTripResponse>> {
+    const { page, limit, skip } = this.pagination(query.page, query.limit);
+    const where: Prisma.TripWhereInput = {
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.driverId ? { driverId: query.driverId } : {}),
+      ...(query.dateFrom || query.dateTo
+        ? {
+            tripDate: {
+              ...(query.dateFrom ? { gte: this.parseDate(query.dateFrom) } : {}),
+              ...(query.dateTo ? { lte: this.parseDate(query.dateTo) } : {})
+            }
+          }
+        : {})
+    };
+
+    const [total, trips] = await this.prisma.$transaction([
+      this.prisma.trip.count({ where }),
+      this.prisma.trip.findMany({
+        where,
+        include: {
+          route: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          driver: {
+            select: {
+              id: true,
+              carModel: true,
+              carPlate: true,
+              carColor: true,
+              user: {
+                select: {
+                  fullName: true,
+                  phone: true
+                }
+              }
+            }
+          },
+          _count: {
+            select: {
+              bookings: true
+            }
+          }
+        },
+        orderBy: [{ tripDate: 'desc' }, { startTime: 'desc' }],
+        skip,
+        take: limit
+      })
+    ]);
+
+    return {
+      data: trips.map(toAdminTripResponse),
+      total,
+      page,
+      limit
+    };
+  }
+
+  async listBookings(
+    query: ListAdminBookingsDto
+  ): Promise<PaginatedResponse<AdminBookingResponse>> {
+    const { page, limit, skip } = this.pagination(query.page, query.limit);
+    const where: Prisma.BookingWhereInput = {
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.tripId ? { tripId: query.tripId } : {}),
+      ...(query.passengerId ? { passengerId: query.passengerId } : {})
+    };
+
+    const [total, bookings] = await this.prisma.$transaction([
+      this.prisma.booking.count({ where }),
+      this.prisma.booking.findMany({
+        where,
+        include: {
+          passenger: {
+            select: {
+              id: true,
+              fullName: true,
+              phone: true
+            }
+          },
+          trip: {
+            select: {
+              id: true,
+              routeId: true,
+              driverId: true,
+              tripDate: true,
+              startTime: true,
+              route: {
+                select: {
+                  name: true
+                }
+              },
+              driver: {
+                select: {
+                  user: {
+                    select: {
+                      fullName: true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit
+      })
+    ]);
+
+    return {
+      data: bookings.map(toAdminBookingResponse),
+      total,
+      page,
+      limit
+    };
+  }
+
   async listPendingDrivers() {
     return this.prisma.driver.findMany({
       where: { status: DriverStatus.pending },
@@ -163,6 +292,18 @@ export class AdminService {
     if (!route) {
       throw new NotFoundException('Route not found');
     }
+  }
+
+  private pagination(page = 1, limit = 20): { page: number; limit: number; skip: number } {
+    return {
+      page,
+      limit,
+      skip: (page - 1) * limit
+    };
+  }
+
+  private parseDate(value: string): Date {
+    return new Date(`${value}T00:00:00.000Z`);
   }
 
   private throwConflictOnUniqueRouteOrder(error: unknown): void {
