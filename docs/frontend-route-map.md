@@ -25,7 +25,8 @@ This route map matches the 17 Stitch screens for the Damietta Transit mobile MVP
 - `/driver/pending-approval` — Pending Approval
 - `/driver/trips` — My Trips
 - `/driver/trips/new` — Create Trip
-- `/driver/trips/:tripId/manage` — Trip Management
+- `/driver/trips/:tripId` — Trip Management
+- `/driver/trips/:tripId/edit` — Edit Trip
 
 ## Shared
 

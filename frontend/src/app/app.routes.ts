@@ -3,6 +3,9 @@ import { AuthLandingPage } from './auth-landing.page';
 import { approvedDriverGuard } from './driver-onboarding.guard';
 import { DriverPendingApprovalPage } from './driver-pending-approval.page';
 import { DriverRegistrationPage } from './driver-registration.page';
+import { DriverTripDetailPage } from './driver-trip-detail.page';
+import { DriverTripFormPage } from './driver-trip-form.page';
+import { DriverTripsPage } from './driver-trips.page';
 import { FoundationPreviewPage } from './foundation-preview.page';
 import { HomePage } from './home.page';
 import { OtpVerificationPage } from './otp-verification.page';
@@ -42,7 +45,22 @@ export const routes: Routes = [
   },
   {
     path: 'driver/trips',
-    component: HomePage,
+    component: DriverTripsPage,
+    canActivate: [approvedDriverGuard]
+  },
+  {
+    path: 'driver/trips/new',
+    component: DriverTripFormPage,
+    canActivate: [approvedDriverGuard]
+  },
+  {
+    path: 'driver/trips/:id/edit',
+    component: DriverTripFormPage,
+    canActivate: [approvedDriverGuard]
+  },
+  {
+    path: 'driver/trips/:id',
+    component: DriverTripDetailPage,
     canActivate: [approvedDriverGuard]
   },
   {
