@@ -8,6 +8,7 @@ import { BookingStatus, DriverStatus, TripStatus, UserRole } from '@prisma/clien
 import { AuthenticatedUser } from '../auth/auth.types';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTripDto } from './dto/create-trip.dto';
+import { SearchTripsDto } from './dto/search-trips.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import {
   TripResponse,
@@ -67,6 +68,36 @@ export class TripsService {
     }
 
     return toTripResponse(trip);
+  }
+
+  async searchTrips(query: SearchTripsDto): Promise<TripResponse[]> {
+    const pickupStop = await this.prisma.routeStop.findUnique({
+      where: { id: query.pickupStopId }
+    });
+    const dropoffStop = await this.prisma.routeStop.findUnique({
+      where: { id: query.dropoffStopId }
+    });
+
+    if (!pickupStop || !dropoffStop || pickupStop.routeId !== dropoffStop.routeId) {
+      return [];
+    }
+
+    if (pickupStop.orderIndex >= dropoffStop.orderIndex) {
+      return [];
+    }
+
+    const trips = await this.prisma.trip.findMany({
+      where: {
+        routeId: pickupStop.routeId,
+        tripDate: parseTripDate(query.date),
+        status: TripStatus.open,
+        availableSeats: { gt: 0 }
+      },
+      include: { driver: true },
+      orderBy: { startTime: 'asc' }
+    });
+
+    return trips.map(toTripResponse);
   }
 
   async updateTrip(

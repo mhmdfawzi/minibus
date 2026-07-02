@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateTripDto } from './dto/create-trip.dto';
+import { SearchTripsDto } from './dto/search-trips.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { TripResponse } from './trip.types';
 import { TripsService } from './trips.service';
@@ -23,6 +24,11 @@ export class TripsController {
   @Get('my')
   listMyTrips(@CurrentUser() user: AuthenticatedUser): Promise<TripResponse[]> {
     return this.tripsService.listMyTrips(user);
+  }
+
+  @Get('search')
+  searchTrips(@Query() query: SearchTripsDto): Promise<TripResponse[]> {
+    return this.tripsService.searchTrips(query);
   }
 
   @Get(':id')

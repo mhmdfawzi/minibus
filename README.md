@@ -73,6 +73,22 @@ All `/admin/*` endpoints require a valid app access token for an active user wit
 
 `POST /drivers/documents` accepts multipart image files under the field name `documents`. Local development stores them under `backend/uploads/driver-documents` and saves `/uploads/...` URLs in `drivers.doc_urls`. Configure S3-compatible object storage before production/pilot use; approval requires at least two uploaded document URLs.
 
+## Booking Concurrency Check
+
+Create an open trip with exactly one available seat, then run:
+
+```bash
+API_BASE_URL=http://127.0.0.1:3000 \
+PASSENGER_TOKEN_A=<passenger-a-access-token> \
+PASSENGER_TOKEN_B=<passenger-b-access-token> \
+TRIP_ID=<one-seat-trip-id> \
+PICKUP_STOP_ID=<pickup-stop-id> \
+DROPOFF_STOP_ID=<dropoff-stop-id> \
+npm run test:booking-concurrency --workspace backend
+```
+
+The script sends two booking requests at the same time and fails unless exactly one succeeds.
+
 ## Notes
 
 - `specs/database-schema-v2.md` is the source of truth for the Prisma schema.
