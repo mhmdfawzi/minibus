@@ -1,15 +1,21 @@
 :root {
   --app-color-primary: #0b2e6b;
   --app-color-primary-strong: #001a47;
+  --app-color-on-primary-soft: #7d98db;
   --app-color-secondary: #5fa8d3;
   --app-color-secondary-strong: #00658d;
+  --app-color-secondary-container: #8ad2fe;
+  --app-color-secondary-container-text: #005a7e;
   --app-color-accent: #f2c230;
   --app-color-background: #fbf9f4;
   --app-color-surface: #ffffff;
+  --app-color-surface-container: #f0eee9;
   --app-color-surface-muted: #f5f3ee;
   --app-color-surface-strong: #e4e2dd;
   --app-color-text: #101b33;
+  --app-color-on-surface: #1b1c19;
   --app-color-text-muted: #444650;
+  --app-color-outline-strong: #747781;
   --app-color-outline: #c4c6d2;
   --app-color-pending: #b7791f;
   --app-color-pending-bg: #fff6db;
@@ -20,6 +26,8 @@
   --app-color-completed: #747781;
   --app-color-completed-bg: #eceef3;
   --app-shadow-card: 0 4px 12px rgba(11, 46, 107, 0.1);
+  --app-shadow-soft: 0 4px 12px rgba(0, 26, 71, 0.06);
+  --app-shadow-gold: 0 4px 20px rgba(242, 194, 48, 0.3);
   --app-shadow-modal: 0 8px 20px rgba(11, 46, 107, 0.14);
   --app-radius-input: 8px;
   --app-radius-card: 16px;
