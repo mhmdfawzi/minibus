@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 import { AuthLandingPage } from './auth-landing.page';
+import { approvedDriverGuard } from './driver-onboarding.guard';
+import { DriverPendingApprovalPage } from './driver-pending-approval.page';
+import { DriverRegistrationPage } from './driver-registration.page';
 import { FoundationPreviewPage } from './foundation-preview.page';
 import { HomePage } from './home.page';
 import { OtpVerificationPage } from './otp-verification.page';
@@ -39,11 +42,16 @@ export const routes: Routes = [
   },
   {
     path: 'driver/trips',
-    component: HomePage
+    component: HomePage,
+    canActivate: [approvedDriverGuard]
+  },
+  {
+    path: 'driver/register',
+    component: DriverRegistrationPage
   },
   {
     path: 'driver/pending-approval',
-    component: HomePage
+    component: DriverPendingApprovalPage
   },
   {
     path: 'admin',

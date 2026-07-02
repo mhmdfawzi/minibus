@@ -23,6 +23,30 @@ export class DriversService {
       throw new ForbiddenException('Only active driver accounts can register a driver profile');
     }
 
+    const existingDriver = await this.prisma.driver.findUnique({
+      where: { userId: user.id }
+    });
+
+    if (existingDriver?.status === DriverStatus.approved) {
+      throw new ConflictException('Approved driver profile cannot be changed here');
+    }
+
+    if (existingDriver) {
+      return this.prisma.driver.update({
+        where: { id: existingDriver.id },
+        data: {
+          nationalId: dto.nationalId,
+          licenseNumber: dto.licenseNumber,
+          carModel: dto.carModel,
+          carPlate: dto.carPlate,
+          carColor: dto.carColor,
+          status: DriverStatus.pending,
+          rejectionReason: null,
+          docUrls: []
+        }
+      });
+    }
+
     try {
       return await this.prisma.driver.create({
         data: {
@@ -69,8 +93,29 @@ export class DriversService {
 
     return this.prisma.driver.update({
       where: { id: driver.id },
-      data: { docUrls: nextUrls }
+      data: {
+        docUrls: nextUrls,
+        ...(driver.status === DriverStatus.rejected || driver.status === DriverStatus.suspended
+          ? { status: DriverStatus.pending, rejectionReason: null }
+          : {})
+      }
     });
+  }
+
+  async getMyProfile(user: AuthenticatedUser) {
+    if (user.role !== UserRole.driver) {
+      throw new ForbiddenException('Only driver accounts can read a driver profile');
+    }
+
+    const driver = await this.prisma.driver.findUnique({
+      where: { userId: user.id }
+    });
+
+    if (!driver) {
+      throw new NotFoundException('Driver profile not found');
+    }
+
+    return driver;
   }
 
   async getPublicProfile(driverId: string) {

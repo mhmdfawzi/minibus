@@ -283,6 +283,12 @@ ion-segment {
   width: 40px;
 }
 
+.stitch-title-with-back {
+  align-items: center;
+  display: flex;
+  gap: var(--app-space-xs);
+}
+
 .stitch-top-spacer.compact {
   width: 24px;
 }
@@ -935,6 +941,454 @@ ion-segment {
 .profile-action {
   border-radius: var(--app-radius-pill);
   box-shadow: 0 4px 16px rgba(242, 194, 48, 0.3);
+}
+
+.driver-register-layout {
+  margin: 0 auto;
+  max-width: 448px;
+  min-height: 100%;
+  padding: var(--app-space-lg) var(--app-space-md) 128px;
+  width: 100%;
+}
+
+.driver-register-heading {
+  margin-bottom: var(--app-space-lg);
+}
+
+.driver-register-heading h2 {
+  color: var(--app-color-primary);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  margin: 0 0 var(--app-space-xs);
+}
+
+.driver-register-heading p {
+  color: var(--app-color-outline-strong);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+}
+
+.driver-register-form {
+  display: grid;
+  gap: var(--app-space-sm);
+}
+
+.driver-form-card {
+  background: var(--app-color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 26, 71, 0.08);
+  display: grid;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-sm);
+}
+
+.driver-form-card label,
+.driver-form-card h3 {
+  color: var(--app-color-primary);
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+  margin: 0 0 var(--app-space-xs);
+}
+
+.driver-form-card h3 {
+  border-inline-start: 4px solid var(--app-color-secondary);
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: 24px;
+  padding-inline-start: 12px;
+}
+
+.driver-form-card input,
+.driver-form-card select {
+  appearance: none;
+  background: var(--app-color-surface-container);
+  border: 2px solid transparent;
+  border-radius: var(--app-radius-input);
+  color: var(--app-color-on-surface);
+  font-family: inherit;
+  font-size: 16px;
+  height: var(--app-touch-target);
+  line-height: 24px;
+  outline: none;
+  padding-inline: var(--app-space-sm);
+  transition: border-color 160ms ease;
+  width: 100%;
+}
+
+.driver-form-card input:focus,
+.driver-form-card select:focus {
+  border-color: var(--app-color-secondary);
+}
+
+.driver-form-card input.centered {
+  text-align: center;
+}
+
+.document-block {
+  display: grid;
+  gap: var(--app-space-xs);
+}
+
+.upload-dashed {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 2px dashed var(--app-color-outline);
+  border-radius: 12px;
+  color: var(--app-color-outline-strong);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-space-xs);
+  height: 128px;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--app-space-sm);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+  width: 100%;
+}
+
+.upload-dashed:active {
+  transform: scale(0.98);
+}
+
+.upload-dashed.has-file {
+  background: rgba(138, 210, 254, 0.3);
+  border-style: solid;
+  border-color: var(--app-color-secondary);
+}
+
+.upload-dashed img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.upload-dashed .material-symbols-outlined {
+  font-size: 32px;
+}
+
+.upload-dashed small {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.vehicle-card {
+  gap: var(--app-space-sm);
+}
+
+.vehicle-grid {
+  display: grid;
+  gap: var(--app-space-sm);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.driver-info-note {
+  align-items: start;
+  background: rgba(11, 46, 107, 0.1);
+  border-radius: 12px;
+  color: var(--app-color-primary);
+  display: flex;
+  gap: 12px;
+  padding: var(--app-space-sm);
+}
+
+.driver-info-note .material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.driver-info-note p {
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+}
+
+.upload-progress {
+  display: grid;
+  gap: var(--app-space-xs);
+}
+
+.upload-progress div {
+  background: var(--app-color-surface-strong);
+  border-radius: var(--app-radius-pill);
+  height: 8px;
+  overflow: hidden;
+}
+
+.upload-progress span {
+  background: var(--app-color-secondary);
+  display: block;
+  height: 100%;
+}
+
+.upload-progress p {
+  color: var(--app-color-outline-strong);
+  font-size: 12px;
+  margin: 0;
+  text-align: center;
+}
+
+.driver-register-footer {
+  background: var(--app-color-surface);
+  bottom: 0;
+  box-shadow: 0 -4px 12px rgba(0, 26, 71, 0.1);
+  left: 0;
+  padding: var(--app-space-md);
+  position: fixed;
+  right: 0;
+  z-index: 50;
+}
+
+.driver-submit-action {
+  border-radius: 12px;
+  height: 56px;
+  margin: 0 auto;
+  max-width: 408px;
+}
+
+.driver-status-layout {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 448px;
+  min-height: calc(100dvh - var(--app-touch-target));
+  padding: 0 var(--app-space-md) 128px;
+  position: relative;
+  width: 100%;
+}
+
+.driver-status-loading {
+  color: var(--app-color-primary);
+}
+
+.driver-status-illustration {
+  align-items: center;
+  background: var(--app-color-surface-container);
+  border-radius: var(--app-radius-pill);
+  display: flex;
+  height: 256px;
+  justify-content: center;
+  margin-bottom: var(--app-space-lg);
+  overflow: hidden;
+  position: relative;
+  width: 256px;
+}
+
+.driver-status-illustration.is-blocked {
+  background: var(--app-color-rejected-bg);
+}
+
+.status-dot-pattern {
+  background-image: radial-gradient(circle, rgba(0, 26, 71, 0.18) 1px, transparent 1px);
+  background-size: 16px 16px;
+  inset: 0;
+  opacity: 0.4;
+  pointer-events: none;
+  position: absolute;
+}
+
+.status-main-icon {
+  color: var(--app-color-primary-strong);
+  font-size: 120px;
+  position: relative;
+  z-index: 1;
+}
+
+.status-sailing-icon {
+  color: var(--app-color-secondary);
+  font-size: 28px;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  position: absolute;
+  right: var(--app-space-lg);
+  top: var(--app-space-lg);
+  z-index: 2;
+}
+
+.driver-status-copy {
+  display: grid;
+  gap: var(--app-space-sm);
+  text-align: center;
+}
+
+.driver-status-copy h1 {
+  color: var(--app-color-primary);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  margin: 0;
+}
+
+.driver-status-copy p {
+  color: var(--app-color-text-muted);
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0 auto;
+  max-width: 280px;
+}
+
+.driver-status-card {
+  align-items: center;
+  background: var(--app-color-surface);
+  border-inline-start: 4px solid var(--app-color-secondary);
+  border-radius: 12px;
+  box-shadow: var(--app-shadow-modal);
+  display: flex;
+  gap: var(--app-space-sm);
+  margin-top: var(--app-space-lg);
+  padding: var(--app-space-sm);
+  width: 100%;
+}
+
+.status-info-icon {
+  align-items: center;
+  background: var(--app-color-secondary-container);
+  border-radius: var(--app-radius-input);
+  color: var(--app-color-secondary-container-text);
+  display: flex;
+  height: var(--app-touch-target);
+  justify-content: center;
+  width: var(--app-touch-target);
+}
+
+.driver-status-card div:nth-child(2) {
+  flex: 1;
+}
+
+.driver-status-card p {
+  color: var(--app-color-secondary-strong);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+  margin: 0;
+}
+
+.driver-status-card strong {
+  color: var(--app-color-primary);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.status-pill {
+  background: var(--app-color-surface-strong);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-color-outline-strong);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 4px var(--app-space-xs);
+}
+
+.driver-rejection-box {
+  background: var(--app-color-rejected-bg);
+  border-radius: 12px;
+  color: var(--app-color-rejected);
+  margin-top: var(--app-space-sm);
+  padding: var(--app-space-sm);
+  width: 100%;
+}
+
+.driver-rejection-box strong,
+.driver-rejection-box p {
+  margin: 0;
+}
+
+.driver-rejection-box p {
+  color: var(--app-color-on-surface);
+  font-size: 14px;
+  line-height: 20px;
+  margin-top: 4px;
+}
+
+.driver-tips-grid {
+  display: grid;
+  gap: var(--app-space-xs);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: var(--app-space-sm);
+  width: 100%;
+}
+
+.driver-tips-grid article {
+  border-radius: 12px;
+  display: grid;
+  gap: var(--app-space-xs);
+  padding: var(--app-space-sm);
+}
+
+.driver-tips-grid article:first-child {
+  background: var(--app-color-primary);
+  color: var(--app-color-on-primary-soft);
+}
+
+.driver-tips-grid article:last-child {
+  background: var(--app-color-surface-container);
+  color: var(--app-color-on-surface);
+}
+
+.driver-tips-grid .material-symbols-outlined {
+  font-size: 28px;
+}
+
+.driver-tips-grid p {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  margin: 0;
+}
+
+.driver-support-action,
+.driver-resubmit-action {
+  margin-top: var(--app-space-lg);
+}
+
+.driver-support-action {
+  align-items: center;
+  appearance: none;
+  background: var(--app-color-surface-strong);
+  border: 0;
+  border-radius: 12px;
+  color: var(--app-color-primary);
+  display: flex;
+  font-size: 18px;
+  font-weight: 600;
+  gap: var(--app-space-xs);
+  height: var(--app-touch-target);
+  justify-content: center;
+  width: 100%;
+}
+
+.driver-status-watermark {
+  bottom: -40px;
+  color: var(--app-color-primary);
+  font-size: 192px;
+  left: -40px;
+  opacity: 0.1;
+  pointer-events: none;
+  position: fixed;
+}
+
+.driver-status-watermark .material-symbols-outlined {
+  font-size: 192px;
 }
 
 ion-button {

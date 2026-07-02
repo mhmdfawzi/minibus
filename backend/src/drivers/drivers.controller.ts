@@ -75,6 +75,11 @@ export class DriversController {
     return this.driversService.addDocuments(user, documentUrls);
   }
 
+  @Get('me')
+  getMyProfile(@CurrentUser() user: AuthenticatedUser) {
+    return this.driversService.getMyProfile(user);
+  }
+
   @Get('bookings')
   listDriverBookings(@CurrentUser() user: AuthenticatedUser): Promise<BookingResponse[]> {
     return this.bookingsService.listDriverBookings(user);
