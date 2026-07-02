@@ -3,16 +3,7 @@
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
-
-:root {
-  --ion-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --ion-color-primary: #0f766e;
-  --ion-color-primary-rgb: 15, 118, 110;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-secondary: #2563eb;
-  --ion-background-color: #f8fafc;
-  --ion-text-color: #111827;
-}
+@import "./theme/damietta-theme.scss";
 
 html,
 body {
@@ -28,13 +19,15 @@ ion-content {
 }
 
 ion-item {
-  --border-color: #d1d5db;
+  --border-color: var(--app-color-outline);
+  --border-radius: var(--app-radius-input);
+  --min-height: var(--app-touch-target);
 }
 
 .auth-form,
 .profile-summary {
   display: grid;
-  gap: 16px;
+  gap: var(--app-space-sm);
   max-width: 420px;
   margin: 32px auto 0;
 }
@@ -45,7 +38,7 @@ ion-item {
 
 .pilot-shell {
   display: grid;
-  gap: 16px;
+  gap: var(--app-space-sm);
   max-width: 920px;
   margin: 0 auto;
 }
@@ -70,23 +63,23 @@ ion-item {
 .trip-row p,
 ion-card-content p {
   margin: 4px 0 0;
-  color: #475569;
+  color: var(--app-color-text-muted);
 }
 
 .workspace {
   display: grid;
-  gap: 14px;
+  gap: var(--app-space-sm);
 }
 
 .dense-form {
   display: grid;
-  gap: 12px;
+  gap: var(--app-space-xs);
 }
 
 .admin-subform {
   margin-top: 18px;
   padding-top: 18px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--app-color-surface-strong);
 }
 
 .file-input {
@@ -97,7 +90,7 @@ ion-card-content p {
 
 .result-list {
   display: grid;
-  gap: 10px;
+  gap: var(--app-space-xs);
   background: transparent;
 }
 
@@ -105,7 +98,7 @@ ion-card-content p {
 .trip-row,
 .rating-box {
   padding: 12px 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--app-color-surface-strong);
 }
 
 .actions {
@@ -123,12 +116,26 @@ ion-card-content p {
 
 ion-card {
   margin-inline: 0;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  border-radius: var(--app-radius-card);
+  box-shadow: var(--app-shadow-card);
 }
 
 ion-segment {
   direction: rtl;
+}
+
+ion-button {
+  min-height: var(--app-touch-target);
+  --border-radius: var(--app-radius-pill);
+  --background: var(--app-color-accent);
+  --background-activated: var(--app-color-accent);
+  --background-hover: var(--app-color-accent);
+  --color: var(--app-color-primary-strong);
+}
+
+ion-button[fill='outline'] {
+  --border-color: var(--app-color-primary);
+  --color: var(--app-color-primary);
 }
 
 @media (max-width: 560px) {
