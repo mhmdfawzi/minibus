@@ -13,7 +13,9 @@ export class PushNotificationsService {
   private currentToken: string | null = null;
   private hasInitialized = false;
 
-  constructor(private readonly authApi: AuthApiService) {}
+  constructor(private readonly authApi: AuthApiService) {
+    this.authApi.sessionStored$.subscribe(() => this.registerCurrentDevice());
+  }
 
   async initialize(): Promise<void> {
     if (!Capacitor.isNativePlatform() || this.hasInitialized) {

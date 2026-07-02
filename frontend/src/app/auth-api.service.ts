@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { environment } from '../environments/environment';
 
 export type UserRole = 'passenger' | 'driver' | 'admin';
@@ -42,6 +42,8 @@ export class AuthApiService {
   private readonly accessTokenKey = 'transport_access_token';
   private readonly refreshTokenKey = 'transport_refresh_token';
   private readonly deviceIdKey = 'transport_device_id';
+  private readonly sessionStoredSubject = new Subject<void>();
+  readonly sessionStored$ = this.sessionStoredSubject.asObservable();
 
   constructor(private readonly http: HttpClient) {}
 
@@ -102,6 +104,7 @@ export class AuthApiService {
   private storeSession(response: AuthResponse): void {
     localStorage.setItem(this.accessTokenKey, response.accessToken);
     localStorage.setItem(this.refreshTokenKey, response.refreshToken);
+    this.sessionStoredSubject.next();
   }
 
   authHeaders(): Record<string, string> {
