@@ -10,6 +10,6 @@ import { JwtAuthGuard } from './jwt-auth.guard';
   imports: [JwtModule.register({})],
   controllers: [AuthController],
   providers: [AuthService, FirebaseAdminService, JwtAuthGuard, AdminGuard],
-  exports: [AuthService, JwtAuthGuard, AdminGuard, JwtModule]
+  exports: [AuthService, FirebaseAdminService, JwtAuthGuard, AdminGuard, JwtModule]
 })
 export class AuthModule {}

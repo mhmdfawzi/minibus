@@ -2,10 +2,12 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  Logger,
   NotFoundException
 } from '@nestjs/common';
 import { BookingStatus, DriverStatus, TripStatus, UserRole } from '@prisma/client';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { SearchTripsDto } from './dto/search-trips.dto';
@@ -19,7 +21,12 @@ import {
 
 @Injectable()
 export class TripsService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(TripsService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService
+  ) {}
 
   async createTrip(user: AuthenticatedUser, dto: CreateTripDto): Promise<TripResponse> {
     const driver = await this.getApprovedDriver(user);
@@ -150,7 +157,9 @@ export class TripsService {
       throw new BadRequestException('Only open trips can be started');
     }
 
-    return this.updateStatus(tripId, TripStatus.started);
+    const updatedTrip = await this.updateStatus(tripId, TripStatus.started);
+    await this.safeNotify('trip_started', () => this.notifications.notifyTripStarted(tripId));
+    return updatedTrip;
   }
 
   async completeTrip(user: AuthenticatedUser, tripId: string): Promise<TripResponse> {
@@ -173,7 +182,11 @@ export class TripsService {
       throw new BadRequestException('Only open or started trips can be cancelled');
     }
 
-    return this.updateStatus(tripId, TripStatus.cancelled);
+    const updatedTrip = await this.updateStatus(tripId, TripStatus.cancelled);
+    await this.safeNotify('trip_cancelled', () =>
+      this.notifications.notifyTripCancelled(tripId)
+    );
+    return updatedTrip;
   }
 
   private async updateStatus(tripId: string, status: TripStatus): Promise<TripResponse> {
@@ -236,5 +249,20 @@ export class TripsService {
     if (availableSeats < 0 || availableSeats > totalSeats) {
       throw new BadRequestException('Trip available seats must be between zero and total seats');
     }
+  }
+
+  private async safeNotify(eventName: string, send: () => Promise<void>): Promise<void> {
+    try {
+      await send();
+    } catch (error) {
+      this.logger.warn(
+        `Notification event ${eventName} failed after trip state changed: ${this.errorMessage(error)}`
+      );
+    }
+  }
+
+  private errorMessage(error: unknown): string {
+    if (error instanceof Error) return error.message;
+    return String(error);
   }
 }

@@ -8,6 +8,7 @@ import {
   initializeApp
 } from 'firebase-admin/app';
 import { DecodedIdToken, getAuth } from 'firebase-admin/auth';
+import { getMessaging, MulticastMessage } from 'firebase-admin/messaging';
 
 @Injectable()
 export class FirebaseAdminService {
@@ -24,6 +25,10 @@ export class FirebaseAdminService {
     } catch {
       throw new UnauthorizedException('Invalid Firebase ID token');
     }
+  }
+
+  async sendEachForMulticast(message: MulticastMessage) {
+    return getMessaging(this.app).sendEachForMulticast(message);
   }
 
   private getFirebaseOptions() {

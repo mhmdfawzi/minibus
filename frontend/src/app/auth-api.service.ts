@@ -29,6 +29,13 @@ export interface CompleteProfilePayload {
   preferredLocale: string;
 }
 
+export type DevicePlatform = 'android' | 'ios';
+
+export interface RegisterDevicePayload {
+  token: string;
+  platform: DevicePlatform;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
   private readonly apiBaseUrl = environment.apiBaseUrl;
@@ -68,6 +75,19 @@ export class AuthApiService {
       payload,
       { headers: this.authHeaders() }
     ).pipe(tap((response) => this.storeSession(response)));
+  }
+
+  registerDevice(payload: RegisterDevicePayload): Observable<unknown> {
+    return this.http.post(`${this.apiBaseUrl}/devices/register`, payload, {
+      headers: this.authHeaders()
+    });
+  }
+
+  deleteDevice(token: string): Observable<{ deleted: boolean }> {
+    return this.http.delete<{ deleted: boolean }>(
+      `${this.apiBaseUrl}/devices/${encodeURIComponent(token)}`,
+      { headers: this.authHeaders() }
+    );
   }
 
   getAccessToken(): string | null {

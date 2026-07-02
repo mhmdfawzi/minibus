@@ -15,6 +15,7 @@ import {
   UserRole
 } from '@prisma/client';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { calculateFlatBookingPrice } from './booking-price';
 import { BookingResponse, toBookingResponse } from './booking.types';
@@ -43,7 +44,10 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
   private readonly holdMinutes = 15;
   private expiryTimer: NodeJS.Timeout | null = null;
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notifications: NotificationsService
+  ) {}
 
   onModuleInit(): void {
     void this.expirePendingBookings();
@@ -121,6 +125,10 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       })
     );
 
+    await this.safeNotify('booking_created', () =>
+      this.notifications.notifyBookingCreated(booking.id)
+    );
+
     return toBookingResponse(booking);
   }
 
@@ -176,6 +184,10 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       });
     });
 
+    await this.safeNotify('booking_accepted', () =>
+      this.notifications.notifyBookingAccepted(booking.id)
+    );
+
     return toBookingResponse(booking);
   }
 
@@ -206,6 +218,10 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
         };
       });
     });
+
+    await this.safeNotify('booking_rejected', () =>
+      this.notifications.notifyBookingRejected(booking.id)
+    );
 
     return toBookingResponse(booking);
   }
@@ -402,5 +418,20 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
     if (availableSeats < 0 || availableSeats > totalSeats) {
       throw new BadRequestException('Trip available seats must be between zero and total seats');
     }
+  }
+
+  private async safeNotify(eventName: string, send: () => Promise<void>): Promise<void> {
+    try {
+      await send();
+    } catch (error) {
+      this.logger.warn(
+        `Notification event ${eventName} failed after booking state changed: ${this.errorMessage(error)}`
+      );
+    }
+  }
+
+  private errorMessage(error: unknown): string {
+    if (error instanceof Error) return error.message;
+    return String(error);
   }
 }

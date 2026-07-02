@@ -16,6 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { AuthApiService, AuthUser } from './auth-api.service';
 import { FirebasePhoneAuthService } from './firebase-phone-auth.service';
+import { PushNotificationsService } from './push-notifications.service';
 
 @Component({
   selector: 'app-home',
@@ -134,7 +135,8 @@ export class HomePage {
 
   constructor(
     private readonly firebasePhoneAuth: FirebasePhoneAuthService,
-    private readonly authApi: AuthApiService
+    private readonly authApi: AuthApiService,
+    private readonly pushNotifications: PushNotificationsService
   ) {}
 
   ionViewWillEnter(): void {
@@ -145,6 +147,7 @@ export class HomePage {
     this.authApi.me().subscribe({
       next: (user) => {
         this.user = user;
+        void this.pushNotifications.syncTokenAfterAuth();
       },
       error: () => this.authApi.clearSession()
     });
@@ -164,6 +167,7 @@ export class HomePage {
       this.authApi.firebaseLogin(firebaseIdToken).subscribe({
         next: (response) => {
           this.user = response.user;
+          void this.pushNotifications.syncTokenAfterAuth();
           this.isLoading = false;
         },
         error: () => {
@@ -186,6 +190,7 @@ export class HomePage {
       .subscribe({
         next: (response) => {
           this.user = response.user;
+          void this.pushNotifications.syncTokenAfterAuth();
           this.isLoading = false;
         },
         error: () => {
@@ -196,6 +201,7 @@ export class HomePage {
   }
 
   logout(): void {
+    void this.pushNotifications.unregisterCurrentDevice();
     this.authApi.clearSession();
     this.user = null;
     this.step = 'phone';
