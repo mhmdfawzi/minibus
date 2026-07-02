@@ -83,6 +83,18 @@ ion-card-content p {
   gap: 12px;
 }
 
+.admin-subform {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.file-input {
+  display: block;
+  width: 100%;
+  padding: 10px 0 2px;
+}
+
 .result-list {
   display: grid;
   gap: 10px;

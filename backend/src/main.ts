@@ -21,6 +21,17 @@ async function bootstrap(): Promise<void> {
     });
   }
 
+  const corsOrigins = config
+    .get<string>('CORS_ORIGINS', '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  app.enableCors({
+    origin: corsOrigins.length > 0 ? corsOrigins : false,
+    credentials: true
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -48,14 +48,3 @@ export class BookingsController {
     return this.bookingsService.cancelBooking(user, bookingId);
   }
 }
-
-@Controller('drivers/bookings')
-@UseGuards(JwtAuthGuard)
-export class DriverBookingsController {
-  constructor(private readonly bookingsService: BookingsService) {}
-
-  @Get()
-  listDriverBookings(@CurrentUser() user: AuthenticatedUser): Promise<BookingResponse[]> {
-    return this.bookingsService.listDriverBookings(user);
-  }
-}

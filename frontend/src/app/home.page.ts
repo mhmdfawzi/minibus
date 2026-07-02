@@ -28,6 +28,9 @@ import {
 import { AuthApiService, AuthUser } from './auth-api.service';
 import { FirebasePhoneAuthService } from './firebase-phone-auth.service';
 import {
+  AdminBooking,
+  AdminDriver,
+  AdminTrip,
   Booking,
   DriverProfile,
   PassengerBookingView,
@@ -161,17 +164,141 @@ type PilotTab = 'passenger' | 'driver';
           }
 
           @if (user.role === 'admin') {
-            <ion-card>
-              <ion-card-header>
-                <ion-card-title>لوحة الإدارة</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <p>واجهات الرقابة متاحة عبر API في هذه المرحلة. استخدم حساب الإدارة لمتابعة الرحلات والحجوزات من أدوات التشغيل.</p>
-                <ion-button expand="block" fill="outline" (click)="sendMonitoringTest()">
-                  إرسال اختبار مراقبة
-                </ion-button>
-              </ion-card-content>
-            </ion-card>
+            <section class="workspace">
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>إدارة المسارات</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <form class="dense-form" (ngSubmit)="createAdminRoute()">
+                    <ion-item>
+                      <ion-label position="stacked">اسم المسار</ion-label>
+                      <ion-input name="adminRouteName" [(ngModel)]="adminRoute.name" required />
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="stacked">الاتجاه</ion-label>
+                      <ion-select name="adminRouteDirection" interface="popover" [(ngModel)]="adminRoute.direction">
+                        <ion-select-option value="outbound">ذهاب</ion-select-option>
+                        <ion-select-option value="return">عودة</ion-select-option>
+                      </ion-select>
+                    </ion-item>
+                    <ion-button type="submit" expand="block" [disabled]="isLoading">إضافة مسار</ion-button>
+                  </form>
+
+                  <form class="dense-form admin-subform" (ngSubmit)="createAdminStop()">
+                    <ion-item>
+                      <ion-label position="stacked">المسار</ion-label>
+                      <ion-select name="adminStopRoute" interface="popover" [(ngModel)]="adminStop.routeId">
+                        @for (route of routes; track route.id) {
+                          <ion-select-option [value]="route.id">{{ route.name }}</ion-select-option>
+                        }
+                      </ion-select>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="stacked">اسم المحطة</ion-label>
+                      <ion-input name="adminStopName" [(ngModel)]="adminStop.name" required />
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="stacked">الترتيب</ion-label>
+                      <ion-input name="adminStopOrder" type="number" min="0" [(ngModel)]="adminStop.orderIndex" required />
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="stacked">زمن الوصول التقريبي بالدقائق</ion-label>
+                      <ion-input
+                        name="adminStopOffset"
+                        type="number"
+                        min="0"
+                        [(ngModel)]="adminStop.estimatedOffsetMinutes"
+                        required
+                      />
+                    </ion-item>
+                    <ion-button type="submit" expand="block" fill="outline" [disabled]="isLoading">
+                      إضافة محطة
+                    </ion-button>
+                  </form>
+                </ion-card-content>
+              </ion-card>
+
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>السائقون بانتظار الموافقة</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-button fill="outline" expand="block" (click)="loadAdminData()">تحديث</ion-button>
+                  @for (driver of pendingDrivers; track driver.id) {
+                    <div class="booking-row">
+                      <div>
+                        <strong>{{ driver.user?.fullName || driver.user?.phone || 'سائق جديد' }}</strong>
+                        <p>{{ driver.carModel }} - {{ driver.carColor }} - {{ driver.carPlate }}</p>
+                        <p>رخصة: {{ driver.licenseNumber }} | هوية: {{ driver.nationalId }}</p>
+                      </div>
+                      <div class="actions">
+                        <ion-button size="small" (click)="approveDriver(driver.id)">اعتماد</ion-button>
+                        <ion-button size="small" color="danger" fill="outline" (click)="rejectDriver(driver.id)">
+                          رفض
+                        </ion-button>
+                      </div>
+                    </div>
+                  } @empty {
+                    <ion-note>لا يوجد سائقون بانتظار الموافقة.</ion-note>
+                  }
+                </ion-card-content>
+              </ion-card>
+
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>مراقبة الرحلات</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  @for (trip of adminTrips; track trip.id) {
+                    <div class="trip-row">
+                      <div>
+                        <strong>{{ trip.route?.name || routeName(trip.routeId) }}</strong>
+                        <p>{{ trip.tripDate }} - {{ trip.startTime }} - {{ tripStatusLabel(trip.status) }}</p>
+                        <p>السائق: {{ trip.driver?.fullName || trip.driver?.phone || trip.driverId }}</p>
+                        <p>الحجوزات: {{ trip.bookingCount }} | المقاعد: {{ trip.availableSeats }}/{{ trip.totalSeats }}</p>
+                      </div>
+                      <ion-badge [color]="trip.status === 'cancelled' ? 'medium' : 'success'">
+                        {{ tripStatusLabel(trip.status) }}
+                      </ion-badge>
+                    </div>
+                  } @empty {
+                    <ion-note>لا توجد رحلات للعرض.</ion-note>
+                  }
+                </ion-card-content>
+              </ion-card>
+
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>مراقبة الحجوزات</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  @for (booking of adminBookings; track booking.id) {
+                    <div class="booking-row">
+                      <div>
+                        <strong>{{ booking.trip?.routeName || booking.tripId }}</strong>
+                        <p>{{ statusLabel(booking.status) }} - {{ booking.seatsCount }} مقعد - {{ booking.price }} جنيه</p>
+                        <p>الراكب: {{ booking.passenger?.fullName || booking.passenger?.phone || booking.passengerId }}</p>
+                      </div>
+                      <ion-badge [color]="badgeColor(booking.status)">{{ statusLabel(booking.status) }}</ion-badge>
+                    </div>
+                  } @empty {
+                    <ion-note>لا توجد حجوزات للعرض.</ion-note>
+                  }
+                </ion-card-content>
+              </ion-card>
+
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>اختبار المراقبة</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-button expand="block" fill="outline" (click)="sendMonitoringTest()">
+                    إرسال اختبار مراقبة
+                  </ion-button>
+                </ion-card-content>
+              </ion-card>
+            </section>
           } @else if (activeTab === 'passenger') {
             <section class="workspace">
               <ion-card>
@@ -306,6 +433,80 @@ type PilotTab = 'passenger' | 'driver';
             </section>
           } @else {
             <section class="workspace">
+              @if (driverProfileRequired) {
+                <ion-card>
+                  <ion-card-header>
+                    <ion-card-title>تسجيل بيانات السائق</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <form class="dense-form" (ngSubmit)="registerDriverProfile()">
+                      <ion-item>
+                        <ion-label position="stacked">الرقم القومي</ion-label>
+                        <ion-input name="driverNationalId" [(ngModel)]="driverProfile.nationalId" required />
+                      </ion-item>
+                      <ion-item>
+                        <ion-label position="stacked">رقم الرخصة</ion-label>
+                        <ion-input name="driverLicenseNumber" [(ngModel)]="driverProfile.licenseNumber" required />
+                      </ion-item>
+                      <ion-item>
+                        <ion-label position="stacked">موديل السيارة</ion-label>
+                        <ion-input name="driverCarModel" [(ngModel)]="driverProfile.carModel" required />
+                      </ion-item>
+                      <ion-item>
+                        <ion-label position="stacked">رقم اللوحة</ion-label>
+                        <ion-input name="driverCarPlate" [(ngModel)]="driverProfile.carPlate" required />
+                      </ion-item>
+                      <ion-item>
+                        <ion-label position="stacked">لون السيارة</ion-label>
+                        <ion-input name="driverCarColor" [(ngModel)]="driverProfile.carColor" required />
+                      </ion-item>
+                      <ion-button type="submit" expand="block" [disabled]="isLoading">
+                        إرسال بيانات السائق
+                      </ion-button>
+                    </form>
+                    <div class="admin-subform">
+                      <ion-item>
+                        <ion-label position="stacked">صور الهوية والرخصة</ion-label>
+                        <input
+                          class="file-input"
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          multiple
+                          (change)="selectDriverDocuments($event)"
+                        />
+                      </ion-item>
+                      <ion-button
+                        expand="block"
+                        fill="outline"
+                        type="button"
+                        [disabled]="isLoading || driverDocuments.length < 2"
+                        (click)="uploadDriverDocuments()"
+                      >
+                        رفع المستندات
+                      </ion-button>
+                      <ion-note>ارفع صورتين على الأقل: الهوية والرخصة.</ion-note>
+                    </div>
+                    <ion-note>
+                      بعد التسجيل، افتح حساب الإدارة واعتمد السائق قبل إنشاء الرحلات.
+                    </ion-note>
+                  </ion-card-content>
+                </ion-card>
+              }
+
+              @if (driverApprovalRequired) {
+                <ion-card>
+                  <ion-card-header>
+                    <ion-card-title>بانتظار اعتماد الإدارة</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <p>
+                      تم تسجيل بيانات السائق، لكن الحساب لم يعتمد بعد. افتح لوحة الإدارة واعتمد السائق حتى يستطيع إنشاء الرحلات وإدارة الحجوزات.
+                    </p>
+                    <ion-button fill="outline" expand="block" (click)="loadDriverData()">تحديث الحالة</ion-button>
+                  </ion-card-content>
+                </ion-card>
+              }
+
               <ion-card>
                 <ion-card-header>
                   <ion-card-title>إنشاء رحلة</ion-card-title>
@@ -350,7 +551,13 @@ type PilotTab = 'passenger' | 'driver';
                         required
                       />
                     </ion-item>
-                    <ion-button type="submit" expand="block" [disabled]="isLoading">نشر الرحلة</ion-button>
+                    <ion-button
+                      type="submit"
+                      expand="block"
+                      [disabled]="isLoading || driverProfileRequired || driverApprovalRequired"
+                    >
+                      نشر الرحلة
+                    </ion-button>
                   </form>
                 </ion-card-content>
               </ion-card>
@@ -451,6 +658,29 @@ export class HomePage {
   };
   myTrips: Trip[] = [];
   driverBookings: Booking[] = [];
+  driverProfileRequired = false;
+  driverApprovalRequired = false;
+  driverProfile = {
+    nationalId: '',
+    licenseNumber: '',
+    carModel: '',
+    carPlate: '',
+    carColor: ''
+  };
+  driverDocuments: File[] = [];
+  pendingDrivers: AdminDriver[] = [];
+  adminTrips: AdminTrip[] = [];
+  adminBookings: AdminBooking[] = [];
+  adminRoute = {
+    name: '',
+    direction: 'outbound' as RouteSummary['direction']
+  };
+  adminStop = {
+    routeId: '',
+    name: '',
+    orderIndex: 0,
+    estimatedOffsetMinutes: 0
+  };
 
   constructor(
     private readonly firebasePhoneAuth: FirebasePhoneAuthService,
@@ -607,8 +837,62 @@ export class HomePage {
   }
 
   async loadDriverData(): Promise<void> {
-    this.myTrips = await firstValueFrom(this.pilotApi.listMyTrips());
-    this.driverBookings = await firstValueFrom(this.pilotApi.listDriverBookings());
+    try {
+      this.myTrips = await firstValueFrom(this.pilotApi.listMyTrips());
+      this.driverBookings = await firstValueFrom(this.pilotApi.listDriverBookings());
+      this.driverProfileRequired = false;
+      this.driverApprovalRequired = false;
+    } catch (error) {
+      if (this.isDriverProfileMissing(error)) {
+        this.driverProfileRequired = true;
+        this.driverApprovalRequired = false;
+        this.myTrips = [];
+        this.driverBookings = [];
+        return;
+      }
+      if (this.isDriverApprovalMissing(error)) {
+        this.driverProfileRequired = false;
+        this.driverApprovalRequired = true;
+        this.myTrips = [];
+        this.driverBookings = [];
+        return;
+      }
+      throw error;
+    }
+  }
+
+  async registerDriverProfile(): Promise<void> {
+    await this.runWithLoading(async () => {
+      await firstValueFrom(
+        this.pilotApi.registerDriver({
+          nationalId: this.driverProfile.nationalId.trim(),
+          licenseNumber: this.driverProfile.licenseNumber.trim(),
+          carModel: this.driverProfile.carModel.trim(),
+          carPlate: this.driverProfile.carPlate.trim(),
+          carColor: this.driverProfile.carColor.trim()
+        })
+      );
+      this.driverProfileRequired = false;
+      this.driverApprovalRequired = true;
+      await this.loadDriverData();
+    }, 'تم تسجيل بيانات السائق. بانتظار اعتماد الإدارة.');
+  }
+
+  selectDriverDocuments(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.driverDocuments = Array.from(input.files ?? []);
+  }
+
+  async uploadDriverDocuments(): Promise<void> {
+    if (this.driverDocuments.length < 2) {
+      this.errorMessage = 'ارفع صورتين على الأقل للهوية والرخصة';
+      return;
+    }
+
+    await this.runWithLoading(async () => {
+      await firstValueFrom(this.pilotApi.uploadDriverDocuments(this.driverDocuments));
+      this.driverDocuments = [];
+    }, 'تم رفع المستندات. يمكن للإدارة اعتماد السائق الآن.');
   }
 
   async acceptBooking(bookingId: string): Promise<void> {
@@ -655,6 +939,79 @@ export class HomePage {
         return;
       }
     }, 'تم إرسال اختبار المراقبة');
+  }
+
+  async loadAdminData(): Promise<void> {
+    await this.runWithLoading(async () => {
+      this.routes = await firstValueFrom(this.pilotApi.listRoutes());
+      this.adminStop.routeId ||= this.routes[0]?.id ?? '';
+      const [drivers, trips, bookings] = await Promise.all([
+        firstValueFrom(this.pilotApi.listPendingDrivers()),
+        firstValueFrom(this.pilotApi.listAdminTrips()),
+        firstValueFrom(this.pilotApi.listAdminBookings())
+      ]);
+      this.pendingDrivers = drivers;
+      this.adminTrips = trips.data;
+      this.adminBookings = bookings.data;
+    });
+  }
+
+  async createAdminRoute(): Promise<void> {
+    if (!this.adminRoute.name.trim()) {
+      this.errorMessage = 'اكتب اسم المسار';
+      return;
+    }
+
+    await this.runWithLoading(async () => {
+      const route = await firstValueFrom(
+        this.pilotApi.createAdminRoute({
+          name: this.adminRoute.name.trim(),
+          direction: this.adminRoute.direction,
+          isActive: true
+        })
+      );
+      this.adminRoute.name = '';
+      this.adminStop.routeId = route.id;
+      await this.loadAdminData();
+    }, 'تمت إضافة المسار');
+  }
+
+  async createAdminStop(): Promise<void> {
+    if (!this.adminStop.routeId || !this.adminStop.name.trim()) {
+      this.errorMessage = 'اختر المسار واكتب اسم المحطة';
+      return;
+    }
+
+    await this.runWithLoading(async () => {
+      await firstValueFrom(
+        this.pilotApi.createAdminStop(this.adminStop.routeId, {
+          name: this.adminStop.name.trim(),
+          orderIndex: Number(this.adminStop.orderIndex),
+          estimatedOffsetMinutes: Number(this.adminStop.estimatedOffsetMinutes),
+          isActive: true
+        })
+      );
+      this.adminStop.name = '';
+      this.adminStop.orderIndex += 1;
+      await this.loadAdminData();
+    }, 'تمت إضافة المحطة');
+  }
+
+  async approveDriver(driverId: string): Promise<void> {
+    await this.runWithLoading(async () => {
+      await firstValueFrom(this.pilotApi.approveDriver(driverId));
+      await this.loadAdminData();
+    }, 'تم اعتماد السائق');
+  }
+
+  async rejectDriver(driverId: string): Promise<void> {
+    const reason = window.prompt('سبب الرفض؟')?.trim();
+    if (!reason) return;
+
+    await this.runWithLoading(async () => {
+      await firstValueFrom(this.pilotApi.rejectDriver(driverId, reason));
+      await this.loadAdminData();
+    }, 'تم رفض السائق');
   }
 
   roleLabel(role: AuthUser['role']): string {
@@ -707,7 +1064,12 @@ export class HomePage {
   }
 
   private async bootstrapPilotData(): Promise<void> {
-    if (!this.user?.isActive || this.user.role === 'admin') return;
+    if (!this.user?.isActive) return;
+
+    if (this.user.role === 'admin') {
+      await this.loadAdminData();
+      return;
+    }
 
     await this.runWithLoading(async () => {
       this.routes = await firstValueFrom(this.pilotApi.listRoutes());
@@ -762,6 +1124,39 @@ export class HomePage {
       if (message) return message;
     }
     return error instanceof Error ? error.message : 'حدث خطأ غير متوقع';
+  }
+
+  private isDriverProfileMissing(error: unknown): boolean {
+    if (typeof error !== 'object' || error === null || !('error' in error)) {
+      return false;
+    }
+
+    const response = error as { error?: { statusCode?: number; message?: string | string[] } };
+    const message = response.error?.message;
+    return (
+      response.error?.statusCode === 403 &&
+      (message === 'Driver profile is required' ||
+        (Array.isArray(message) && message.includes('Driver profile is required')))
+    );
+  }
+
+  private isDriverApprovalMissing(error: unknown): boolean {
+    if (typeof error !== 'object' || error === null || !('error' in error)) {
+      return false;
+    }
+
+    const response = error as { error?: { statusCode?: number; message?: string | string[] } };
+    const message = response.error?.message;
+    const approvalMessages = [
+      'Only approved drivers can manage bookings',
+      'Only approved drivers can manage trips'
+    ];
+    return (
+      response.error?.statusCode === 403 &&
+      (typeof message === 'string'
+        ? approvalMessages.includes(message)
+        : Array.isArray(message) && message.some((item) => approvalMessages.includes(item)))
+    );
   }
 
   private today(): string {

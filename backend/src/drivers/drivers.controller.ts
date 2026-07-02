@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   UploadedFiles,
   UseGuards,
@@ -17,6 +18,8 @@ import { randomUUID } from 'crypto';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { BookingResponse } from '../bookings/booking.types';
+import { BookingsService } from '../bookings/bookings.service';
 import { RegisterDriverDto } from './dto/register-driver.dto';
 import { DriversService } from './drivers.service';
 
@@ -26,7 +29,10 @@ const uploadRoot = join(process.cwd(), 'uploads', 'driver-documents');
 @Controller('drivers')
 @UseGuards(JwtAuthGuard)
 export class DriversController {
-  constructor(private readonly driversService: DriversService) {}
+  constructor(
+    private readonly driversService: DriversService,
+    private readonly bookingsService: BookingsService
+  ) {}
 
   @Post('register')
   register(
@@ -69,8 +75,13 @@ export class DriversController {
     return this.driversService.addDocuments(user, documentUrls);
   }
 
+  @Get('bookings')
+  listDriverBookings(@CurrentUser() user: AuthenticatedUser): Promise<BookingResponse[]> {
+    return this.bookingsService.listDriverBookings(user);
+  }
+
   @Get(':id')
-  getDriverProfile(@Param('id') driverId: string) {
+  getDriverProfile(@Param('id', ParseUUIDPipe) driverId: string) {
     return this.driversService.getPublicProfile(driverId);
   }
 }

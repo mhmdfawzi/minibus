@@ -44,6 +44,18 @@
             }
           },
           "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "transport:build:production"
+            },
+            "development": {
+              "buildTarget": "transport:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }

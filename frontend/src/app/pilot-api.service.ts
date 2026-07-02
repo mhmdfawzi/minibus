@@ -100,6 +100,65 @@ export interface RegisterDriverPayload {
   carColor: string;
 }
 
+export interface AdminDriver {
+  id: string;
+  userId: string;
+  nationalId: string;
+  licenseNumber: string;
+  carModel: string;
+  carPlate: string;
+  carColor: string;
+  docUrls: string[];
+  status: string;
+  rejectionReason: string | null;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    phone: string | null;
+    fullName: string | null;
+    role: string;
+    isActive: boolean;
+  };
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface AdminTrip extends Trip {
+  route?: {
+    id: string;
+    name: string;
+  };
+  driver?: {
+    id: string;
+    fullName: string | null;
+    phone: string | null;
+  };
+  bookingCount: number;
+}
+
+export interface AdminBooking extends Booking {
+  passenger?: {
+    id: string;
+    fullName: string | null;
+    phone: string | null;
+  };
+  trip?: {
+    id: string;
+    routeId: string;
+    routeName: string;
+    driverId: string;
+    driverName: string | null;
+    tripDate: string;
+    startTime: string;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class PilotApiService {
   private readonly apiBaseUrl = environment.apiBaseUrl;
@@ -242,8 +301,85 @@ export class PilotApiService {
     });
   }
 
+  uploadDriverDocuments(files: File[]): Observable<unknown> {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('documents', file);
+    }
+
+    return this.http.post(`${this.apiBaseUrl}/drivers/documents`, formData, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
   triggerBackendMonitoringTest(): Observable<unknown> {
     return this.http.get(`${this.apiBaseUrl}/health/sentry-test`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  createAdminRoute(payload: {
+    name: string;
+    direction: RouteDirection;
+    isActive?: boolean;
+  }): Observable<RouteSummary> {
+    return this.http.post<RouteSummary>(`${this.apiBaseUrl}/admin/routes`, payload, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  createAdminStop(
+    routeId: string,
+    payload: {
+      name: string;
+      orderIndex: number;
+      estimatedOffsetMinutes: number;
+      isActive?: boolean;
+    }
+  ): Observable<RouteStop> {
+    return this.http.post<RouteStop>(`${this.apiBaseUrl}/admin/routes/${routeId}/stops`, payload, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  listPendingDrivers(): Observable<AdminDriver[]> {
+    return this.http.get<AdminDriver[]>(`${this.apiBaseUrl}/admin/drivers/pending`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  approveDriver(driverId: string): Observable<AdminDriver> {
+    return this.http.patch<AdminDriver>(
+      `${this.apiBaseUrl}/admin/drivers/${driverId}/approve`,
+      {},
+      { headers: this.authApi.authHeaders() }
+    );
+  }
+
+  suspendDriver(driverId: string, rejectionReason?: string): Observable<AdminDriver> {
+    return this.http.patch<AdminDriver>(
+      `${this.apiBaseUrl}/admin/drivers/${driverId}/suspend`,
+      { rejectionReason },
+      { headers: this.authApi.authHeaders() }
+    );
+  }
+
+  rejectDriver(driverId: string, rejectionReason: string): Observable<AdminDriver> {
+    return this.http.patch<AdminDriver>(
+      `${this.apiBaseUrl}/admin/drivers/${driverId}/reject`,
+      { rejectionReason },
+      { headers: this.authApi.authHeaders() }
+    );
+  }
+
+  listAdminTrips(): Observable<PaginatedResponse<AdminTrip>> {
+    return this.http.get<PaginatedResponse<AdminTrip>>(`${this.apiBaseUrl}/admin/trips`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  listAdminBookings(): Observable<PaginatedResponse<AdminBooking>> {
+    return this.http.get<PaginatedResponse<AdminBooking>>(`${this.apiBaseUrl}/admin/bookings`, {
       headers: this.authApi.authHeaders()
     });
   }

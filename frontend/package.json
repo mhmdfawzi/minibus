@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ionic serve --host 0.0.0.0",
+    "start": "ng serve transport --port 8100",
     "build": "ng build",
     "lint": "eslint \"src/**/*.ts\""
   },
