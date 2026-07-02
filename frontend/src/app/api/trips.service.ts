@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { AuthApiService } from '../auth-api.service';
-import { TripCardViewModel } from '../shared/trip-card.component';
 import { ApiId, ISODate } from './api-types';
 
 export interface TripSearchQuery {
@@ -13,7 +12,7 @@ export interface TripSearchQuery {
 }
 
 export interface TripsApi {
-  search(query: TripSearchQuery): Observable<TripCardViewModel[]>;
+  search(query: TripSearchQuery): Observable<DriverTrip[]>;
 }
 
 export type DriverTripStatus = 'open' | 'started' | 'completed' | 'cancelled';
@@ -54,23 +53,17 @@ export class TripsService implements TripsApi {
     private readonly http: HttpClient
   ) {}
 
-  search(query: TripSearchQuery): Observable<TripCardViewModel[]> {
-    // TODO: replace mock once Phase 3/4 UI screens move off PilotApiService.
-    return of([
-      {
-        id: `${query.pickupStopId}-${query.dropoffStopId}`,
-        routeName: 'الخلفية إلى دمياط الجديدة',
-        pickupName: 'الخلفية',
-        dropoffName: 'دمياط الجديدة',
-        date: query.date,
-        startTime: '08:30',
-        availableSeats: 3,
-        totalSeats: 7,
-        pricePerSeat: 25,
-        driverLabel: 'سائق معتمد',
-        status: 'open'
-      }
-    ]);
+  search(query: TripSearchQuery): Observable<DriverTrip[]> {
+    const params = {
+      pickupStopId: query.pickupStopId,
+      dropoffStopId: query.dropoffStopId,
+      date: query.date
+    };
+
+    return this.http.get<DriverTrip[]>(`${this.apiBaseUrl}/trips/search`, {
+      headers: this.authApi.authHeaders(),
+      params
+    });
   }
 
   listMine(): Observable<DriverTrip[]> {

@@ -24,6 +24,18 @@ export interface DriverOnboardingProfile extends DriverRegistrationPayload {
   updatedAt: string;
 }
 
+export interface PublicDriverProfile {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  carModel: string;
+  carPlate: string;
+  carColor: string;
+  status: DriverReviewStatus;
+  ratingAverage: number | null;
+  ratingCount: number;
+}
+
 export interface DriverUploadProgress {
   state: 'progress' | 'done';
   progress: number;
@@ -41,6 +53,12 @@ export class DriversService {
 
   getMine(): Observable<DriverOnboardingProfile> {
     return this.http.get<DriverOnboardingProfile>(`${this.apiBaseUrl}/drivers/me`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  getPublicProfile(driverId: string): Observable<PublicDriverProfile> {
+    return this.http.get<PublicDriverProfile>(`${this.apiBaseUrl}/drivers/${driverId}`, {
       headers: this.authApi.authHeaders()
     });
   }

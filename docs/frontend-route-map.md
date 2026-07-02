@@ -11,11 +11,11 @@ This route map matches the 17 Stitch screens for the Damietta Transit mobile MVP
 
 ## Passenger
 
-- `/passenger/home` — Home Search
-- `/passenger/trips/results` — Search Results
-- `/passenger/trips/:tripId/book` — Trip Booking
-- `/passenger/bookings/:bookingId/status` — Booking Status
-- `/passenger/bookings` — My Bookings
+- `/passenger/home` — Home Search (implemented)
+- `/passenger/trips/results` — Search Results (implemented)
+- `/passenger/trips/:tripId/book` — Trip Booking (implemented)
+- `/passenger/bookings/:bookingId/status` — Booking Status (implemented)
+- `/passenger/bookings` — My Bookings (implemented)
 - `/passenger/rate/:tripId` — Rate Driver
 - `/drivers/:driverId` — Driver Profile
 

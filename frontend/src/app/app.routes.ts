@@ -9,6 +9,11 @@ import { DriverTripsPage } from './driver-trips.page';
 import { FoundationPreviewPage } from './foundation-preview.page';
 import { HomePage } from './home.page';
 import { OtpVerificationPage } from './otp-verification.page';
+import { PassengerBookingDetailPage } from './passenger-booking-detail.page';
+import { PassengerBookingsPage } from './passenger-bookings.page';
+import { PassengerSearchPage } from './passenger-search.page';
+import { PassengerTripBookingPage } from './passenger-trip-booking.page';
+import { PassengerTripResultsPage } from './passenger-trip-results.page';
 import { PhoneEntryPage } from './phone-entry.page';
 import { ProfileSetupPage } from './profile-setup.page';
 import { WelcomePage } from './welcome.page';
@@ -41,7 +46,23 @@ export const routes: Routes = [
   },
   {
     path: 'passenger/home',
-    component: HomePage
+    component: PassengerSearchPage
+  },
+  {
+    path: 'passenger/trips/results',
+    component: PassengerTripResultsPage
+  },
+  {
+    path: 'passenger/trips/:tripId/book',
+    component: PassengerTripBookingPage
+  },
+  {
+    path: 'passenger/bookings',
+    component: PassengerBookingsPage
+  },
+  {
+    path: 'passenger/bookings/:bookingId/status',
+    component: PassengerBookingDetailPage
   },
   {
     path: 'driver/trips',
