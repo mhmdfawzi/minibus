@@ -1583,13 +1583,13 @@ ion-segment {
 
 .trip-create-form {
   display: grid;
-  gap: var(--app-space-lg);
+  gap: var(--app-space-sm);
 }
 
 .trip-create-hero {
   border-radius: 12px;
   box-shadow: var(--app-shadow-card);
-  height: 192px;
+  height: 128px;
   margin-bottom: 0;
   overflow: hidden;
   position: relative;
@@ -1635,12 +1635,18 @@ ion-segment {
   gap: var(--app-space-xs);
 }
 
+.trip-route-stack small {
+  color: var(--app-color-outline-strong);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
 .trip-form-card label {
   color: var(--app-color-text-muted);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  line-height: 16px;
+  line-height: 20px;
 }
 
 .trip-input-shell,
@@ -1701,6 +1707,119 @@ ion-segment {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.trip-choice-grid {
+  display: grid;
+  gap: var(--app-space-xs);
+}
+
+.trip-choice-grid button {
+  appearance: none;
+  background: var(--app-color-surface-container);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  color: var(--app-color-primary);
+  font-family: inherit;
+  font-weight: 700;
+  min-height: var(--app-touch-target);
+  padding: 10px 12px;
+}
+
+.trip-choice-grid button.is-active {
+  background: rgba(247, 197, 38, 0.18);
+  border-color: var(--app-color-accent);
+  box-shadow: 0 0 0 2px rgba(247, 197, 38, 0.12);
+}
+
+.trip-date-choice-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.trip-date-choice-grid button {
+  display: grid;
+  gap: 2px;
+  text-align: start;
+}
+
+.trip-date-choice-grid strong,
+.trip-date-choice-grid small {
+  display: block;
+}
+
+.trip-date-choice-grid strong {
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.trip-date-choice-grid small {
+  color: var(--app-color-outline-strong);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.trip-time-choice-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.trip-stops-card {
+  gap: var(--app-space-sm);
+}
+
+.trip-stops-list {
+  display: grid;
+  gap: 0;
+}
+
+.trip-stop-row {
+  align-items: start;
+  display: grid;
+  gap: var(--app-space-xs);
+  grid-template-columns: 18px minmax(0, 1fr);
+  min-height: 48px;
+  position: relative;
+}
+
+.trip-stop-row:not(:last-child)::after {
+  background: var(--app-color-surface-strong);
+  bottom: 0;
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 18px;
+  width: 2px;
+}
+
+.trip-stop-dot {
+  background: var(--app-color-surface);
+  border: 3px solid var(--app-color-secondary-strong);
+  border-radius: var(--app-radius-pill);
+  height: 18px;
+  position: relative;
+  width: 18px;
+  z-index: 1;
+}
+
+.trip-stop-row.is-edge .trip-stop-dot {
+  background: var(--app-color-primary);
+  border-color: var(--app-color-primary);
+}
+
+.trip-stop-row strong,
+.trip-stop-row small {
+  display: block;
+}
+
+.trip-stop-row strong {
+  color: var(--app-color-primary);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.trip-stop-row small {
+  color: var(--app-color-outline-strong);
+  font-size: 12px;
+  line-height: 18px;
+}
+
 .trip-counter-card {
   text-align: center;
 }
@@ -1741,12 +1860,19 @@ ion-segment {
 }
 
 .trip-price-shell input {
+  -moz-appearance: textfield;
   color: var(--app-color-primary);
   flex: 0 1 120px;
   font-size: 22px;
   font-weight: 700;
   line-height: 28px;
   text-align: center;
+}
+
+.trip-price-shell input::-webkit-outer-spin-button,
+.trip-price-shell input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .trip-price-shell span {
@@ -1796,7 +1922,7 @@ ion-segment {
   display: grid;
   gap: var(--app-space-xs);
   left: 0;
-  padding: var(--app-space-sm) var(--app-space-md) var(--app-space-sm);
+  padding: var(--app-space-sm) var(--app-space-md) calc(var(--app-space-sm) + env(safe-area-inset-bottom));
   position: fixed;
   right: 0;
   box-shadow: 0 -4px 12px rgba(0, 26, 71, 0.1);
@@ -1807,6 +1933,20 @@ ion-segment {
 .trip-detail-actions > * {
   margin: 0 auto;
   max-width: 408px;
+}
+
+.trip-create-stitch .trip-form-layout {
+  padding-bottom: var(--app-space-lg);
+}
+
+.trip-create-stitch .trip-form-footer {
+  background: transparent;
+  bottom: auto;
+  box-shadow: none;
+  left: auto;
+  padding: 0;
+  position: static;
+  right: auto;
 }
 
 .trip-detail-topbar {

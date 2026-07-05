@@ -111,7 +111,10 @@ export class DriverTripsPage {
   }
 
   get filteredTrips(): DriverTrip[] {
-    return this.trips.filter((trip) => trip.status === this.activeFilter);
+    const direction = this.activeFilter === 'completed' ? -1 : 1;
+    return this.trips
+      .filter((trip) => trip.status === this.activeFilter)
+      .sort((first, second) => direction * (this.tripTimestamp(first) - this.tripTimestamp(second)));
   }
 
   get tripsSummary(): string {
@@ -141,8 +144,8 @@ export class DriverTripsPage {
     return {
       id: trip.id,
       routeName: this.routeName(trip.routeId),
-      date: trip.tripDate,
-      startTime: trip.startTime,
+      date: this.tripDateLabel(trip.tripDate),
+      startTime: this.tripTimeLabel(trip.startTime),
       availableSeats: trip.availableSeats,
       totalSeats: trip.totalSeats,
       pricePerSeat: trip.pricePerSeat,
@@ -163,6 +166,36 @@ export class DriverTripsPage {
       cancelled: 'ملغية'
     };
     return labels[status];
+  }
+
+  tripDateLabel(value: string): string {
+    const date = this.parseDate(value);
+    const today = this.parseDate(new Date().toISOString().slice(0, 10));
+    const dayDiff = Math.round((date.getTime() - today.getTime()) / 86400000);
+    const formattedDate = new Intl.DateTimeFormat('ar-EG', {
+      day: 'numeric',
+      month: 'short'
+    }).format(date);
+
+    if (dayDiff === 0) return `النهارده - ${formattedDate}`;
+    if (dayDiff === 1) return `بكرة - ${formattedDate}`;
+    if (dayDiff === 2) return `بعد بكرة - ${formattedDate}`;
+
+    const weekday = new Intl.DateTimeFormat('ar-EG', { weekday: 'long' }).format(date);
+    return `${weekday} - ${formattedDate}`;
+  }
+
+  tripTimeLabel(value: string): string {
+    const [hourText, minuteText = '00'] = value.split(':');
+    const hour = Number(hourText);
+    const minute = Number(minuteText);
+    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+    const suffix = hour < 12 ? 'ص' : hour === 12 ? 'ظ' : 'م';
+    const hourLabel = new Intl.NumberFormat('ar-EG', { useGrouping: false }).format(displayHour);
+    const minuteLabel = minute
+      ? `:${new Intl.NumberFormat('ar-EG', { minimumIntegerDigits: 2, useGrouping: false }).format(minute)}`
+      : '';
+    return `${hourLabel}${minuteLabel} ${suffix}`;
   }
 
   createTrip(): void {
@@ -188,5 +221,16 @@ export class DriverTripsPage {
   private fail(error: unknown): void {
     this.errorMessage = error instanceof Error ? error.message : 'تعذر تحميل الرحلات';
     this.isLoading = false;
+  }
+
+  private parseDate(value: string): Date {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
+  private tripTimestamp(trip: DriverTrip): number {
+    const [year, month, day] = trip.tripDate.split('-').map(Number);
+    const [hour = 0, minute = 0] = trip.startTime.split(':').map(Number);
+    return new Date(year, month - 1, day, hour, minute).getTime();
   }
 }
