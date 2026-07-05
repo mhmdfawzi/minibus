@@ -3008,97 +3008,46 @@ ion-segment {
   gap: var(--app-space-md);
 }
 
-.home-route-card,
-.home-date-card {
-  background: var(--app-color-surface);
-  border: 1px solid var(--app-color-surface-container);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 26, 71, 0.1);
-  padding: var(--app-space-md);
+.passenger-search-card {
+  gap: var(--app-space-sm);
 }
 
-.home-route-inner {
-  display: flex;
-  flex-direction: column;
-  gap: var(--app-space-md);
-  position: relative;
-}
-
-.home-route-card label,
-.home-date-card label {
+.passenger-route-stack,
+.passenger-search-card label {
   display: flex;
   flex-direction: column;
   gap: var(--app-space-xs);
 }
 
-.home-route-card label > span,
-.home-date-card label > span {
+.passenger-search-card label > span,
+.home-date-heading {
   align-items: center;
   color: var(--app-color-outline-strong);
   display: flex;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   gap: 4px;
-  letter-spacing: 0.5px;
-  line-height: 16px;
+  line-height: 20px;
 }
 
-.home-route-card label > span .material-symbols-outlined,
-.home-date-card label > span .material-symbols-outlined {
-  font-size: 14px;
+.passenger-search-card label > span .material-symbols-outlined,
+.home-date-heading .material-symbols-outlined {
+  font-size: 18px;
 }
 
-.home-select-shell {
-  position: relative;
-}
-
-.home-select-shell select,
-.home-date-card input {
+.passenger-select-shell select {
   appearance: none;
-  background: var(--app-color-surface-muted);
-  border: 2px solid transparent;
-  border-radius: 8px;
+  background: transparent;
+  border: 0;
   color: var(--app-color-on-surface);
+  flex: 1;
   font-family: inherit;
   font-size: 16px;
-  height: var(--app-touch-target);
   line-height: 24px;
+  min-width: 0;
   outline: none;
-  padding: 0 var(--app-space-md);
-  width: 100%;
-}
-
-.home-select-shell select:focus,
-.home-date-card input:focus {
-  border-color: var(--app-color-secondary);
-}
-
-.home-select-shell > .material-symbols-outlined {
-  color: var(--app-color-outline-strong);
-  left: 12px;
-  pointer-events: none;
-  position: absolute;
-  top: 12px;
-}
-
-.home-swap-button {
-  align-items: center;
-  appearance: none;
-  background: var(--app-color-surface);
-  border: 1px solid var(--app-color-surface-strong);
-  border-radius: var(--app-radius-pill);
-  box-shadow: var(--app-shadow-soft);
-  color: var(--app-color-primary-strong);
-  display: flex;
-  height: 34px;
-  justify-content: center;
   padding: 0;
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 34px;
-  z-index: 10;
+  width: 100%;
 }
 
 .home-search-button {

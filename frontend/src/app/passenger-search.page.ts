@@ -28,54 +28,60 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
         </section>
 
         <form class="passenger-search-grid" (ngSubmit)="searchTrips()">
-          <section class="home-route-card">
-            <div class="home-route-inner">
+          <section class="trip-form-card passenger-search-card">
+            <label>خط الرحلة</label>
+            <div class="passenger-route-stack">
               <label>
                 <span>
                   <span class="material-symbols-outlined">location_on</span>
                   من
                 </span>
-                <div class="home-select-shell">
+                <div class="trip-input-shell passenger-select-shell">
+                  <span class="material-symbols-outlined route-origin-icon">location_on</span>
                   <select name="pickupStopId" [(ngModel)]="pickupStopId" required>
                     <option disabled value="">اختر نقطة الانطلاق</option>
                     @for (stop of pickupStops; track stop.id) {
                       <option [value]="stop.id">{{ stop.name }}</option>
                     }
                   </select>
-                  <span class="material-symbols-outlined">expand_more</span>
                 </div>
               </label>
-
-              <button class="home-swap-button" type="button" aria-label="تبديل المحطات" (click)="swapStops()">
-                <span class="material-symbols-outlined">swap_vert</span>
-              </button>
 
               <label>
                 <span>
                   <span class="material-symbols-outlined">near_me</span>
                   إلى
                 </span>
-                <div class="home-select-shell">
+                <div class="trip-input-shell passenger-select-shell">
+                  <span class="material-symbols-outlined route-destination-icon">flag</span>
                   <select name="dropoffStopId" [(ngModel)]="dropoffStopId" required>
                     <option disabled value="">اختر وجهتك</option>
                     @for (stop of dropoffStops; track stop.id) {
                       <option [value]="stop.id">{{ stop.name }}</option>
                     }
                   </select>
-                  <span class="material-symbols-outlined">expand_more</span>
                 </div>
               </label>
             </div>
           </section>
 
-          <section class="home-date-card">
-            <label>
-              <span>
-                <span class="material-symbols-outlined">calendar_month</span>
-                تاريخ الرحلة
-              </span>
-              <input name="date" type="date" [(ngModel)]="date" required />
-            </label>
+          <section class="trip-form-card passenger-search-card">
+            <div class="home-date-heading">
+              <span class="material-symbols-outlined">calendar_month</span>
+              <span>يوم الرحلة</span>
+            </div>
+            <div class="trip-choice-grid trip-date-choice-grid" role="group" aria-label="اختيار يوم الرحلة">
+              @for (dateOption of dateOptions; track dateOption.value) {
+                <button
+                  type="button"
+                  [class.is-active]="date === dateOption.value"
+                  (click)="date = dateOption.value"
+                >
+                  <strong>{{ dateOption.label }}</strong>
+                  <small>{{ dateOption.dateLabel }}</small>
+                </button>
+              }
+            </div>
           </section>
 
           @if (errorMessage) {
@@ -157,6 +163,7 @@ export class PassengerSearchPage {
   date = new Date().toISOString().slice(0, 10);
   isLoading = true;
   errorMessage = '';
+  readonly dateOptions = this.buildDateOptions();
 
   constructor(
     private readonly pilotApi: PilotApiService,
@@ -236,14 +243,38 @@ export class PassengerSearchPage {
     void this.router.navigateByUrl('/passenger/profile');
   }
 
-  swapStops(): void {
-    const pickup = this.pickupStopId;
-    this.pickupStopId = this.dropoffStopId;
-    this.dropoffStopId = pickup;
-  }
-
   stopName(stopId: string): string {
     return this.stops.find((stop) => stop.id === stopId)?.name || '';
+  }
+
+  private buildDateOptions(): { value: string; label: string; dateLabel: string }[] {
+    return Array.from({ length: 6 }, (_, index) => {
+      const optionDate = new Date();
+      optionDate.setDate(optionDate.getDate() + index);
+
+      return {
+        value: this.isoDate(optionDate),
+        label: this.relativeDateLabel(index, optionDate),
+        dateLabel: new Intl.DateTimeFormat('ar-EG', {
+          day: 'numeric',
+          month: 'short'
+        }).format(optionDate)
+      };
+    });
+  }
+
+  private relativeDateLabel(index: number, optionDate: Date): string {
+    if (index === 0) return 'النهارده';
+    if (index === 1) return 'بكرة';
+    if (index === 2) return 'بعد بكرة';
+    return new Intl.DateTimeFormat('ar-EG', { weekday: 'long' }).format(optionDate);
+  }
+
+  private isoDate(value: Date): string {
+    const year = value.getFullYear();
+    const month = `${value.getMonth() + 1}`.padStart(2, '0');
+    const day = `${value.getDate()}`.padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private errorText(error: unknown, fallback: string): string {
