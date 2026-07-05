@@ -140,7 +140,7 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
           <app-notification-badge />
           <small>التنبيهات</small>
         </button>
-        <button type="button">
+        <button type="button" (click)="openProfile()">
           <span class="material-symbols-outlined">person</span>
           <small>الملف الشخصي</small>
         </button>
@@ -230,6 +230,10 @@ export class PassengerSearchPage {
 
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
+  }
+
+  openProfile(): void {
+    void this.router.navigateByUrl('/passenger/profile');
   }
 
   swapStops(): void {

@@ -16,8 +16,8 @@ This route map matches the 17 Stitch screens for the Damietta Transit mobile MVP
 - `/passenger/trips/:tripId/book` — Trip Booking (implemented)
 - `/passenger/bookings/:bookingId/status` — Booking Status (implemented)
 - `/passenger/bookings` — My Bookings (implemented)
-- `/passenger/rate/:tripId` — Rate Driver
-- `/drivers/:driverId` — Driver Profile
+- `/passenger/rate/:tripId` — Rate Driver (implemented)
+- `/drivers/:driverId` — Driver Profile (implemented)
 
 ## Driver
 

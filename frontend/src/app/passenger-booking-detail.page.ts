@@ -4,6 +4,7 @@ import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { BookingView, BookingsService } from './api/bookings.service';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
+import { RatingView, RatingsService } from './api/ratings.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
@@ -59,14 +60,28 @@ import { StatusBadgeComponent } from './shared/status-badge.component';
             </article>
           </section>
 
-          <section class="driver-mini-card">
+          <button class="driver-mini-card driver-profile-link" type="button" (click)="openDriverProfile()">
             <span class="material-symbols-outlined">account_circle</span>
             <div>
               <small>السائق والسيارة</small>
               <strong>{{ driver?.fullName || 'سائق معتمد' }}</strong>
               <p>{{ carLabel }}</p>
             </div>
-          </section>
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          @if (canRate) {
+            <section class="rate-prompt-card">
+              <div>
+                <span class="material-symbols-outlined">star</span>
+                <div>
+                  <h3>قيّم رحلتك</h3>
+                  <p>ساعد الركاب الآخرين بتقييم السائق بعد اكتمال الرحلة.</p>
+                </div>
+              </div>
+              <button type="button" (click)="openRateDriver()">تقييم السائق</button>
+            </section>
+          }
 
           @if (acceptedPhone) {
             <a class="driver-call-card" [href]="'tel:' + acceptedPhone">
@@ -105,6 +120,7 @@ export class PassengerBookingDetailPage implements OnDestroy {
   driver: PublicDriverProfile | null = null;
   routes: RouteSummary[] = [];
   stops: RouteStop[] = [];
+  ratings: RatingView[] = [];
   isLoading = true;
   isMutating = false;
   errorMessage = '';
@@ -114,6 +130,7 @@ export class PassengerBookingDetailPage implements OnDestroy {
     private readonly bookingsService: BookingsService,
     private readonly driversService: DriversService,
     private readonly pilotApi: PilotApiService,
+    private readonly ratingsService: RatingsService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly tripsService: TripsService
@@ -160,6 +177,15 @@ export class PassengerBookingDetailPage implements OnDestroy {
     return this.booking ? labels[this.booking.status] : '';
   }
 
+  get canRate(): boolean {
+    if (!this.booking || !this.trip || !this.driver) return false;
+    const isCompleted = this.booking.status === 'completed' && this.trip.status === 'completed';
+    const alreadyRated = this.ratings.some(
+      (rating) => rating.tripId === this.trip?.id && rating.passengerId === this.booking?.passengerId
+    );
+    return isCompleted && !alreadyRated;
+  }
+
   ionViewWillEnter(): void {
     void this.load();
     this.refreshHandle = window.setInterval(() => void this.load(false), 30000);
@@ -192,6 +218,9 @@ export class PassengerBookingDetailPage implements OnDestroy {
       this.routes = routes;
       this.stops = stops;
       this.driver = driver;
+      this.ratings = driver
+        ? await firstValueFrom(this.ratingsService.listDriverRatings(driver.id))
+        : [];
     } catch (error) {
       this.errorMessage = error instanceof Error ? error.message : 'تعذر تحميل الحجز';
     } finally {
@@ -219,6 +248,16 @@ export class PassengerBookingDetailPage implements OnDestroy {
 
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
+  }
+
+  openDriverProfile(): void {
+    if (!this.driver) return;
+    void this.router.navigateByUrl(`/drivers/${this.driver.id}`);
+  }
+
+  openRateDriver(): void {
+    if (!this.trip) return;
+    void this.router.navigateByUrl(`/passenger/rate/${this.trip.id}`);
   }
 
   routeName(routeId: string): string {

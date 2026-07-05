@@ -127,7 +127,7 @@ type BookingFilter = 'all' | 'pending' | 'accepted' | 'completed';
           <app-notification-badge />
           <small>التنبيهات</small>
         </button>
-        <button type="button">
+        <button type="button" (click)="openProfile()">
           <span class="material-symbols-outlined">person</span>
           <small>الملف الشخصي</small>
         </button>
@@ -209,17 +209,15 @@ export class PassengerBookingsPage implements OnDestroy {
 
   handleCardAction(row: PassengerBookingRow): void {
     if (row.booking.status === 'completed') {
-      void this.router.navigate(['/passenger/trips/results'], {
-        queryParams: {
-          pickupStopId: row.booking.pickupStopId,
-          dropoffStopId: row.booking.dropoffStopId,
-          date: new Date().toISOString().slice(0, 10)
-        }
-      });
+      void this.router.navigateByUrl(`/passenger/rate/${row.booking.tripId}`);
       return;
     }
 
     this.openBooking(row.booking.id);
+  }
+
+  openProfile(): void {
+    void this.router.navigateByUrl('/passenger/profile');
   }
 
   goBack(): void {
@@ -273,7 +271,7 @@ export class PassengerBookingsPage implements OnDestroy {
       accepted: 'التفاصيل',
       rejected: 'التفاصيل',
       cancelled: 'التفاصيل',
-      completed: 'إعادة حجز',
+      completed: 'تقييم السائق',
       expired: 'التفاصيل'
     };
     return labels[status];

@@ -2,6 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
+import { AuthApiService, UserRole } from './auth-api.service';
 import { NotificationView, NotificationsService } from './api/notifications.service';
 import { NotificationNavigationService } from './notification-navigation.service';
 
@@ -73,10 +74,12 @@ import { NotificationNavigationService } from './notification-navigation.service
       </main>
 
       <nav class="passenger-bottom-nav" aria-label="تنقل التطبيق">
-        <button type="button" (click)="goHome()">
-          <span class="material-symbols-outlined">home</span>
-          <small>الرئيسية</small>
-        </button>
+        @if (role !== 'driver') {
+          <button type="button" (click)="goHome()">
+            <span class="material-symbols-outlined">home</span>
+            <small>الرئيسية</small>
+          </button>
+        }
         <button type="button" (click)="goBookings()">
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
@@ -85,7 +88,7 @@ import { NotificationNavigationService } from './notification-navigation.service
           <span class="material-symbols-outlined">notifications</span>
           <small>التنبيهات</small>
         </button>
-        <button type="button">
+        <button type="button" (click)="goProfile()">
           <span class="material-symbols-outlined">person</span>
           <small>الملف الشخصي</small>
         </button>
@@ -97,9 +100,11 @@ export class NotificationsPage implements OnDestroy {
   notifications: NotificationView[] = [];
   isLoading = true;
   errorMessage = '';
+  role: UserRole | null = null;
   private refreshHandle: number | null = null;
 
   constructor(
+    private readonly authApi: AuthApiService,
     private readonly notificationNavigation: NotificationNavigationService,
     private readonly notificationsService: NotificationsService,
     private readonly router: Router
@@ -126,7 +131,12 @@ export class NotificationsPage implements OnDestroy {
     if (showSpinner) this.isLoading = true;
     this.errorMessage = '';
     try {
-      this.notifications = await firstValueFrom(this.notificationsService.list());
+      const [notifications, user] = await Promise.all([
+        firstValueFrom(this.notificationsService.list()),
+        firstValueFrom(this.authApi.me()).catch(() => null)
+      ]);
+      this.notifications = notifications;
+      this.role = user?.role ?? this.role;
     } catch (error) {
       this.errorMessage = error instanceof Error ? error.message : 'تعذر تحميل التنبيهات';
     } finally {
@@ -169,11 +179,15 @@ export class NotificationsPage implements OnDestroy {
   }
 
   goHome(): void {
-    void this.router.navigateByUrl('/passenger/home');
+    void this.router.navigateByUrl(this.role === 'driver' ? '/driver/trips' : '/passenger/home');
   }
 
   goBookings(): void {
-    void this.router.navigateByUrl('/passenger/bookings');
+    void this.router.navigateByUrl(this.role === 'driver' ? '/driver/trips' : '/passenger/bookings');
+  }
+
+  goProfile(): void {
+    void this.router.navigateByUrl(this.role === 'driver' ? '/driver/profile' : '/passenger/profile');
   }
 
   private clearRefresh(): void {

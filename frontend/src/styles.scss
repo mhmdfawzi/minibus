@@ -3616,6 +3616,10 @@ ion-segment {
 }
 
 .booking-driver-card {
+  appearance: none;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
   grid-column: span 5;
   padding: var(--app-space-md);
   text-align: center;
@@ -4159,6 +4163,364 @@ ion-segment {
   --border-radius: 12px;
   --button-color: var(--app-color-accent);
   --color: var(--app-color-surface);
+}
+
+.driver-profile-link {
+  appearance: none;
+  border: 0;
+  font-family: inherit;
+  text-align: start;
+  width: 100%;
+}
+
+.driver-profile-link > .material-symbols-outlined:last-child {
+  color: var(--app-color-outline-strong);
+  margin-inline-start: auto;
+}
+
+.rate-prompt-card {
+  background: var(--app-color-primary-strong);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 26, 71, 0.14);
+  color: var(--app-color-surface);
+  display: grid;
+  gap: var(--app-space-sm);
+  padding: var(--app-space-md);
+}
+
+.rate-prompt-card > div {
+  align-items: center;
+  display: flex;
+  gap: var(--app-space-sm);
+}
+
+.rate-prompt-card > div > .material-symbols-outlined {
+  color: var(--app-color-accent);
+  font-size: 36px;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.rate-prompt-card h3,
+.rate-prompt-card p {
+  margin: 0;
+}
+
+.rate-prompt-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.rate-prompt-card p {
+  color: var(--app-color-on-primary-soft);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.rate-prompt-card button {
+  appearance: none;
+  background: var(--app-color-accent);
+  border: 0;
+  border-radius: 12px;
+  color: var(--app-color-primary-strong);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  height: var(--app-touch-target);
+}
+
+.driver-profile-stitch,
+.rate-driver-stitch {
+  --padding-bottom: 32px;
+  font-family: "Be Vietnam Pro", "Noto Sans Arabic", var(--app-font-family);
+}
+
+.driver-profile-topbar {
+  align-items: center;
+  background: var(--app-color-background);
+  display: flex;
+  flex-direction: row-reverse;
+  height: var(--app-touch-target);
+  justify-content: space-between;
+  padding-inline: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.driver-profile-topbar h1 {
+  color: var(--app-color-primary-strong);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+  margin: 0;
+}
+
+.driver-profile-topbar button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--app-color-primary-strong);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+}
+
+.driver-profile-canvas,
+.rate-driver-canvas {
+  display: grid;
+  gap: var(--app-space-md);
+  padding: var(--app-space-md) 20px var(--app-space-lg);
+}
+
+.driver-profile-hero,
+.rate-driver-card,
+.rate-state-card {
+  align-items: center;
+  background: var(--app-color-surface);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 26, 71, 0.1);
+  display: grid;
+  gap: var(--app-space-xs);
+  justify-items: center;
+  padding: var(--app-space-lg) var(--app-space-md);
+  text-align: center;
+}
+
+.driver-profile-avatar,
+.rate-avatar {
+  align-items: center;
+  background: var(--app-color-primary-strong);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-color-surface);
+  display: flex;
+  height: 96px;
+  justify-content: center;
+  position: relative;
+  width: 96px;
+}
+
+.driver-profile-avatar > .material-symbols-outlined,
+.rate-avatar > .material-symbols-outlined {
+  font-size: 56px;
+}
+
+.driver-profile-avatar i {
+  align-items: center;
+  background: var(--app-color-accent);
+  border: 3px solid var(--app-color-surface);
+  border-radius: var(--app-radius-pill);
+  bottom: 0;
+  color: var(--app-color-primary-strong);
+  display: flex;
+  font-size: 18px;
+  height: 30px;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  width: 30px;
+}
+
+.driver-profile-hero h2,
+.driver-profile-hero p,
+.rate-driver-card h2,
+.rate-driver-card p,
+.rate-driver-card small,
+.rate-state-card h2,
+.rate-state-card p {
+  margin: 0;
+}
+
+.driver-profile-hero h2,
+.rate-driver-card h2,
+.rate-state-card h2 {
+  color: var(--app-color-primary-strong);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.driver-profile-hero p,
+.rate-driver-card p,
+.rate-driver-card small,
+.rate-state-card p {
+  color: var(--app-color-text-muted);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.driver-profile-rating {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.driver-profile-rating strong {
+  color: var(--app-color-primary-strong);
+}
+
+.driver-profile-rating small {
+  color: var(--app-color-outline-strong);
+}
+
+.profile-role-pill {
+  background: rgba(27, 127, 91, 0.12);
+  border-radius: var(--app-radius-pill);
+  color: var(--app-color-secondary-strong);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  margin-top: var(--app-space-xs);
+  padding: 6px 14px;
+}
+
+.driver-profile-grid {
+  display: grid;
+  gap: var(--app-space-sm);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.driver-profile-grid article {
+  background: var(--app-color-surface);
+  border-radius: 12px;
+  box-shadow: var(--app-shadow-card);
+  display: grid;
+  gap: 4px;
+  min-height: 118px;
+  padding: var(--app-space-sm);
+}
+
+.driver-profile-grid .material-symbols-outlined {
+  color: var(--app-color-secondary-strong);
+}
+
+.driver-profile-grid small,
+.driver-review-list small,
+.rate-form label span {
+  color: var(--app-color-outline-strong);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 16px;
+}
+
+.driver-profile-grid strong {
+  color: var(--app-color-primary-strong);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.driver-review-list {
+  display: grid;
+  gap: var(--app-space-sm);
+}
+
+.driver-review-list h3 {
+  color: var(--app-color-primary-strong);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 0;
+}
+
+.driver-review-list article,
+.driver-review-empty {
+  background: var(--app-color-surface);
+  border-radius: 12px;
+  box-shadow: var(--app-shadow-card);
+  display: grid;
+  gap: var(--app-space-xs);
+  padding: var(--app-space-sm);
+}
+
+.driver-review-list article > div {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.driver-review-list strong {
+  color: var(--app-color-primary-strong);
+}
+
+.driver-review-list p {
+  color: var(--app-color-text-muted);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+}
+
+.driver-review-empty {
+  justify-items: center;
+  text-align: center;
+}
+
+.driver-review-empty .material-symbols-outlined,
+.rate-state-card > .material-symbols-outlined {
+  color: var(--app-color-accent);
+  font-size: 44px;
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+.rate-driver-card .star-rating .star-button {
+  font-size: 2.25rem;
+  min-width: 56px;
+}
+
+.rate-form {
+  display: grid;
+  gap: var(--app-space-sm);
+}
+
+.rate-form label {
+  display: grid;
+  gap: var(--app-space-xs);
+}
+
+.rate-form textarea {
+  background: var(--app-color-surface);
+  border: 1px solid var(--app-color-surface-strong);
+  border-radius: 12px;
+  color: var(--app-color-on-surface);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 22px;
+  min-height: 120px;
+  outline: none;
+  padding: var(--app-space-sm);
+  resize: none;
+}
+
+.rate-form textarea:focus {
+  border-color: var(--app-color-secondary);
+  box-shadow: 0 0 0 2px rgba(var(--ion-color-secondary-rgb), 0.2);
+}
+
+.rate-state-card button {
+  appearance: none;
+  background: var(--app-color-accent);
+  border: 0;
+  border-radius: 12px;
+  color: var(--app-color-primary-strong);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  height: var(--app-touch-target);
+  padding-inline: var(--app-space-lg);
 }
 
 .trip-secondary-action,

@@ -2,7 +2,9 @@ import { Routes } from '@angular/router';
 import { AuthLandingPage } from './auth-landing.page';
 import { approvedDriverGuard } from './driver-onboarding.guard';
 import { DriverPendingApprovalPage } from './driver-pending-approval.page';
+import { DriverProfilePage } from './driver-profile.page';
 import { DriverRegistrationPage } from './driver-registration.page';
+import { DriverSelfProfilePage } from './driver-self-profile.page';
 import { DriverTripDetailPage } from './driver-trip-detail.page';
 import { DriverTripFormPage } from './driver-trip-form.page';
 import { DriverTripsPage } from './driver-trips.page';
@@ -12,11 +14,13 @@ import { NotificationsPage } from './notifications.page';
 import { OtpVerificationPage } from './otp-verification.page';
 import { PassengerBookingDetailPage } from './passenger-booking-detail.page';
 import { PassengerBookingsPage } from './passenger-bookings.page';
+import { PassengerProfilePage } from './passenger-profile.page';
 import { PassengerSearchPage } from './passenger-search.page';
 import { PassengerTripBookingPage } from './passenger-trip-booking.page';
 import { PassengerTripResultsPage } from './passenger-trip-results.page';
 import { PhoneEntryPage } from './phone-entry.page';
 import { ProfileSetupPage } from './profile-setup.page';
+import { RateDriverPage } from './rate-driver.page';
 import { WelcomePage } from './welcome.page';
 
 /*
@@ -64,6 +68,23 @@ export const routes: Routes = [
   {
     path: 'passenger/bookings/:bookingId/status',
     component: PassengerBookingDetailPage
+  },
+  {
+    path: 'passenger/rate/:tripId',
+    component: RateDriverPage
+  },
+  {
+    path: 'passenger/profile',
+    component: PassengerProfilePage
+  },
+  {
+    path: 'drivers/:driverId',
+    component: DriverProfilePage
+  },
+  {
+    path: 'driver/profile',
+    component: DriverSelfProfilePage,
+    canActivate: [approvedDriverGuard]
   },
   {
     path: 'driver/trips',

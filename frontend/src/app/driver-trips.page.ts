@@ -8,7 +8,7 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
 import { StatusBadgeComponent } from './shared/status-badge.component';
 import { TripCardComponent, TripCardViewModel } from './shared/trip-card.component';
 
-type TripFilter = 'all' | DriverTripStatus;
+type TripFilter = DriverTripStatus;
 
 @Component({
   selector: 'app-driver-trips',
@@ -68,20 +68,20 @@ type TripFilter = 'all' | DriverTripStatus;
         <span class="material-symbols-outlined">add</span>
       </button>
 
-      <nav class="driver-bottom-nav" aria-label="تنقل السائق">
-        <button type="button">
-          <span class="material-symbols-outlined">home</span>
-        </button>
+      <nav class="passenger-bottom-nav" aria-label="تنقل السائق">
         <button class="is-active" type="button">
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
+          <i></i>
         </button>
         <button class="notification-nav-button" type="button" (click)="openNotifications()">
           <span class="material-symbols-outlined">notifications</span>
           <app-notification-badge />
+          <small>التنبيهات</small>
         </button>
-        <button type="button">
+        <button type="button" (click)="openProfile()">
           <span class="material-symbols-outlined">person</span>
+          <small>الملف الشخصي</small>
         </button>
       </nav>
     </ion-content>
@@ -90,11 +90,10 @@ type TripFilter = 'all' | DriverTripStatus;
 export class DriverTripsPage {
   trips: DriverTrip[] = [];
   routes: RouteSummary[] = [];
-  activeFilter: TripFilter = 'all';
+  activeFilter: TripFilter = 'open';
   isLoading = true;
   errorMessage = '';
   readonly filters: { value: TripFilter; label: string }[] = [
-    { value: 'all', label: 'الكل' },
     { value: 'open', label: 'مفتوح' },
     { value: 'started', label: 'قيد التنفيذ' },
     { value: 'completed', label: 'منتهي' },
@@ -112,7 +111,6 @@ export class DriverTripsPage {
   }
 
   get filteredTrips(): DriverTrip[] {
-    if (this.activeFilter === 'all') return this.trips;
     return this.trips.filter((trip) => trip.status === this.activeFilter);
   }
 
@@ -177,6 +175,10 @@ export class DriverTripsPage {
 
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
+  }
+
+  openProfile(): void {
+    void this.router.navigateByUrl('/driver/profile');
   }
 
   goBack(): void {

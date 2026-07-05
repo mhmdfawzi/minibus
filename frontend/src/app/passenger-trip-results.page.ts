@@ -122,7 +122,7 @@ interface SearchTripResult {
           <app-notification-badge />
           <small>التنبيهات</small>
         </button>
-        <button type="button">
+        <button type="button" (click)="openProfile()">
           <span class="material-symbols-outlined">person</span>
           <small>الملف الشخصي</small>
         </button>
@@ -233,6 +233,10 @@ export class PassengerTripResultsPage {
     void this.router.navigateByUrl('/notifications');
   }
 
+  openProfile(): void {
+    void this.router.navigateByUrl('/passenger/profile');
+  }
+
   stopName(stopId: string): string {
     return this.stops.find((stop) => stop.id === stopId)?.name || 'محطة';
   }
@@ -246,7 +250,7 @@ export class PassengerTripResultsPage {
   }
 
   ratingLabel(driver: PublicDriverProfile | null): string {
-    return driver?.ratingAverage ? driver.ratingAverage.toFixed(1) : '٤.٩';
+    return driver?.ratingAverage ? driver.ratingAverage.toFixed(1) : 'جديد';
   }
 
   carLabel(trip: DriverTrip): string {

@@ -73,7 +73,7 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
               />
             </article>
 
-            <article class="booking-driver-card">
+            <button class="booking-driver-card" type="button" (click)="openDriverProfile()">
               <div>
                 <img
                   alt=""
@@ -86,7 +86,7 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
                 <span class="material-symbols-outlined">star</span>
                 {{ driverRating }}
               </small>
-            </article>
+            </button>
           </section>
 
           <section class="seat-selection-card">
@@ -291,6 +291,11 @@ export class PassengerTripBookingPage {
 
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
+  }
+
+  openDriverProfile(): void {
+    if (!this.driver) return;
+    void this.router.navigateByUrl(`/drivers/${this.driver.id}`);
   }
 
   routeName(routeId: string): string {
