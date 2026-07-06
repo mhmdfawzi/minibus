@@ -55,7 +55,20 @@ ion-item {
 }
 
 .recaptcha-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-inline: auto;
+  max-width: min(304px, 100%);
   min-height: 78px;
+  overflow: visible;
+}
+
+.recaptcha-container > div,
+.recaptcha-container iframe,
+iframe[src*='recaptcha'] {
+  margin-inline: auto !important;
+  max-width: calc(100vw - 32px) !important;
 }
 
 .pilot-shell {

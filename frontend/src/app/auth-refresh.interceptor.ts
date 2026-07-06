@@ -1,12 +1,12 @@
 import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { environment } from '../environments/environment';
+import { getApiBaseUrl } from './api-base-url';
 import { AuthApiService } from './auth-api.service';
 
 export const authRefreshInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const authApi = inject(AuthApiService);
-  const isApiRequest = request.url.startsWith(environment.apiBaseUrl);
+  const isApiRequest = request.url.startsWith(getApiBaseUrl());
   const isAuthSessionRequest = request.url.includes('/auth/firebase-login') || request.url.includes('/auth/refresh');
   const accessToken = authApi.getAccessToken();
   const authRequest =

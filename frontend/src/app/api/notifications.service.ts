@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { getApiBaseUrl } from '../api-base-url';
 import { AuthApiService } from '../auth-api.service';
 import { ApiId, ISODateTime } from './api-types';
 
@@ -37,7 +37,7 @@ export interface NotificationsApi {
 
 @Injectable({ providedIn: 'root' })
 export class NotificationsService implements NotificationsApi {
-  private readonly apiBaseUrl = environment.apiBaseUrl;
+  private readonly apiBaseUrl = getApiBaseUrl();
   private readonly unreadCountSubject = new BehaviorSubject<number>(0);
   readonly unreadCount$ = this.unreadCountSubject.asObservable();
 

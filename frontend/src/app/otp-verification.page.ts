@@ -166,6 +166,6 @@ export class OtpVerificationPage {
   }
 
   private errorText(error: unknown): string {
-    return error instanceof Error ? error.message : 'تعذر تأكيد رمز التحقق';
+    return this.firebasePhoneAuth.errorText(error, 'تعذر تأكيد رمز التحقق');
   }
 }

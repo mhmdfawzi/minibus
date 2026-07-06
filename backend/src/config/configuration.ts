@@ -1,7 +1,7 @@
 export const configuration = () => ({
   NODE_ENV: process.env.NODE_ENV ?? 'development',
   PORT: Number(process.env.PORT ?? 3000),
-  CORS_ORIGINS: process.env.CORS_ORIGINS ?? 'http://localhost:8100,http://127.0.0.1:8100',
+  CORS_ORIGINS: process.env.CORS_ORIGINS ?? 'http://localhost:8100,http://127.0.0.1:8100,https://localhost,http://localhost',
   DATABASE_URL: process.env.DATABASE_URL,
   LOG_LEVEL: process.env.LOG_LEVEL ?? 'log',
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,

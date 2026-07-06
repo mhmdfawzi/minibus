@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException
 } from '@nestjs/common';
@@ -36,6 +37,31 @@ export class AuthService {
       },
       update: {
         ...(phone ? { phone } : {})
+      }
+    });
+
+    return this.createSession(user, deviceId);
+  }
+
+  async loginAsDevAdmin(deviceId?: string): Promise<AuthResponse> {
+    if (this.config.get<string>('NODE_ENV') === 'production') {
+      throw new ForbiddenException('Development admin login is disabled in production');
+    }
+
+    const user = await this.prisma.user.upsert({
+      where: { firebaseUid: 'dev-admin' },
+      create: {
+        firebaseUid: 'dev-admin',
+        fullName: 'مدير النظام',
+        role: UserRole.admin,
+        isActive: true,
+        preferredLocale: 'ar'
+      },
+      update: {
+        fullName: 'مدير النظام',
+        role: UserRole.admin,
+        isActive: true,
+        preferredLocale: 'ar'
       }
     });
 

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { getApiBaseUrl } from '../api-base-url';
 import { AuthApiService } from '../auth-api.service';
 import { ApiId, ISODateTime } from './api-types';
 
@@ -26,7 +26,7 @@ export interface CreateRatingPayload {
 
 @Injectable({ providedIn: 'root' })
 export class RatingsService {
-  private readonly apiBaseUrl = environment.apiBaseUrl;
+  private readonly apiBaseUrl = getApiBaseUrl();
 
   constructor(
     private readonly authApi: AuthApiService,

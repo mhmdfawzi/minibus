@@ -125,6 +125,6 @@ export class PhoneEntryPage {
   }
 
   private errorText(error: unknown): string {
-    return error instanceof Error ? error.message : 'تعذر إرسال رمز التحقق';
+    return this.firebasePhoneAuth.errorText(error, 'تعذر إرسال رمز التحقق');
   }
 }

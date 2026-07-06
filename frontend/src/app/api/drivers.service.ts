@@ -1,7 +1,7 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, filter, map } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { getApiBaseUrl } from '../api-base-url';
 import { AuthApiService } from '../auth-api.service';
 
 export type DriverReviewStatus = 'pending' | 'approved' | 'rejected' | 'suspended';
@@ -44,7 +44,7 @@ export interface DriverUploadProgress {
 
 @Injectable({ providedIn: 'root' })
 export class DriversService {
-  private readonly apiBaseUrl = environment.apiBaseUrl;
+  private readonly apiBaseUrl = getApiBaseUrl();
 
   constructor(
     private readonly http: HttpClient,

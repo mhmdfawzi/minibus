@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, tap } from 'rxjs';
-import { environment } from '../environments/environment';
+import { getApiBaseUrl } from './api-base-url';
 
 export type UserRole = 'passenger' | 'driver' | 'admin';
 
@@ -38,7 +38,7 @@ export interface RegisterDevicePayload {
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
-  private readonly apiBaseUrl = environment.apiBaseUrl;
+  private readonly apiBaseUrl = getApiBaseUrl();
   private readonly accessTokenKey = 'transport_access_token';
   private readonly refreshTokenKey = 'transport_refresh_token';
   private readonly deviceIdKey = 'transport_device_id';

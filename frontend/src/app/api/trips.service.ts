@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { getApiBaseUrl } from '../api-base-url';
 import { AuthApiService } from '../auth-api.service';
 import { ApiId, ISODate } from './api-types';
 
@@ -46,7 +46,7 @@ export interface TripMutationPayload {
 
 @Injectable({ providedIn: 'root' })
 export class TripsService implements TripsApi {
-  private readonly apiBaseUrl = environment.apiBaseUrl;
+  private readonly apiBaseUrl = getApiBaseUrl();
 
   constructor(
     private readonly authApi: AuthApiService,

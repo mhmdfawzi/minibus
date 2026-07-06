@@ -9,6 +9,7 @@ import {
 } from '@capacitor/push-notifications';
 import { AuthApiService, DevicePlatform } from './auth-api.service';
 import { NotificationsService } from './api/notifications.service';
+import { environment } from '../environments/environment';
 import { NotificationNavigationService } from './notification-navigation.service';
 
 @Injectable({ providedIn: 'root' })
@@ -26,7 +27,7 @@ export class PushNotificationsService {
   }
 
   async initialize(): Promise<void> {
-    if (!Capacitor.isNativePlatform() || this.hasInitialized) {
+    if (!Capacitor.isNativePlatform() || this.hasInitialized || !environment.nativePushEnabled) {
       return;
     }
 

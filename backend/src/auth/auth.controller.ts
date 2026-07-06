@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthResponse, AuthResponseUser, AuthenticatedUser } from './auth.types';
 import { CurrentUser } from './current-user.decorator';
 import { CompleteProfileDto } from './dto/complete-profile.dto';
+import { DevAdminLoginDto } from './dto/dev-admin-login.dto';
 import { FirebaseLoginDto } from './dto/firebase-login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -14,6 +15,11 @@ export class AuthController {
   @Post('firebase-login')
   firebaseLogin(@Body() dto: FirebaseLoginDto): Promise<AuthResponse> {
     return this.authService.loginWithFirebase(dto.firebaseIdToken, dto.deviceId);
+  }
+
+  @Post('dev-admin-login')
+  devAdminLogin(@Body() dto: DevAdminLoginDto): Promise<AuthResponse> {
+    return this.authService.loginAsDevAdmin(dto.deviceId);
   }
 
   @Post('refresh')
