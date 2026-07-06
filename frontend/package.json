@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start": "ng serve transport --port 8100",
-    "start:prod": "serve -s www -l tcp://0.0.0.0:$PORT",
+    "start:prod": "npm run write-runtime-config && serve -s www -l tcp://0.0.0.0:$PORT",
     "build": "ng build",
+    "write-runtime-config": "node scripts/write-runtime-config.mjs",
     "lint": "eslint \"src/**/*.ts\""
   },
   "engines": {
