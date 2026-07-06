@@ -14,7 +14,7 @@ import { StarRatingComponent } from './shared/star-rating.component';
     <ion-content class="stitch-auth-page driver-profile-stitch" fullscreen>
       <header class="driver-profile-topbar">
         <button type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>ملف السائق</h1>
         <span></span>

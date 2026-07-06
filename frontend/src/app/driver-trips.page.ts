@@ -19,7 +19,7 @@ type TripFilter = DriverTripStatus;
       <header class="driver-trips-topbar">
         <h1>رحلاتي</h1>
         <button type="button" class="stitch-icon-button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
       </header>
 

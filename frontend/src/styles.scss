@@ -36,6 +36,10 @@ body {
   word-wrap: normal;
 }
 
+.rtl-back-icon {
+  transform: scaleX(-1);
+}
+
 ion-content {
   --padding-bottom: 24px;
 }

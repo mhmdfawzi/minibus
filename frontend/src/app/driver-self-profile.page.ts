@@ -4,6 +4,7 @@ import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { DriverOnboardingProfile, DriversService, DriverReviewStatus } from './api/drivers.service';
 import { RatingView, RatingsService } from './api/ratings.service';
+import { AuthApiService } from './auth-api.service';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
 import { StarRatingComponent } from './shared/star-rating.component';
 
@@ -15,10 +16,12 @@ import { StarRatingComponent } from './shared/star-rating.component';
     <ion-content class="stitch-auth-page driver-profile-stitch" fullscreen>
       <header class="driver-profile-topbar">
         <button type="button" aria-label="رجوع" (click)="goTrips()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>ملفي كسائق</h1>
-        <span></span>
+        <button type="button" aria-label="تسجيل الخروج" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
       </header>
 
       @if (isLoading) {
@@ -118,6 +121,7 @@ export class DriverSelfProfilePage {
   errorMessage = '';
 
   constructor(
+    private readonly authApi: AuthApiService,
     private readonly driversService: DriversService,
     private readonly ratingsService: RatingsService,
     private readonly router: Router
@@ -174,5 +178,10 @@ export class DriverSelfProfilePage {
 
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
+  }
+
+  logout(): void {
+    this.authApi.clearSession();
+    void this.router.navigateByUrl('/welcome', { replaceUrl: true });
   }
 }

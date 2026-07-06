@@ -328,6 +328,31 @@ export class PilotApiService {
     });
   }
 
+  listAdminRoutes(): Observable<RouteSummary[]> {
+    return this.http.get<RouteSummary[]>(`${this.apiBaseUrl}/admin/routes`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  updateAdminRoute(
+    routeId: string,
+    payload: {
+      name?: string;
+      direction?: RouteDirection;
+      isActive?: boolean;
+    }
+  ): Observable<RouteSummary> {
+    return this.http.patch<RouteSummary>(`${this.apiBaseUrl}/admin/routes/${routeId}`, payload, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  listAdminStops(routeId: string): Observable<RouteStop[]> {
+    return this.http.get<RouteStop[]>(`${this.apiBaseUrl}/admin/routes/${routeId}/stops`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
   createAdminStop(
     routeId: string,
     payload: {
@@ -342,8 +367,28 @@ export class PilotApiService {
     });
   }
 
+  updateAdminStop(
+    stopId: string,
+    payload: {
+      name?: string;
+      orderIndex?: number;
+      estimatedOffsetMinutes?: number;
+      isActive?: boolean;
+    }
+  ): Observable<RouteStop> {
+    return this.http.patch<RouteStop>(`${this.apiBaseUrl}/admin/stops/${stopId}`, payload, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
   listPendingDrivers(): Observable<AdminDriver[]> {
     return this.http.get<AdminDriver[]>(`${this.apiBaseUrl}/admin/drivers/pending`, {
+      headers: this.authApi.authHeaders()
+    });
+  }
+
+  listActiveDrivers(): Observable<AdminDriver[]> {
+    return this.http.get<AdminDriver[]>(`${this.apiBaseUrl}/admin/drivers/active`, {
       headers: this.authApi.authHeaders()
     });
   }

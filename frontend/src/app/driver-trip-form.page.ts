@@ -15,7 +15,7 @@ import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
       <header class="trip-form-topbar">
         <div class="trip-form-title-cluster">
           <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
-            <span class="material-symbols-outlined">arrow_forward</span>
+            <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
           </button>
           <h1>{{ isEditMode ? 'تعديل رحلة' : 'إنشاء رحلة' }}</h1>
         </div>

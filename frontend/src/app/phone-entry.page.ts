@@ -12,7 +12,7 @@ import { FirebasePhoneAuthService } from './firebase-phone-auth.service';
     <ion-content class="stitch-auth-page" fullscreen>
       <header class="stitch-topbar">
         <button class="stitch-icon-button" type="button" (click)="goBack()" aria-label="رجوع">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <div class="stitch-brand-title">مسار دمياط</div>
         <div class="stitch-top-spacer"></div>

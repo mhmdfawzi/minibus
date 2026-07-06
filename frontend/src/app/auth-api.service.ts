@@ -56,6 +56,14 @@ export class AuthApiService {
       .pipe(tap((response) => this.storeSession(response)));
   }
 
+  devAdminLogin(): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiBaseUrl}/auth/dev-admin-login`, {
+        deviceId: this.getDeviceId()
+      })
+      .pipe(tap((response) => this.storeSession(response)));
+  }
+
   refresh(): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.apiBaseUrl}/auth/refresh`, {

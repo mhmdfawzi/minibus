@@ -18,7 +18,7 @@ import { StatusBadgeComponent } from './shared/status-badge.component';
     <ion-content class="stitch-auth-page passenger-flow-page" fullscreen>
       <header class="passenger-topbar">
         <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>حالة الحجز</h1>
         <button class="stitch-icon-button notification-nav-button" type="button" aria-label="التنبيهات" (click)="openNotifications()">
@@ -209,10 +209,17 @@ export class PassengerBookingDetailPage implements OnDestroy {
         this.errorMessage = 'لم يتم العثور على الحجز';
         return;
       }
-      this.trip = await firstValueFrom(this.tripsService.get(this.booking.tripId));
+      this.trip = await firstValueFrom(this.tripsService.get(this.booking.tripId)).catch(() => null);
+      if (!this.trip) {
+        this.routes = [];
+        this.stops = [];
+        this.driver = null;
+        this.ratings = [];
+        return;
+      }
       const [routes, stops, driver] = await Promise.all([
-        firstValueFrom(this.pilotApi.listRoutes()),
-        firstValueFrom(this.pilotApi.listStops(this.trip.routeId)),
+        firstValueFrom(this.pilotApi.listRoutes()).catch(() => []),
+        firstValueFrom(this.pilotApi.listStops(this.trip.routeId)).catch(() => []),
         this.loadDriver(this.trip.driverId)
       ]);
       this.routes = routes;

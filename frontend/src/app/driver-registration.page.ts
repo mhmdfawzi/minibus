@@ -22,7 +22,7 @@ interface DriverDocumentSlot {
       <header class="stitch-topbar">
         <div class="stitch-title-with-back">
           <button class="stitch-icon-button" type="button" (click)="goBack()" aria-label="رجوع">
-            <span class="material-symbols-outlined">arrow_forward</span>
+            <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
           </button>
           <h1 class="stitch-brand-title">مسار دمياط</h1>
         </div>

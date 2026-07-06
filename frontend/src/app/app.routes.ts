@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { AdminPage } from './admin.page';
 import { AuthLandingPage } from './auth-landing.page';
 import { approvedDriverGuard } from './driver-onboarding.guard';
 import { DriverPendingApprovalPage } from './driver-pending-approval.page';
@@ -9,7 +10,6 @@ import { DriverTripDetailPage } from './driver-trip-detail.page';
 import { DriverTripFormPage } from './driver-trip-form.page';
 import { DriverTripsPage } from './driver-trips.page';
 import { FoundationPreviewPage } from './foundation-preview.page';
-import { HomePage } from './home.page';
 import { NotificationsPage } from './notifications.page';
 import { OtpVerificationPage } from './otp-verification.page';
 import { PassengerBookingDetailPage } from './passenger-booking-detail.page';
@@ -116,7 +116,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: HomePage
+    component: AdminPage
   },
   {
     path: 'foundation-preview',

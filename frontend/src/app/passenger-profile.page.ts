@@ -14,10 +14,12 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
     <ion-content class="stitch-auth-page driver-profile-stitch" fullscreen>
       <header class="driver-profile-topbar">
         <button type="button" aria-label="رجوع" (click)="goHome()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>الملف الشخصي</h1>
-        <span></span>
+        <button type="button" aria-label="تسجيل الخروج" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
       </header>
 
       @if (isLoading) {
@@ -141,5 +143,10 @@ export class PassengerProfilePage {
 
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
+  }
+
+  logout(): void {
+    this.authApi.clearSession();
+    void this.router.navigateByUrl('/welcome', { replaceUrl: true });
   }
 }

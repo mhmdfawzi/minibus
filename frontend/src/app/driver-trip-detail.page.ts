@@ -15,7 +15,7 @@ import { StatusBadgeComponent } from './shared/status-badge.component';
     <ion-content class="stitch-auth-page" fullscreen>
       <header class="trip-detail-topbar">
         <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>مسار دمياط</h1>
         <div class="stitch-top-spacer"></div>

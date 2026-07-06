@@ -14,7 +14,7 @@ import { NotificationNavigationService } from './notification-navigation.service
     <ion-content class="stitch-auth-page notifications-stitch" fullscreen>
       <header class="notifications-topbar">
         <button type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>التنبيهات</h1>
         <button type="button" aria-label="تحديث" (click)="load()">

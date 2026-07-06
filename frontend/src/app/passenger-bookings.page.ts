@@ -26,7 +26,7 @@ type BookingFilter = 'all' | 'pending' | 'accepted' | 'completed';
           <h1>مسار دمياط</h1>
         </div>
         <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
       </header>
 
@@ -181,17 +181,20 @@ export class PassengerBookingsPage implements OnDestroy {
     this.errorMessage = '';
     try {
       const bookings = await firstValueFrom(this.bookingsService.listMine());
-      this.routes = await firstValueFrom(this.pilotApi.listRoutes());
       const rows = await Promise.all(
         bookings.map(async (booking) => ({
           booking,
           trip: await this.loadTrip(booking.tripId)
         }))
       );
-      const routeIds = [...new Set(rows.map((row) => row.trip?.routeId).filter(Boolean) as string[])];
-      const stopGroups = await Promise.all(routeIds.map((routeId) => firstValueFrom(this.pilotApi.listStops(routeId))));
-      this.stops = stopGroups.flat();
+
       this.rows = rows;
+      this.routes = await firstValueFrom(this.pilotApi.listRoutes()).catch(() => []);
+      const routeIds = [...new Set(rows.map((row) => row.trip?.routeId).filter(Boolean) as string[])];
+      const stopGroups = await Promise.all(
+        routeIds.map((routeId) => firstValueFrom(this.pilotApi.listStops(routeId)).catch(() => []))
+      );
+      this.stops = stopGroups.flat();
     } catch (error) {
       this.errorMessage = error instanceof Error ? error.message : 'تعذر تحميل الحجوزات';
     } finally {

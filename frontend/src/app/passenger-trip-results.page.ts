@@ -22,7 +22,7 @@ interface SearchTripResult {
       <header class="results-topbar">
         <div class="results-title-cluster">
           <button type="button" aria-label="رجوع" (click)="goBack()">
-            <span class="material-symbols-outlined">arrow_forward</span>
+            <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
           </button>
           <div>
             <h1>{{ stopName(pickupStopId) }} - {{ stopName(dropoffStopId) }}</h1>

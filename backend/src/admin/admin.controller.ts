@@ -21,6 +21,11 @@ import { UpdateStopDto } from './dto/update-stop.dto';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @Get('routes')
+  listRoutes(): Promise<RouteResponse[]> {
+    return this.adminService.listRoutes();
+  }
+
   @Post('routes')
   createRoute(@Body() dto: CreateRouteDto): Promise<RouteResponse> {
     return this.adminService.createRoute(dto);
@@ -29,6 +34,11 @@ export class AdminController {
   @Patch('routes/:id')
   updateRoute(@Param('id') routeId: string, @Body() dto: UpdateRouteDto): Promise<RouteResponse> {
     return this.adminService.updateRoute(routeId, dto);
+  }
+
+  @Get('routes/:id/stops')
+  listStops(@Param('id') routeId: string): Promise<RouteStopResponse[]> {
+    return this.adminService.listStops(routeId);
   }
 
   @Post('routes/:id/stops')
@@ -56,6 +66,11 @@ export class AdminController {
   @Get('drivers/pending')
   listPendingDrivers() {
     return this.adminService.listPendingDrivers();
+  }
+
+  @Get('drivers/active')
+  listActiveDrivers() {
+    return this.adminService.listActiveDrivers();
   }
 
   @Patch('drivers/:id/approve')

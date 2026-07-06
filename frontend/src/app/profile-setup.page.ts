@@ -15,7 +15,7 @@ import { AuthFlowService } from './auth-flow.service';
       <header class="stitch-topbar sticky">
         <div class="stitch-brand-title">مسار دمياط</div>
         <button class="stitch-icon-button" type="button" (click)="goBack()" aria-label="رجوع">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
       </header>
 

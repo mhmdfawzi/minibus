@@ -17,7 +17,7 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
     <ion-content class="stitch-auth-page passenger-booking-stitch" fullscreen>
       <header class="booking-detail-topbar">
         <button type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1>تفاصيل الرحلة</h1>
         <button class="notification-nav-button" type="button" aria-label="التنبيهات" (click)="openNotifications()">

@@ -32,6 +32,17 @@ import { UpdateStopDto } from './dto/update-stop.dto';
 export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async listRoutes(): Promise<RouteResponse[]> {
+    const routes = await this.prisma.route.findMany({
+      orderBy: [
+        { isActive: 'desc' },
+        { createdAt: 'desc' }
+      ]
+    });
+
+    return routes.map(toApiRoute);
+  }
+
   async createRoute(dto: CreateRouteDto): Promise<RouteResponse> {
     const route = await this.prisma.route.create({
       data: {
@@ -62,6 +73,20 @@ export class AdminService {
       this.throwNotFoundOnMissing(error, 'Route not found');
       throw error;
     }
+  }
+
+  async listStops(routeId: string): Promise<RouteStopResponse[]> {
+    await this.ensureRouteExists(routeId);
+
+    const stops = await this.prisma.routeStop.findMany({
+      where: { routeId },
+      orderBy: [
+        { orderIndex: 'asc' },
+        { name: 'asc' }
+      ]
+    });
+
+    return stops.map(toApiRouteStop);
   }
 
   async createStop(routeId: string, dto: CreateStopDto): Promise<RouteStopResponse> {
@@ -232,6 +257,14 @@ export class AdminService {
       where: { status: DriverStatus.pending },
       include: { user: true },
       orderBy: { createdAt: 'asc' }
+    });
+  }
+
+  async listActiveDrivers() {
+    return this.prisma.driver.findMany({
+      where: { status: DriverStatus.approved },
+      include: { user: true },
+      orderBy: { updatedAt: 'desc' }
     });
   }
 

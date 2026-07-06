@@ -16,7 +16,7 @@ import { PushNotificationsService } from './push-notifications.service';
     <ion-content class="stitch-auth-page" fullscreen>
       <header class="stitch-topbar">
         <button class="stitch-icon-button" type="button" (click)="goBack()" aria-label="رجوع">
-          <span class="material-symbols-outlined">arrow_forward</span>
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
         <h1 class="stitch-brand-title">مسار دمياط</h1>
         <div class="stitch-top-spacer compact"></div>
