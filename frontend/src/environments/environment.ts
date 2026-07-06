@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: "http://localhost:3000",
-  nativeApiBaseUrl: "http://10.0.2.2:3000",
+  nativeApiBaseUrl: "http://192.168.8.138:3000",
   firebase: {
     apiKey: "AIzaSyCwlA2v1m0lL0pYzmA0ejX24m3egRDcM_w",
     authDomain: "mircobus-f5166.firebaseapp.com",
