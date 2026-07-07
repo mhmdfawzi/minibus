@@ -33,12 +33,39 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
             <div class="passenger-route-stack">
               <label>
                 <span>
+                  <span class="material-symbols-outlined">route</span>
+                  الخط
+                </span>
+                <div class="trip-input-shell passenger-select-shell">
+                  <span class="material-symbols-outlined route-origin-icon">alt_route</span>
+                  <select
+                    name="routeId"
+                    [ngModel]="routeId"
+                    (ngModelChange)="selectRoute($event)"
+                    required
+                  >
+                    <option disabled value="">اختر الخط المناسب</option>
+                    @for (route of routes; track route.id) {
+                      <option [value]="route.id">{{ route.name }}</option>
+                    }
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                <span>
                   <span class="material-symbols-outlined">location_on</span>
                   من
                 </span>
                 <div class="trip-input-shell passenger-select-shell">
                   <span class="material-symbols-outlined route-origin-icon">location_on</span>
-                  <select name="pickupStopId" [(ngModel)]="pickupStopId" required>
+                  <select
+                    name="pickupStopId"
+                    [ngModel]="pickupStopId"
+                    (ngModelChange)="selectPickupStop($event)"
+                    [disabled]="stops.length < 2"
+                    required
+                  >
                     <option disabled value="">اختر نقطة الانطلاق</option>
                     @for (stop of pickupStops; track stop.id) {
                       <option [value]="stop.id">{{ stop.name }}</option>
@@ -54,7 +81,12 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
                 </span>
                 <div class="trip-input-shell passenger-select-shell">
                   <span class="material-symbols-outlined route-destination-icon">flag</span>
-                  <select name="dropoffStopId" [(ngModel)]="dropoffStopId" required>
+                  <select
+                    name="dropoffStopId"
+                    [(ngModel)]="dropoffStopId"
+                    [disabled]="dropoffStops.length === 0"
+                    required
+                  >
                     <option disabled value="">اختر وجهتك</option>
                     @for (stop of dropoffStops; track stop.id) {
                       <option [value]="stop.id">{{ stop.name }}</option>
@@ -180,11 +212,19 @@ export class PassengerSearchPage {
   }
 
   get canSearch(): boolean {
-    return Boolean(this.pickupStopId && this.dropoffStopId && this.date && this.pickupStopId !== this.dropoffStopId);
+    return Boolean(
+      this.routeId &&
+        this.pickupStopId &&
+        this.dropoffStopId &&
+        this.date &&
+        this.pickupStopId !== this.dropoffStopId
+    );
   }
 
   get recentSearchLabel(): string {
-    return `${this.stopName(this.pickupStopId) || 'دمياط الجديدة'} ← ${this.stopName(this.dropoffStopId) || 'رأس البر'}`;
+    const route = this.routes.find((item) => item.id === this.routeId)?.name;
+    const stops = `${this.stopName(this.pickupStopId) || 'نقطة الصعود'} ← ${this.stopName(this.dropoffStopId) || 'الوجهة'}`;
+    return route ? `${route}: ${stops}` : stops;
   }
 
   ionViewWillEnter(): void {
@@ -213,12 +253,29 @@ export class PassengerSearchPage {
       (first, second) => first.orderIndex - second.orderIndex
     );
     this.pickupStopId = this.stops[0]?.id || '';
-    this.dropoffStopId = this.stops[1]?.id || '';
+    this.dropoffStopId = this.dropoffStops[0]?.id || '';
+  }
+
+  selectRoute(routeId: string): void {
+    this.routeId = routeId;
+    this.stops = [];
+    this.pickupStopId = '';
+    this.dropoffStopId = '';
+    this.errorMessage = '';
+    void this.loadStopsForRoute(routeId);
+  }
+
+  selectPickupStop(stopId: string): void {
+    this.pickupStopId = stopId;
+    const validDropoffs = this.dropoffStops;
+    if (!validDropoffs.some((stop) => stop.id === this.dropoffStopId)) {
+      this.dropoffStopId = validDropoffs[0]?.id || '';
+    }
   }
 
   searchTrips(): void {
     if (!this.canSearch) {
-      this.errorMessage = 'اختر نقطة صعود ونقطة وصول بعدها على نفس المسار.';
+      this.errorMessage = 'اختر الخط، ثم نقطة صعود ونقطة وصول بعدها على نفس الخط.';
       return;
     }
 
