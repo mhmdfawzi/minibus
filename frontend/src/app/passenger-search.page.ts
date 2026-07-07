@@ -253,7 +253,7 @@ export class PassengerSearchPage {
       (first, second) => first.orderIndex - second.orderIndex
     );
     this.pickupStopId = this.stops[0]?.id || '';
-    this.dropoffStopId = this.dropoffStops[0]?.id || '';
+    this.dropoffStopId = this.defaultDropoffStopId();
   }
 
   selectRoute(routeId: string): void {
@@ -269,8 +269,12 @@ export class PassengerSearchPage {
     this.pickupStopId = stopId;
     const validDropoffs = this.dropoffStops;
     if (!validDropoffs.some((stop) => stop.id === this.dropoffStopId)) {
-      this.dropoffStopId = validDropoffs[0]?.id || '';
+      this.dropoffStopId = this.defaultDropoffStopId();
     }
+  }
+
+  private defaultDropoffStopId(): string {
+    return this.dropoffStops.at(-1)?.id || '';
   }
 
   searchTrips(): void {
