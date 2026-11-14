@@ -9,6 +9,11 @@ const config: CapacitorConfig = {
     androidScheme: 'http',
     iosScheme: 'https',
     cleartext: true
+  },
+  plugins: {
+    Keyboard: {
+      resize: 'body'
+    }
   }
 };
 

@@ -12,6 +12,9 @@
   "engines": {
     "node": ">=20"
   },
+  "overrides": {
+    "typescript": "5.5.4"
+  },
   "dependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/common": "^18.2.13",
@@ -51,6 +54,6 @@
     "@typescript-eslint/eslint-plugin": "^8.18.1",
     "@typescript-eslint/parser": "^8.18.1",
     "eslint": "^9.17.0",
-    "typescript": "^5.5.4"
+    "typescript": "5.5.4"
   }
 }
