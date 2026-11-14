@@ -5,7 +5,9 @@ const config: CapacitorConfig = {
   appName: 'Transport MVP',
   webDir: 'www',
   server: {
+    hostname: 'localhost',
     androidScheme: 'http',
+    iosScheme: 'https',
     cleartext: true
   }
 };
