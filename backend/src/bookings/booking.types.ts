@@ -12,9 +12,17 @@ export interface BookingResponse {
   holdExpiresAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  passenger?: {
+    fullName: string | null;
+    phone: string | null;
+  };
 }
 
-export function toBookingResponse(booking: Booking): BookingResponse {
+type BookingWithPassenger = Booking & {
+  passenger?: { fullName: string | null; phone: string | null };
+};
+
+export function toBookingResponse(booking: BookingWithPassenger): BookingResponse {
   return {
     id: booking.id,
     tripId: booking.tripId,
@@ -26,6 +34,7 @@ export function toBookingResponse(booking: Booking): BookingResponse {
     status: booking.status,
     holdExpiresAt: booking.holdExpiresAt,
     createdAt: booking.createdAt,
-    updatedAt: booking.updatedAt
+    updatedAt: booking.updatedAt,
+    ...(booking.passenger ? { passenger: booking.passenger } : {})
   };
 }

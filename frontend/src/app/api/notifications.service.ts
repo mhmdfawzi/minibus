@@ -61,7 +61,7 @@ export class NotificationsService implements NotificationsApi {
         {},
         { headers: this.authApi.authHeaders() }
       )
-      .pipe(tap(() => this.refreshUnreadCount()));
+      .pipe(tap((notification) => notification.isRead && this.decrementUnreadCount()));
   }
 
   refreshUnreadCount(): void {
@@ -71,6 +71,10 @@ export class NotificationsService implements NotificationsApi {
 
   incrementUnreadCount(): void {
     this.unreadCountSubject.next(this.unreadCountSubject.value + 1);
+  }
+
+  private decrementUnreadCount(): void {
+    this.unreadCountSubject.next(Math.max(0, this.unreadCountSubject.value - 1));
   }
 
   private setUnreadCount(notifications: NotificationView[]): void {

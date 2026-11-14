@@ -5,13 +5,14 @@ import { firstValueFrom } from 'rxjs';
 import { DriverOnboardingProfile, DriversService, DriverReviewStatus } from './api/drivers.service';
 import { RatingView, RatingsService } from './api/ratings.service';
 import { AuthApiService } from './auth-api.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
 import { StarRatingComponent } from './shared/star-rating.component';
 
 @Component({
   selector: 'app-driver-self-profile',
   standalone: true,
-  imports: [IonContent, IonSpinner, NotificationBadgeComponent, StarRatingComponent],
+  imports: [AvatarComponent, IonContent, IonSpinner, NotificationBadgeComponent, StarRatingComponent],
   template: `
     <ion-content class="stitch-auth-page driver-profile-stitch" fullscreen>
       <header class="driver-profile-topbar">
@@ -32,7 +33,7 @@ import { StarRatingComponent } from './shared/star-rating.component';
         <main class="driver-profile-canvas">
           <section class="driver-profile-hero">
             <div class="driver-profile-avatar">
-              <span class="material-symbols-outlined">directions_car</span>
+              <app-avatar icon="person" size="lg" />
               <i></i>
             </div>
             <h2>{{ profile.carModel }}</h2>

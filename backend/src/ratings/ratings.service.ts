@@ -5,8 +5,9 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { BookingStatus, Prisma, TripStatus, UserRole } from '@prisma/client';
+import { BookingStatus, TripStatus, UserRole } from '@prisma/client';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { isPrismaErrorCode } from '../common/prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { RatingResponse, toRatingResponse } from './rating.types';
@@ -77,10 +78,7 @@ export class RatingsService {
 
       return toRatingResponse(rating);
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
+      if (isPrismaErrorCode(error, 'P2002')) {
         throw new ConflictException('Passenger already rated this trip');
       }
       throw error;

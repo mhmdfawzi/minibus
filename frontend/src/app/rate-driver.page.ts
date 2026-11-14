@@ -8,12 +8,13 @@ import { BookingsService } from './api/bookings.service';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { RatingsService } from './api/ratings.service';
 import { DriverTrip, TripsService } from './api/trips.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { StarRatingComponent } from './shared/star-rating.component';
 
 @Component({
   selector: 'app-rate-driver',
   standalone: true,
-  imports: [FormsModule, IonContent, IonSpinner, StarRatingComponent],
+  imports: [AvatarComponent, FormsModule, IonContent, IonSpinner, StarRatingComponent],
   template: `
     <ion-content class="stitch-auth-page rate-driver-stitch" fullscreen>
       <header class="driver-profile-topbar">
@@ -38,9 +39,7 @@ import { StarRatingComponent } from './shared/star-rating.component';
       } @else if (trip && driver) {
         <main class="rate-driver-canvas">
           <section class="rate-driver-card">
-            <div class="rate-avatar">
-              <span class="material-symbols-outlined">person</span>
-            </div>
+            <app-avatar class="rate-avatar" [name]="driver.fullName" size="lg" />
             <p>كيف كانت رحلتك مع</p>
             <h2>{{ driver.fullName || 'السائق' }}؟</h2>
             <small>{{ trip.tripDate }} - {{ trip.startTime }}</small>

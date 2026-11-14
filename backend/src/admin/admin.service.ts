@@ -5,6 +5,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { DriverStatus, Prisma } from '@prisma/client';
+import { isPrismaErrorCode } from '../common/prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   RouteResponse,
@@ -340,19 +341,13 @@ export class AdminService {
   }
 
   private throwConflictOnUniqueRouteOrder(error: unknown): void {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002'
-    ) {
+    if (isPrismaErrorCode(error, 'P2002')) {
       throw new ConflictException('A stop with this order already exists on the route');
     }
   }
 
   private throwNotFoundOnMissing(error: unknown, message: string): void {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
-    ) {
+    if (isPrismaErrorCode(error, 'P2025')) {
       throw new NotFoundException(message);
     }
   }

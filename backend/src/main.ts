@@ -1,9 +1,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { static as expressStatic } from 'express';
 import * as Sentry from '@sentry/node';
-import { join } from 'path';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { RequestLoggingInterceptor } from './common/interceptors/request-logging.interceptor';
@@ -41,7 +39,6 @@ async function bootstrap(): Promise<void> {
   );
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new RequestLoggingInterceptor());
-  app.use('/uploads', expressStatic(join(process.cwd(), 'uploads')));
 
   const port = config.get<number>('PORT', 3000);
   await app.listen(port);

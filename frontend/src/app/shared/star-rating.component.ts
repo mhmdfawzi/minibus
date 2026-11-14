@@ -43,7 +43,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       }
 
       .star-button.is-active {
-        color: var(--app-color-accent);
+        color: var(--app-color-rating);
       }
 
       .star-button:disabled {

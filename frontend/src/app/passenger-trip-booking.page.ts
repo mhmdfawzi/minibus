@@ -7,12 +7,13 @@ import { BookingsService } from './api/bookings.service';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
 @Component({
   selector: 'app-passenger-trip-booking',
   standalone: true,
-  imports: [IonContent, IonSpinner, NotificationBadgeComponent],
+  imports: [IonContent, IonSpinner, NotificationBadgeComponent, AvatarComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-booking-stitch" fullscreen>
       <header class="booking-detail-topbar">
@@ -67,18 +68,14 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
                 <h2>{{ vehicleTitle }}</h2>
                 <p>{{ vehiclePlate }}</p>
               </div>
-              <img
-                alt=""
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5_PX-IgJ2Tlm-t34CS--8KQxJ8pHKZ7-5FJ71Ys5nay9TwTnw_hLvrFEYI5br0Q5Xf4gWv1qgDQQwPQ0WC3NISl9DSV1NItqZTfaUboUWpkYLAoIHvxCgnzXJBQqtj8rBgcGeNo609_-sCZbQgl5oYOu70GdhUfljIpWvFdJxGfudlwbODNy2cOjgz5H2qfiGLYjzT4_SE3HSZEJ3Md0tsnA0_tJq2f4lq654lQdQs0BzS36nmuSbDw"
-              />
+              <div class="vehicle-icon-tile">
+                <span class="material-symbols-outlined">directions_car</span>
+              </div>
             </article>
 
             <button class="booking-driver-card" type="button" (click)="openDriverProfile()">
               <div>
-                <img
-                  alt=""
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKJyeT6rH4GY1_o-V7N0LS1mooRHg0BleI5PYxZMDYn1tM8iFEY29_Pp0vHiF5CfaAcPY1lUel1wpjeeUDKz-YBqS0ScaIQafUkoOzlOUemYI1ScG5KA1FTipRo9KFABZaUjK9yyzzMQDigRJJAbop5aypwBjcp8w093e0Ivk2BUnSAna9iykyBo4qZNbF6lNQpvTdqr4SpUECTg2vXDuo7pv-E9EeTKcw1w3IRLlmXHFEtalwMJvS9g"
-                />
+                <app-avatar [name]="driver?.fullName" size="md" />
                 <span class="material-symbols-outlined">verified</span>
               </div>
               <p>{{ driver?.fullName || 'سائق معتمد' }}</p>

@@ -36,6 +36,7 @@ import { FirebasePhoneAuthService } from './firebase-phone-auth.service';
                 name="phoneNumber"
                 dir="ltr"
                 inputmode="tel"
+                autocomplete="tel-national"
                 placeholder="01X XXXX XXXX"
                 [(ngModel)]="phoneNumber"
                 (input)="normalizePhoneDigits()"
@@ -46,8 +47,8 @@ import { FirebasePhoneAuthService } from './firebase-phone-auth.service';
         </section>
 
         <p class="terms-copy">
-          بالنقر على "إرسال الكود"، فإنك توافق على <a href="#">شروط الخدمة</a> و
-          <a href="#">سياسة الخصوصية</a>. قد يتم تطبيق رسوم الرسائل النصية والبيانات.
+          بالنقر على "إرسال الكود"، فإنك توافق على <span class="legal-link">شروط الخدمة</span> و
+          <span class="legal-link">سياسة الخصوصية</span>. قد يتم تطبيق رسوم الرسائل النصية والبيانات.
         </p>
 
         <div id="phone-recaptcha-container" class="recaptcha-container phone-recaptcha"></div>
@@ -96,6 +97,8 @@ export class PhoneEntryPage {
   }
 
   async sendCode(): Promise<void> {
+    if (this.isLoading) return;
+
     this.errorMessage = '';
     const formattedPhone = this.formatPhoneNumber();
     if (!formattedPhone) {

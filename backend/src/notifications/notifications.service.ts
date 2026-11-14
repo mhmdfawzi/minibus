@@ -2,6 +2,7 @@ import { ForbiddenException, Injectable, Logger, NotFoundException } from '@nest
 import { BookingStatus, NotificationType } from '@prisma/client';
 import { FirebaseAdminService } from '../auth/firebase-admin.service';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { errorMessage } from '../common/error-message';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDeviceDto } from './dto/register-device.dto';
 import { NotificationResponse, toNotificationResponse } from './notification.types';
@@ -296,7 +297,7 @@ export class NotificationsService {
         });
       }
     } catch (error) {
-      this.logger.warn(`Push send failed after notification persisted: ${this.errorMessage(error)}`);
+      this.logger.warn(`Push send failed after notification persisted: ${errorMessage(error)}`);
     }
   }
 
@@ -305,10 +306,5 @@ export class NotificationsService {
       code === 'messaging/registration-token-not-registered' ||
       code === 'messaging/invalid-registration-token'
     );
-  }
-
-  private errorMessage(error: unknown): string {
-    if (error instanceof Error) return error.message;
-    return String(error);
   }
 }

@@ -274,14 +274,15 @@ ion-segment {
   background: var(--app-color-background);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: var(--app-space-md);
+  min-height: var(--app-touch-target);
+  padding: 0 var(--app-space-md);
   position: relative;
   z-index: 50;
 }
 
 .stitch-topbar.sticky {
+  padding-top: env(safe-area-inset-top);
   position: sticky;
   top: 0;
 }
@@ -294,10 +295,10 @@ ion-segment {
   border: 0;
   color: var(--app-color-primary);
   display: inline-flex;
-  height: 40px;
+  height: var(--app-touch-target);
   justify-content: center;
   padding: 0;
-  width: 40px;
+  width: var(--app-touch-target);
 }
 
 .stitch-title-with-back {
@@ -328,7 +329,7 @@ ion-segment {
   background: var(--app-color-accent);
   border: 0;
   border-radius: 12px;
-  box-shadow: var(--app-shadow-gold);
+  box-shadow: var(--app-shadow-accent);
   color: var(--app-color-primary-strong);
   display: flex;
   font-size: 18px;
@@ -484,7 +485,7 @@ ion-segment {
   text-align: center;
 }
 
-.welcome-footer a {
+.welcome-footer .legal-link {
   color: var(--app-color-surface);
   text-decoration: underline;
 }
@@ -626,7 +627,7 @@ ion-segment {
   padding-inline: 4px;
 }
 
-.terms-copy a,
+.terms-copy .legal-link,
 .otp-resend {
   color: var(--app-color-secondary-strong);
   font-weight: 700;
@@ -768,7 +769,8 @@ ion-segment {
   font-size: 12px;
   line-height: 16px;
   margin: 0 auto;
-  padding: var(--app-space-xs);
+  min-height: var(--app-touch-target);
+  padding: 0 var(--app-space-sm);
 }
 
 .otp-spacer {
@@ -919,14 +921,33 @@ ion-segment {
   width: 100%;
 }
 
+.profile-visual-image,
+.trip-create-hero-image {
+  align-items: center;
+  background: linear-gradient(135deg, var(--app-color-primary) 0%, var(--app-color-secondary-strong) 100%);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
 .profile-visual-image {
-  background:
-    linear-gradient(rgba(11, 46, 107, 0.08), rgba(11, 46, 107, 0.08)),
-    url("https://lh3.googleusercontent.com/aida-public/AB6AXuAul-zaFC_QfrhDOi7cQbukqP30c03tuVLPKQ8JbeHGJl435xpX-qb-YfnDfmGOhXxTVUqvPEiW-CItH1fCjF5VibHgdApRcLUuaTjfppEfH4OaXZJHRNOcD9sAN11iyhW3JqYoy64UBgXDcT3FfYOgGo6dqC16nrvGlc9oGuIEYyP_Zo6Ko5RUtb2_mzxrQcHHu4Ue2T1od22dZewv-s3x1ijmGdOdDLeHBGlDOR7_bhq-kUJF4LGWzg");
-  background-position: center;
-  background-size: cover;
   inset: 0;
   position: absolute;
+}
+
+.profile-visual-image::before,
+.trip-create-hero-image::before {
+  color: var(--app-color-surface);
+  content: "sailing";
+  font-family: "Material Symbols Outlined";
+  font-size: 96px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 200,
+    "GRAD" 0,
+    "opsz" 48;
+  opacity: 0.22;
 }
 
 .profile-visual-shade {
@@ -946,7 +967,7 @@ ion-segment {
 }
 
 .profile-footer {
-  background: rgba(251, 249, 244, 0.8);
+  background: rgba(243, 250, 253, 0.8);
   bottom: 0;
   margin-inline: calc(var(--app-space-md) * -1);
   margin-top: auto;
@@ -957,7 +978,7 @@ ion-segment {
 
 .profile-action {
   border-radius: var(--app-radius-pill);
-  box-shadow: 0 4px 16px rgba(242, 194, 48, 0.3);
+  box-shadow: 0 4px 16px rgba(230, 255, 0, 0.3);
 }
 
 .driver-register-layout {
@@ -1419,9 +1440,9 @@ ion-segment {
   background: var(--app-color-background);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: var(--app-space-md);
+  min-height: var(--app-touch-target);
+  padding: env(safe-area-inset-top) var(--app-space-md) 0;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -1441,10 +1462,16 @@ ion-segment {
 .trip-form-topbar h1,
 .trip-detail-topbar h1 {
   color: var(--app-color-primary);
+  flex: 1;
   font-size: 22px;
   font-weight: 700;
   line-height: 28px;
   margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .driver-trips-layout,
@@ -1492,7 +1519,8 @@ ion-segment {
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
-  padding: var(--app-space-xs) var(--app-space-sm);
+  min-height: var(--app-touch-target);
+  padding: 0 var(--app-space-sm);
   white-space: nowrap;
 }
 
@@ -1531,7 +1559,7 @@ ion-segment {
   border: 0;
   border-radius: var(--app-radius-pill);
   bottom: 96px;
-  box-shadow: 0 8px 24px rgba(242, 194, 48, 0.4);
+  box-shadow: 0 8px 24px rgba(230, 255, 0, 0.4);
   color: var(--app-color-primary-strong);
   display: flex;
   height: 56px;
@@ -1549,43 +1577,6 @@ ion-segment {
 
 .driver-floating-add .material-symbols-outlined {
   font-size: 32px;
-}
-
-.driver-bottom-nav {
-  align-items: center;
-  background: var(--app-color-surface);
-  border-radius: 24px 24px 0 0;
-  bottom: 0;
-  box-shadow: 0 -4px 20px rgba(0, 26, 71, 0.08);
-  display: flex;
-  height: 80px;
-  justify-content: space-around;
-  left: 0;
-  padding: var(--app-space-xs) var(--app-space-md);
-  position: fixed;
-  right: 0;
-  z-index: 39;
-}
-
-.driver-bottom-nav button {
-  align-items: center;
-  appearance: none;
-  background: transparent;
-  border: 0;
-  color: var(--app-color-outline-strong);
-  display: grid;
-  font-size: 12px;
-  gap: 2px;
-  justify-items: center;
-  min-width: 56px;
-}
-
-.driver-bottom-nav button.is-active {
-  color: var(--app-color-primary);
-}
-
-.driver-bottom-nav small {
-  font-weight: 600;
 }
 
 .trip-form-sail {
@@ -1614,9 +1605,6 @@ ion-segment {
 }
 
 .trip-create-hero-image {
-  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4b_zHonY5OdteE4XZJHGDElaiRJ_uhYxy1cCCOHz0Xj7-Eyc_5FzslOUFG9Gp9zVhjsokAp0OdPcjBIutgUHt31WUcaL5yTqPTvll0XrtGSl775hiM2B9eA8xxdyBHC9XxHAxhdS0snwTHMo7VrOQ-M2sn0R8ekr5eNmxrrAjr8b9ia2vhhKI_QkOcq_uIA4Nhh_nT_GLsq4U-DLuD2Y1dc35HfMywjRKKogSDYbFztjY762xEEg9qw");
-  background-position: center;
-  background-size: cover;
   height: 100%;
   width: 100%;
 }
@@ -1742,9 +1730,9 @@ ion-segment {
 }
 
 .trip-choice-grid button.is-active {
-  background: rgba(247, 197, 38, 0.18);
+  background: rgba(230, 255, 0, 0.18);
   border-color: var(--app-color-accent);
-  box-shadow: 0 0 0 2px rgba(247, 197, 38, 0.12);
+  box-shadow: 0 0 0 2px rgba(230, 255, 0, 0.12);
 }
 
 .trip-date-choice-grid {
@@ -1859,9 +1847,9 @@ ion-segment {
   box-shadow: var(--app-shadow-soft);
   color: var(--app-color-primary);
   display: flex;
-  height: 32px;
+  height: var(--app-touch-target);
   justify-content: center;
-  width: 32px;
+  width: var(--app-touch-target);
 }
 
 .trip-stepper strong {
@@ -2098,12 +2086,12 @@ ion-segment {
 .passenger-topbar {
   align-items: center;
   background: var(--app-color-background);
-  color: var(--app-color-primary);
+  color: var(--app-color-primary-strong);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: var(--app-space-md);
+  min-height: var(--app-touch-target);
+  padding: env(safe-area-inset-top) var(--app-space-md) 0;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -2127,29 +2115,6 @@ ion-segment {
 
 .passenger-layout.with-footer {
   padding-bottom: 136px;
-}
-
-.passenger-hero {
-  align-items: end;
-  background:
-    linear-gradient(to top, rgba(var(--ion-color-primary-rgb), 0.72), rgba(var(--ion-color-primary-rgb), 0.08)),
-    url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4b_zHonY5OdteE4XZJHGDElaiRJ_uhYxy1cCCOHz0Xj7-Eyc_5FzslOUFG9Gp9zVhjsokAp0OdPcjBIutgUHt31WUcaL5yTqPTvll0XrtGSl775hiM2B9eA8xxdyBHC9XxHAxhdS0snwTHMo7VrOQ-M2sn0R8ekr5eNmxrrAjr8b9ia2vhhKI_QkOcq_uIA4Nhh_nT_GLsq4U-DLuD2Y1dc35HfMywjRKKogSDYbFztjY762xEEg9qw")
-      center / cover;
-  border-radius: 16px;
-  box-shadow: var(--app-shadow-card);
-  display: flex;
-  min-height: 188px;
-  overflow: hidden;
-  padding: var(--app-space-md);
-}
-
-.passenger-hero p {
-  color: var(--app-color-surface);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 32px;
-  margin: 0;
-  max-width: 320px;
 }
 
 .booking-panel,
@@ -2460,7 +2425,7 @@ ion-segment {
 
 .request-actions > * {
   flex: 1 1 0;
-  height: 44px;
+  height: var(--app-touch-target);
 }
 
 .trip-booking-empty {
@@ -2487,9 +2452,9 @@ ion-segment {
   background: var(--app-color-background);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: 20px;
+  min-height: var(--app-touch-target);
+  padding: env(safe-area-inset-top) 20px 0;
   position: sticky;
   top: 0;
   width: 100%;
@@ -2630,36 +2595,6 @@ ion-segment {
   display: flex;
   flex-direction: row-reverse;
   justify-content: space-between;
-}
-
-.booking-status-pill {
-  border-radius: var(--app-radius-pill);
-  display: inline-flex;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  line-height: 16px;
-  padding: 4px 12px;
-}
-
-.booking-status-pill[data-status='accepted'] {
-  background: var(--app-color-accepted-bg);
-  color: var(--app-color-accepted);
-}
-
-.booking-status-pill[data-status='pending'] {
-  background: var(--app-color-pending-bg);
-  color: var(--app-color-pending);
-}
-
-.booking-status-pill[data-status='completed'] {
-  background: var(--app-color-completed-bg);
-  color: var(--app-color-completed);
-}
-
-.booking-status-pill[data-status='rejected'] {
-  background: var(--app-color-rejected-bg);
-  color: var(--app-color-rejected);
 }
 
 .booking-card-price {
@@ -2926,9 +2861,9 @@ ion-segment {
   background: var(--app-color-background);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: 20px;
+  min-height: var(--app-touch-target);
+  padding: env(safe-area-inset-top) 20px 0;
   width: 100%;
   z-index: 50;
 }
@@ -2987,37 +2922,6 @@ ion-segment {
 
 .passenger-home-canvas {
   padding: var(--app-space-md) 20px 128px;
-}
-
-.passenger-home-hero {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 26, 71, 0.1);
-  height: 160px;
-  margin-bottom: var(--app-space-lg);
-  overflow: hidden;
-  position: relative;
-}
-
-.passenger-home-hero > div {
-  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCDn9ZvmgGPwUSQObt6ut-9bf9xPS1HOQaZ97WoRMgrakh7YtCjUO8cEAgX11T6-feTZkHxhvWO6KA64akz9vGBIurqSefrN1A3c4BVZhAGTBcTEeGLM4ulG_IHo8U7DSYepuwNyzv4Hr20zafnpCqUZMMn_zGk0oLfhJb6doMSv6DoRH7LhUt2dMsNyS0EDJrnADHII-JgIvbyi5skiXcG3vcvPZ-LSnbGwCX-GqT4NchpOdI3LcE90g");
-  background-position: center;
-  background-size: cover;
-  height: 100%;
-  width: 100%;
-}
-
-.passenger-home-hero p {
-  align-items: end;
-  background: linear-gradient(to top, rgba(var(--ion-color-primary-rgb), 0.6), transparent);
-  color: var(--app-color-surface);
-  display: flex;
-  font-size: 18px;
-  font-weight: 600;
-  inset: 0;
-  line-height: 24px;
-  margin: 0;
-  padding: var(--app-space-md);
-  position: absolute;
 }
 
 .passenger-search-grid {
@@ -3218,16 +3122,670 @@ ion-segment {
   line-height: 28px;
 }
 
-.ras-elbar {
-  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC0f7Nzf1FkHQ6YdAVBSohGe2f0La7gn5LU3W5jRYo8WMO4aWWh4IsS2QHw3bC38gy7LmAQ6gXIq37VJ5fEDl5tpCv3kO2NHO1SkCUKhMoMijc5TTWvJdvaBSXW447MweMg-6y7AemSi5xnrMFXkP1t5VsNYaB1C0BnzYep2jCdzxRxiihhuEeqzifu0nBhlWOSYT0x-QNlUpt1qRd4NWpyXFSHWUH5zORlAI0En9QA48rl55pr85kjvg");
+/* Passenger mobility experience: route-first, fast and thumb-friendly. */
+.mobility-home {
+  --background: var(--app-color-background);
+  --padding-bottom: 96px;
+  color: var(--app-color-text);
 }
 
-.damietta-square {
-  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpb9xwqTRflUg6xQ9iLk1dNht1uznf_CZ4WQZamqbnjv-ogzDvJhpljbrvbyul1uFttVGnuDQRqd3s3YOTNf7bj73SvUL5vkX9uevwx-UQkUG6p8-_q4NdhY5aN1Qbd3eROg6Pqikfw9dOD8Cp-NIEhkK3HEOtfda-6qOU_wPC9iu7TJX-6Y6qJCQrLfuXNhJCR6ZXjlnerFpMYy4fUhWzU0o0s1kUsRcHXFA0DqSyAeOqMvB2pkYCPw");
+.mobility-hero {
+  background:
+    radial-gradient(circle at 8% 16%, rgba(255, 255, 255, 0.2) 0 5px, transparent 6px),
+    radial-gradient(circle at 13% 25%, rgba(255, 255, 255, 0.12) 0 3px, transparent 4px),
+    linear-gradient(145deg, var(--app-color-secondary) 0%, var(--app-color-primary) 62%, var(--app-color-primary-strong) 100%);
+  color: #fff;
+  min-height: 300px;
+  overflow: hidden;
+  padding: max(18px, env(safe-area-inset-top)) 20px 72px;
+  position: relative;
 }
 
-.new-damietta {
-  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCYlUcqUPrRQO4XOpT-sz66qYaadbJmqdDPdgMymdGZqyk-Lk6SRRzus_D8BA-s2yjpHOX0BId7khG0DAXnXuQy4wrOKVTzJmJn0wc2uD1tAblqR_QL7qNqHyw9vSmnTxarTuc050dROd2okh-vvaZvBa-QEgFiOkbu9BOLRcmAjvnO_cb5HeSp691yBrgWnCgaQoMNUuBblXJdAelghANoPbm1psFLKtIA_GsSyneDT6xIWgL-Nusp7A");
+.mobility-hero::after {
+  border: 28px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  content: "";
+  height: 210px;
+  left: -92px;
+  position: absolute;
+  top: 78px;
+  width: 210px;
+}
+
+.mobility-topbar,
+.mobility-brand,
+.mobility-alert-button {
+  align-items: center;
+  display: flex;
+}
+
+.mobility-topbar {
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+}
+
+.mobility-brand {
+  gap: 8px;
+}
+
+.mobility-brand > span {
+  align-items: center;
+  background: #fff;
+  border-radius: 11px;
+  color: var(--app-color-primary);
+  display: flex;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.mobility-brand strong {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.mobility-alert-button {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 50%;
+  color: #fff;
+  height: 42px;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  width: 42px;
+}
+
+.mobility-welcome {
+  margin-top: 38px;
+  position: relative;
+  z-index: 2;
+}
+
+.mobility-eyebrow {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+}
+
+.mobility-welcome h1 {
+  font-size: clamp(36px, 10vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.2;
+  margin: 14px 0 2px;
+}
+
+.mobility-welcome p {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  margin: 0;
+}
+
+.mobility-road {
+  align-items: center;
+  bottom: 22px;
+  direction: ltr;
+  display: flex;
+  gap: 6px;
+  left: 20px;
+  opacity: 0.8;
+  position: absolute;
+}
+
+.mobility-road span {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  height: 6px;
+  width: 6px;
+}
+
+.mobility-road i {
+  border-top: 2px dashed rgba(255, 255, 255, 0.45);
+  width: 28px;
+}
+
+.mobility-road b {
+  font-size: 36px;
+  margin-left: 4px;
+}
+
+.mobility-canvas {
+  margin: -50px auto 0;
+  max-width: 520px;
+  padding: 0 16px 112px;
+  position: relative;
+  z-index: 3;
+}
+
+.mobility-search-sheet {
+  background: #fff;
+  border: 1px solid rgba(16, 24, 40, 0.05);
+  border-radius: 22px;
+  box-shadow: 0 18px 44px rgba(6, 40, 54, 0.15);
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.mobility-sheet-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mobility-sheet-heading > div > span {
+  color: var(--app-color-primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.mobility-sheet-heading h2 {
+  color: var(--app-color-text);
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 1px 0 0;
+}
+
+.mobility-sheet-heading > .material-symbols-outlined {
+  align-items: center;
+  background: var(--app-color-secondary-container);
+  border-radius: 12px;
+  color: var(--app-color-primary);
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.mobility-route-picker {
+  background: var(--app-color-surface-muted);
+  border: 1px solid var(--app-color-surface-strong);
+  border-radius: 16px;
+  display: grid;
+  gap: 0;
+  grid-template-columns: 24px minmax(0, 1fr);
+  padding: 4px 14px;
+}
+
+.mobility-route-rail {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  grid-row: 1 / span 2;
+  justify-content: center;
+}
+
+.mobility-route-rail span {
+  background: #fff;
+  border: 3px solid var(--app-color-primary);
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: 12px;
+  width: 12px;
+}
+
+.mobility-route-rail span:last-child {
+  background: var(--app-color-primary);
+}
+
+.mobility-route-rail i {
+  border-right: 2px dashed var(--app-color-outline);
+  height: 38px;
+}
+
+.mobility-place-field {
+  display: grid;
+  gap: 1px;
+  padding: 11px 8px;
+}
+
+.mobility-place-field:first-of-type {
+  border-bottom: 1px solid var(--app-color-surface-strong);
+}
+
+.mobility-place-field small,
+.mobility-line-field small {
+  color: var(--app-color-outline-strong);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mobility-place-field select,
+.mobility-line-field select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--app-color-text);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  min-width: 0;
+  outline: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.mobility-place-field select:disabled,
+.mobility-line-field select:disabled {
+  color: var(--app-color-outline);
+  opacity: 1;
+}
+
+.mobility-line-field {
+  align-items: center;
+  border: 1px solid var(--app-color-surface-strong);
+  border-radius: 14px;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 34px minmax(0, 1fr) 24px;
+  padding: 10px 12px;
+}
+
+.mobility-line-field > .material-symbols-outlined:first-child {
+  color: var(--app-color-primary);
+}
+
+.mobility-line-field > span:nth-child(2) {
+  display: grid;
+}
+
+.mobility-line-field > .material-symbols-outlined:last-child {
+  color: var(--app-color-outline-strong);
+  font-size: 20px;
+}
+
+.mobility-date-row {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mobility-date-row button {
+  appearance: none;
+  background: #fff;
+  border: 1px solid var(--app-color-surface-strong);
+  border-radius: 12px;
+  color: var(--app-color-text-muted);
+  display: grid;
+  font-family: inherit;
+  gap: 1px;
+  min-height: 56px;
+  padding: 7px 5px;
+}
+
+.mobility-date-row button.is-active {
+  background: var(--app-color-secondary-container);
+  border-color: var(--app-color-primary);
+  color: var(--app-color-primary-strong);
+}
+
+.mobility-date-row strong {
+  font-size: 13px;
+}
+
+.mobility-date-row small {
+  color: var(--app-color-outline-strong);
+  font-size: 10px;
+}
+
+.mobility-search-button {
+  align-items: center;
+  appearance: none;
+  background: linear-gradient(135deg, var(--app-color-secondary), var(--app-color-primary));
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 9px 20px rgba(var(--ion-color-primary-rgb), 0.25);
+  color: #fff;
+  display: flex;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  height: 54px;
+  justify-content: center;
+  position: relative;
+}
+
+.mobility-search-button .material-symbols-outlined {
+  left: 16px;
+  position: absolute;
+}
+
+.mobility-search-button:disabled {
+  box-shadow: none;
+  filter: grayscale(0.3);
+  opacity: 0.55;
+}
+
+.mobility-search-button:not(:disabled):active,
+.mobility-recent-card:not(:disabled):active {
+  transform: scale(0.985);
+}
+
+.mobility-error {
+  background: var(--app-color-rejected-bg);
+  border-radius: 10px;
+  color: var(--app-color-rejected);
+  font-size: 12px;
+  margin: 0;
+  padding: 9px 11px;
+}
+
+.mobility-section {
+  margin-top: 28px;
+}
+
+.mobility-section-title {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 2px 12px;
+}
+
+.mobility-section-title h2 {
+  color: var(--app-color-text);
+  font-size: 18px;
+  margin: 0;
+}
+
+.mobility-section-title span {
+  color: var(--app-color-outline-strong);
+  font-size: 11px;
+}
+
+.mobility-recent-card {
+  align-items: center;
+  appearance: none;
+  background: #fff;
+  border: 1px solid var(--app-color-surface-strong);
+  border-radius: 16px;
+  color: inherit;
+  display: flex;
+  font-family: inherit;
+  gap: 12px;
+  padding: 15px;
+  text-align: start;
+  transition: transform 150ms ease;
+  width: 100%;
+}
+
+.mobility-recent-card:disabled {
+  opacity: 0.6;
+}
+
+.mobility-recent-icon {
+  align-items: center;
+  background: var(--app-color-secondary-container);
+  border-radius: 12px;
+  color: var(--app-color-primary);
+  display: flex;
+  height: 44px;
+  justify-content: center;
+  width: 44px;
+}
+
+.mobility-recent-copy {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mobility-recent-copy strong {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobility-recent-copy small {
+  color: var(--app-color-outline-strong);
+  font-size: 11px;
+}
+
+.mobility-recent-arrow {
+  color: var(--app-color-outline-strong);
+  font-size: 20px;
+}
+
+.mobility-promise {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 22px;
+}
+
+.mobility-promise div {
+  align-items: center;
+  color: var(--app-color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.mobility-promise .material-symbols-outlined {
+  color: var(--app-color-primary);
+  font-size: 22px;
+}
+
+.mobility-promise strong {
+  font-size: 10px;
+}
+
+.mobility-home .passenger-bottom-nav {
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 30px rgba(6, 40, 54, 0.08);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobility-home .passenger-bottom-nav button.is-active,
+.mobility-home .passenger-bottom-nav button.is-active .material-symbols-outlined {
+  color: var(--app-color-primary);
+}
+
+.mobility-home .passenger-bottom-nav i {
+  background: var(--app-color-primary);
+}
+
+@media (min-width: 720px) {
+  .mobility-hero {
+    min-height: 340px;
+    padding-inline: calc((100% - 520px) / 2);
+  }
+
+  .mobility-road {
+    left: calc((100% - 520px) / 2);
+  }
+}
+
+/* Unified interaction and accessibility layer shared by every application area. */
+html {
+  background: var(--app-color-background);
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--app-color-background);
+  color: var(--app-color-text);
+  font-family: var(--app-font-family);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+[role='button'] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+button:not(:disabled),
+[role='button']:not([aria-disabled='true']),
+select:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
+:where(button, input, select, textarea, a, [role='button'], [role='radio']):focus-visible {
+  outline: 3px solid rgba(var(--ion-color-primary-rgb), 0.24);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: rgba(var(--ion-color-primary-rgb), 0.18);
+  color: var(--app-color-primary-strong);
+}
+
+.stitch-auth-page,
+.passenger-flow-page,
+.driver-trips-page,
+.admin-web-page {
+  --background: var(--app-color-background);
+}
+
+.stitch-topbar,
+.passenger-home-topbar,
+.results-topbar,
+.booking-detail-topbar,
+.my-bookings-topbar,
+.trip-form-topbar,
+.trip-detail-topbar,
+.driver-trips-topbar {
+  backdrop-filter: blur(18px);
+  background: rgba(243, 250, 253, 0.9);
+  border-bottom: 1px solid rgba(11, 36, 48, 0.06);
+  min-height: 56px;
+  padding-top: env(safe-area-inset-top);
+}
+
+.stitch-brand-title,
+.passenger-home-topbar h1,
+.results-topbar h1,
+.booking-detail-topbar h1,
+.driver-trips-topbar h1,
+.trip-form-topbar h1,
+.trip-detail-topbar h1 {
+  letter-spacing: -0.35px;
+}
+
+.stitch-primary-action:hover:not(:disabled),
+.admin-primary-button:hover:not(:disabled),
+.home-search-button:hover:not(:disabled) {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+.stitch-error,
+.admin-alert {
+  background: var(--app-color-rejected-bg);
+  border: 1px solid rgba(186, 26, 26, 0.12);
+  border-radius: 12px;
+  color: var(--app-color-rejected);
+  padding: 10px 12px;
+}
+
+.phone-intro h1,
+.profile-heading h1,
+.otp-copy h2 {
+  color: var(--app-color-text);
+  font-size: clamp(26px, 7vw, 34px);
+  letter-spacing: -0.7px;
+}
+
+.country-pill,
+.phone-pill,
+.profile-field input,
+.otp-input,
+.trip-input-shell,
+.driver-form-card input,
+.driver-form-card select {
+  border-color: rgba(32, 33, 39, 0.08);
+  box-shadow: 0 5px 18px rgba(27, 24, 29, 0.055);
+}
+
+.country-pill:focus-within,
+.phone-pill:focus-within,
+.profile-field input:focus,
+.otp-input:focus {
+  border-color: var(--app-color-primary);
+  box-shadow: 0 0 0 4px rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.country-pill input,
+.phone-pill input {
+  color: var(--app-color-text);
+}
+
+.otp-illustration {
+  background: linear-gradient(145deg, #fff, var(--app-color-secondary-container));
+  box-shadow: 0 18px 44px rgba(var(--ion-color-primary-rgb), 0.12);
+}
+
+.otp-input {
+  caret-color: var(--app-color-primary);
+}
+
+.profile-role-card,
+.trip-form-card,
+.driver-form-card,
+.results-trip-card,
+.booking-card-stitch,
+.trip-path-card,
+.seat-selection-card,
+.admin-panel {
+  border: 1px solid rgba(32, 33, 39, 0.06);
+  box-shadow: var(--app-shadow-card);
+}
+
+.passenger-bottom-nav,
+.my-bookings-bottom-nav {
+  min-height: calc(72px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.notification-nav-button {
+  position: relative;
+}
+
+@media (hover: hover) {
+  .results-trip-card:hover,
+  .booking-card-stitch:hover,
+  .home-recent-card:hover,
+  .mobility-recent-card:hover:not(:disabled),
+  .profile-role-card:hover {
+    box-shadow: 0 14px 34px rgba(27, 24, 29, 0.11);
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .passenger-bottom-nav {
@@ -3240,7 +3798,7 @@ ion-segment {
   height: 72px;
   justify-content: space-around;
   left: 0;
-  padding: 0 var(--app-space-md);
+  padding: 0 var(--app-space-md) env(safe-area-inset-bottom);
   position: fixed;
   right: 0;
   z-index: 50;
@@ -3448,13 +4006,6 @@ ion-segment {
   padding: var(--app-space-xs) 0;
 }
 
-.results-driver-row img {
-  border-radius: var(--app-radius-pill);
-  height: 48px;
-  object-fit: cover;
-  width: 48px;
-}
-
 .results-driver-copy {
   flex: 1;
   text-align: right;
@@ -3476,7 +4027,7 @@ ion-segment {
 
 .results-driver-copy span {
   align-items: center;
-  color: var(--app-color-accent);
+  color: var(--app-color-rating);
   display: flex;
   font-size: 12px;
   font-weight: 600;
@@ -3714,11 +4265,20 @@ ion-segment {
   line-height: 20px;
 }
 
-.vehicle-card img {
-  display: block;
+.vehicle-icon-tile {
+  align-items: center;
+  background: var(--app-color-secondary-container);
+  border-radius: var(--app-radius-input);
+  color: var(--app-color-secondary-container-text);
+  display: flex;
+  height: 64px;
+  justify-content: center;
   margin: 16px 0 0 auto;
-  max-width: 96px;
-  width: 60%;
+  width: 64px;
+}
+
+.vehicle-icon-tile .material-symbols-outlined {
+  font-size: 32px;
 }
 
 .booking-driver-card {
@@ -3737,12 +4297,8 @@ ion-segment {
   position: relative;
 }
 
-.booking-driver-card img {
+.booking-driver-card app-avatar {
   border: 2px solid var(--app-color-accent);
-  border-radius: var(--app-radius-pill);
-  height: 64px;
-  object-fit: cover;
-  width: 64px;
 }
 
 .booking-driver-card > div .material-symbols-outlined {
@@ -3785,7 +4341,7 @@ ion-segment {
 }
 
 .booking-driver-card small .material-symbols-outlined {
-  color: var(--app-color-accent);
+  color: var(--app-color-rating);
   font-size: 16px;
   font-variation-settings:
     "FILL" 1,
@@ -3849,9 +4405,9 @@ ion-segment {
   border-radius: var(--app-radius-pill);
   color: var(--app-color-surface);
   display: flex;
-  height: 40px;
+  height: var(--app-touch-target);
   justify-content: center;
-  width: 40px;
+  width: var(--app-touch-target);
 }
 
 .seat-stepper button.plus {
@@ -3927,9 +4483,9 @@ ion-segment {
 }
 
 .booking-detail-footer {
-  background: rgba(251, 249, 244, 0.8);
+  background: rgba(243, 250, 253, 0.8);
   backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(228, 226, 221, 0.3);
+  border-top: 1px solid rgba(179, 214, 223, 0.3);
   bottom: 0;
   left: 0;
   padding: 20px;
@@ -4021,9 +4577,9 @@ ion-segment {
   background: var(--app-color-background);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: 20px;
+  min-height: var(--app-touch-target);
+  padding: env(safe-area-inset-top) 20px 0;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -4070,7 +4626,7 @@ ion-segment {
 }
 
 .notifications-summary::before {
-  background: rgba(242, 194, 48, 0.12);
+  background: rgba(230, 255, 0, 0.12);
   border-radius: var(--app-radius-pill);
   content: "";
   height: 112px;
@@ -4141,7 +4697,7 @@ ion-segment {
 }
 
 .notification-item.is-unread {
-  border-color: rgba(242, 194, 48, 0.7);
+  border-color: rgba(230, 255, 0, 0.7);
 }
 
 .notification-icon {
@@ -4350,9 +4906,9 @@ ion-segment {
   background: var(--app-color-background);
   display: flex;
   flex-direction: row-reverse;
-  height: var(--app-touch-target);
   justify-content: space-between;
-  padding-inline: 20px;
+  min-height: var(--app-touch-target);
+  padding: env(safe-area-inset-top) 20px 0;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -4400,22 +4956,8 @@ ion-segment {
   text-align: center;
 }
 
-.driver-profile-avatar,
-.rate-avatar {
-  align-items: center;
-  background: var(--app-color-primary-strong);
-  border-radius: var(--app-radius-pill);
-  color: var(--app-color-surface);
-  display: flex;
-  height: 96px;
-  justify-content: center;
+.driver-profile-avatar {
   position: relative;
-  width: 96px;
-}
-
-.driver-profile-avatar > .material-symbols-outlined,
-.rate-avatar > .material-symbols-outlined {
-  font-size: 56px;
 }
 
 .driver-profile-avatar i {
@@ -4573,7 +5115,7 @@ ion-segment {
 
 .driver-review-empty .material-symbols-outlined,
 .rate-state-card > .material-symbols-outlined {
-  color: var(--app-color-accent);
+  color: var(--app-color-rating);
   font-size: 44px;
   font-variation-settings:
     "FILL" 1,
@@ -4739,5 +5281,213 @@ ion-button[fill='outline'] {
 
   50% {
     transform: scale(1.02);
+  }
+}
+
+/* RTL corrections: the document is already RTL, so avoid reversing rows twice. */
+.stitch-topbar,
+.driver-trips-topbar,
+.trip-form-topbar,
+.trip-detail-topbar,
+.passenger-topbar,
+.my-bookings-topbar,
+.passenger-home-topbar,
+.results-topbar,
+.booking-detail-topbar,
+.notifications-topbar,
+.driver-profile-topbar {
+  direction: rtl;
+  flex-direction: row;
+}
+
+.passenger-bottom-nav,
+.my-bookings-bottom-nav,
+.my-bookings-tabs,
+.results-filter-pills {
+  direction: rtl;
+  flex-direction: row;
+}
+
+.booking-card-header,
+.booking-route-line,
+.booking-card-footer,
+.booking-card-time,
+.results-card-main,
+.results-driver-row,
+.results-driver-copy > div,
+.results-route-row {
+  direction: rtl;
+  flex-direction: row;
+}
+
+.results-time {
+  align-items: flex-start;
+  text-align: right;
+}
+
+.results-price {
+  align-items: flex-end;
+  text-align: left;
+}
+
+.booking-card-price {
+  text-align: left;
+}
+
+.rtl-back-icon {
+  /* Material arrow_back points left; back navigation in RTL points right. */
+  transform: scaleX(-1);
+}
+
+/* Forward/progression affordances point toward the RTL reading direction. */
+.stitch-primary-action .material-symbols-outlined:is(.flow-arrow),
+.mobility-search-button .material-symbols-outlined,
+.mobility-recent-arrow {
+  transform: none;
+}
+
+/* Consistent closed-state styling for native dropdowns across the app. */
+select {
+  appearance: none;
+  background-color: var(--app-color-surface);
+  direction: rtl;
+  min-height: 48px;
+  padding-inline: 14px 42px;
+  text-align: right;
+  text-align-last: right;
+}
+
+select:hover:not(:disabled) {
+  border-color: rgba(var(--ion-color-primary-rgb), 0.34);
+}
+
+select:focus-visible,
+select:focus {
+  border-color: var(--app-color-primary) !important;
+  box-shadow: 0 0 0 4px rgba(var(--ion-color-primary-rgb), 0.1) !important;
+  outline: 0;
+}
+
+select:disabled {
+  background-color: var(--app-color-surface-container);
+  color: var(--app-color-outline-strong);
+  opacity: 0.72;
+}
+
+select option {
+  background: var(--app-color-surface);
+  color: var(--app-color-text);
+  direction: rtl;
+  font-family: var(--app-font-family);
+  padding: 10px;
+  text-align: right;
+}
+
+.trip-input-shell select,
+.passenger-select-shell select,
+.driver-form-card select,
+.admin-panel select,
+.admin-inline-form select {
+  border: 1px solid rgba(32, 33, 39, 0.08);
+  border-radius: var(--app-radius-input);
+  width: 100%;
+}
+
+.trip-input-shell select,
+.passenger-select-shell select {
+  background-color: transparent;
+  border: 0;
+}
+
+.mobility-place-field select {
+  background-color: transparent;
+  min-height: 42px;
+}
+
+.mobility-line-field select {
+  background-color: transparent;
+  min-height: 34px;
+  padding-inline: 0;
+}
+
+.country-pill {
+  direction: rtl;
+}
+
+.country-pill .material-symbols-outlined {
+  margin-inline: 0 4px;
+}
+
+.country-pill input {
+  direction: ltr;
+  text-align: left;
+}
+
+.app-select,
+.trip-input-shell,
+.mobility-place-field {
+  position: relative;
+}
+
+.app-select {
+  display: block;
+  width: 100%;
+}
+
+.app-select::after,
+.trip-input-shell > .select-chevron,
+.mobility-select-chevron {
+  color: var(--app-color-outline-strong);
+  font-family: "Material Symbols Outlined";
+  font-size: 20px;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 500,
+    "GRAD" 0,
+    "opsz" 20;
+  left: 12px;
+  line-height: 1;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.app-select::after {
+  content: "expand_more";
+}
+
+.app-select select {
+  padding-left: 42px;
+  width: 100%;
+}
+
+.trip-input-shell > .select-chevron {
+  left: 10px;
+}
+
+.trip-input-shell select {
+  padding-left: 38px;
+}
+
+.mobility-select-chevron {
+  bottom: 13px;
+  left: 4px;
+  top: auto;
+  transform: none;
+}
+
+.mobility-place-field select {
+  padding-left: 30px;
+}
+
+[dir='ltr'] {
+  unicode-bidi: isolate;
+}
+
+@media (max-width: 480px) {
+  select {
+    font-size: 16px;
   }
 }

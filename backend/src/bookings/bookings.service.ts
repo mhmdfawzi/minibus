@@ -15,6 +15,8 @@ import {
   UserRole
 } from '@prisma/client';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { assertSeatBounds } from '../common/seat-bounds';
+import { safeNotify } from '../common/safe-notify';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { calculateFlatBookingPrice } from './booking-price';
@@ -125,7 +127,7 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       })
     );
 
-    await this.safeNotify('booking_created', () =>
+    await safeNotify(this.logger, 'booking_created', 'booking', () =>
       this.notifications.notifyBookingCreated(booking.id)
     );
 
@@ -148,6 +150,11 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       where: {
         trip: {
           driverId: driver.id
+        }
+      },
+      include: {
+        passenger: {
+          select: { fullName: true, phone: true }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -184,7 +191,7 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       });
     });
 
-    await this.safeNotify('booking_accepted', () =>
+    await safeNotify(this.logger, 'booking_accepted', 'booking', () =>
       this.notifications.notifyBookingAccepted(booking.id)
     );
 
@@ -219,7 +226,7 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       });
     });
 
-    await this.safeNotify('booking_rejected', () =>
+    await safeNotify(this.logger, 'booking_rejected', 'booking', () =>
       this.notifications.notifyBookingRejected(booking.id)
     );
 
@@ -264,7 +271,7 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       });
     });
 
-    await this.safeNotify('booking_cancelled', () =>
+    await safeNotify(this.logger, 'booking_cancelled', 'booking', () =>
       this.notifications.notifyBookingCancelled(
         booking.id,
         driver ? 'driver' : 'passenger'
@@ -340,10 +347,10 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
       throw new NotFoundException('Trip not found');
     }
 
-    this.assertSeatBounds(trip.total_seats, trip.available_seats);
+    assertSeatBounds(trip.total_seats, trip.available_seats);
     const { result, seatDelta } = await operation(trip);
     const nextAvailableSeats = trip.available_seats + seatDelta;
-    this.assertSeatBounds(trip.total_seats, nextAvailableSeats);
+    assertSeatBounds(trip.total_seats, nextAvailableSeats);
 
     if (seatDelta !== 0) {
       await tx.trip.update({
@@ -421,24 +428,4 @@ export class BookingsService implements OnModuleInit, OnModuleDestroy {
     return new Date(Date.now() + this.holdMinutes * 60 * 1000);
   }
 
-  private assertSeatBounds(totalSeats: number, availableSeats: number): void {
-    if (availableSeats < 0 || availableSeats > totalSeats) {
-      throw new BadRequestException('Trip available seats must be between zero and total seats');
-    }
-  }
-
-  private async safeNotify(eventName: string, send: () => Promise<void>): Promise<void> {
-    try {
-      await send();
-    } catch (error) {
-      this.logger.warn(
-        `Notification event ${eventName} failed after booking state changed: ${this.errorMessage(error)}`
-      );
-    }
-  }
-
-  private errorMessage(error: unknown): string {
-    if (error instanceof Error) return error.message;
-    return String(error);
-  }
 }

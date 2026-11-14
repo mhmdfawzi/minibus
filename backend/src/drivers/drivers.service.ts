@@ -5,7 +5,8 @@ import {
   Injectable,
   NotFoundException
 } from '@nestjs/common';
-import { DriverStatus, Prisma, UserRole } from '@prisma/client';
+import { DriverStatus, UserRole } from '@prisma/client';
+import { isPrismaErrorCode } from '../common/prisma-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthenticatedUser } from '../auth/auth.types';
 import { RegisterDriverDto } from './dto/register-driver.dto';
@@ -61,10 +62,7 @@ export class DriversService {
         }
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
+      if (isPrismaErrorCode(error, 'P2002')) {
         throw new ConflictException('Driver profile already exists or document identifiers are duplicated');
       }
       throw error;
@@ -100,6 +98,19 @@ export class DriversService {
           : {})
       }
     });
+  }
+
+  async canAccessDocument(user: AuthenticatedUser, documentUrl: string): Promise<boolean> {
+    if (user.role === UserRole.admin) {
+      return true;
+    }
+
+    const driver = await this.prisma.driver.findUnique({
+      where: { userId: user.id }
+    });
+
+    const docUrls = Array.isArray(driver?.docUrls) ? driver.docUrls : [];
+    return docUrls.includes(documentUrl);
   }
 
   async getMyProfile(user: AuthenticatedUser) {

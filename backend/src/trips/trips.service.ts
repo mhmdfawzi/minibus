@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { BookingStatus, DriverStatus, TripStatus, UserRole } from '@prisma/client';
 import { AuthenticatedUser } from '../auth/auth.types';
+import { assertSeatBounds } from '../common/seat-bounds';
+import { safeNotify } from '../common/safe-notify';
 import { NotificationsService } from '../notifications/notifications.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTripDto } from './dto/create-trip.dto';
@@ -131,7 +133,7 @@ export class TripsService {
     }
 
     const nextTotalSeats = dto.totalSeats ?? trip.totalSeats;
-    this.assertSeatBounds(nextTotalSeats, nextTotalSeats);
+    assertSeatBounds(nextTotalSeats, nextTotalSeats);
 
     const updatedTrip = await this.prisma.trip.update({
       where: { id: tripId },
@@ -158,7 +160,7 @@ export class TripsService {
     }
 
     const updatedTrip = await this.updateStatus(tripId, TripStatus.started);
-    await this.safeNotify('trip_started', () => this.notifications.notifyTripStarted(tripId));
+    await safeNotify(this.logger, 'trip_started', 'trip', () => this.notifications.notifyTripStarted(tripId));
     return updatedTrip;
   }
 
@@ -182,8 +184,8 @@ export class TripsService {
       throw new BadRequestException('Only open or started trips can be cancelled');
     }
 
-    const updatedTrip = await this.updateStatus(tripId, TripStatus.cancelled);
-    await this.safeNotify('trip_cancelled', () =>
+    const updatedTrip = await this.cancelTripAndBookings(tripId);
+    await safeNotify(this.logger, 'trip_cancelled', 'trip', () =>
       this.notifications.notifyTripCancelled(tripId)
     );
     return updatedTrip;
@@ -219,6 +221,31 @@ export class TripsService {
       });
 
       return completedTrip;
+    });
+
+    return toTripResponse(trip);
+  }
+
+  private async cancelTripAndBookings(tripId: string): Promise<TripResponse> {
+    const trip = await this.prisma.$transaction(async (tx) => {
+      const cancelledTrip = await tx.trip.update({
+        where: { id: tripId },
+        data: { status: TripStatus.cancelled },
+        include: { driver: true }
+      });
+
+      await tx.booking.updateMany({
+        where: {
+          tripId,
+          status: { in: [BookingStatus.pending, BookingStatus.accepted] }
+        },
+        data: {
+          status: BookingStatus.cancelled,
+          holdExpiresAt: null
+        }
+      });
+
+      return cancelledTrip;
     });
 
     return toTripResponse(trip);
@@ -266,28 +293,8 @@ export class TripsService {
       throw new ForbiddenException('Trip does not belong to the authenticated driver');
     }
 
-    this.assertSeatBounds(trip.totalSeats, trip.availableSeats);
+    assertSeatBounds(trip.totalSeats, trip.availableSeats);
     return trip;
   }
 
-  private assertSeatBounds(totalSeats: number, availableSeats: number): void {
-    if (availableSeats < 0 || availableSeats > totalSeats) {
-      throw new BadRequestException('Trip available seats must be between zero and total seats');
-    }
-  }
-
-  private async safeNotify(eventName: string, send: () => Promise<void>): Promise<void> {
-    try {
-      await send();
-    } catch (error) {
-      this.logger.warn(
-        `Notification event ${eventName} failed after trip state changed: ${this.errorMessage(error)}`
-      );
-    }
-  }
-
-  private errorMessage(error: unknown): string {
-    if (error instanceof Error) return error.message;
-    return String(error);
-  }
 }

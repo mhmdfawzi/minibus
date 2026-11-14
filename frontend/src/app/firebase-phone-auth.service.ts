@@ -15,7 +15,9 @@ export class FirebasePhoneAuthService {
   private readonly app: FirebaseApp;
   private readonly auth: Auth;
   private verifier: RecaptchaVerifier | null = null;
+  private verifierContainerId: string | null = null;
   private confirmation: ConfirmationResult | null = null;
+  private isSending = false;
 
   constructor() {
     this.ensureFirebaseConfig();
@@ -25,12 +27,37 @@ export class FirebasePhoneAuthService {
   }
 
   async sendOtp(phoneNumber: string, recaptchaContainerId: string): Promise<void> {
-    this.verifier?.clear();
+    if (this.isSending) {
+      throw new Error('OTP request is already in progress');
+    }
+
+    this.isSending = true;
+    this.clearVerifier();
+
+    const container = document.getElementById(recaptchaContainerId);
+    if (!container) {
+      this.isSending = false;
+      throw new Error(`reCAPTCHA container "${recaptchaContainerId}" was not found`);
+    }
+
+    container.replaceChildren();
     const verifierSize = Capacitor.isNativePlatform() ? 'invisible' : 'normal';
-    this.verifier = new RecaptchaVerifier(this.auth, recaptchaContainerId, {
+    const verifier = new RecaptchaVerifier(this.auth, container, {
       size: verifierSize
     });
-    this.confirmation = await signInWithPhoneNumber(this.auth, phoneNumber, this.verifier);
+
+    this.verifier = verifier;
+    this.verifierContainerId = recaptchaContainerId;
+
+    try {
+      await verifier.render();
+      this.confirmation = await signInWithPhoneNumber(this.auth, phoneNumber, verifier);
+    } catch (error) {
+      this.clearVerifier();
+      throw error;
+    } finally {
+      this.isSending = false;
+    }
   }
 
   async confirmOtp(code: string): Promise<string> {
@@ -64,6 +91,8 @@ export class FirebasePhoneAuthService {
         return 'تعذر الاتصال بالإنترنت';
       case 'auth/captcha-check-failed':
       case 'auth/missing-app-credential':
+      case 'auth/invalid-app-credential':
+      case 'auth/unauthorized-domain':
         return 'تعذر التحقق من الأمان، حاول إرسال الكود مرة أخرى';
       case 'auth/invalid-phone-number':
         return 'رقم الهاتف غير صحيح';
@@ -91,6 +120,21 @@ export class FirebasePhoneAuthService {
     }
 
     return null;
+  }
+
+  private clearVerifier(): void {
+    try {
+      this.verifier?.clear();
+    } catch {
+      // Firebase may already have disposed the widget after a failed request.
+    }
+
+    if (this.verifierContainerId) {
+      document.getElementById(this.verifierContainerId)?.replaceChildren();
+    }
+
+    this.verifier = null;
+    this.verifierContainerId = null;
   }
 
   private ensureFirebaseConfig(): void {

@@ -4,12 +4,13 @@ import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { RatingView, RatingsService } from './api/ratings.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { StarRatingComponent } from './shared/star-rating.component';
 
 @Component({
   selector: 'app-driver-profile',
   standalone: true,
-  imports: [IonContent, IonSpinner, StarRatingComponent],
+  imports: [AvatarComponent, IonContent, IonSpinner, StarRatingComponent],
   template: `
     <ion-content class="stitch-auth-page driver-profile-stitch" fullscreen>
       <header class="driver-profile-topbar">
@@ -26,7 +27,7 @@ import { StarRatingComponent } from './shared/star-rating.component';
         <main class="driver-profile-canvas">
           <section class="driver-profile-hero">
             <div class="driver-profile-avatar">
-              <span class="material-symbols-outlined">person</span>
+              <app-avatar [name]="driver.fullName" size="lg" />
               <i class="material-symbols-outlined">verified</i>
             </div>
             <h2>{{ driver.fullName || 'سائق معتمد' }}</h2>

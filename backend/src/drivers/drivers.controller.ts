@@ -2,17 +2,20 @@ import {
   BadRequestException,
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   ParseUUIDPipe,
   Post,
+  Res,
   UploadedFiles,
   UseGuards,
   UseInterceptors
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import type { Response } from 'express';
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { basename, extname, join } from 'path';
 import { mkdirSync } from 'fs';
 import { randomUUID } from 'crypto';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -71,7 +74,7 @@ export class DriversController {
     @CurrentUser() user: AuthenticatedUser,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
-    const documentUrls = files.map((file) => `/uploads/driver-documents/${file.filename}`);
+    const documentUrls = files.map((file) => `/drivers/documents/${file.filename}`);
     return this.driversService.addDocuments(user, documentUrls);
   }
 
@@ -83,6 +86,23 @@ export class DriversController {
   @Get('bookings')
   listDriverBookings(@CurrentUser() user: AuthenticatedUser): Promise<BookingResponse[]> {
     return this.bookingsService.listDriverBookings(user);
+  }
+
+  @Get('documents/:filename')
+  async getDocument(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('filename') filename: string,
+    @Res() res: Response
+  ): Promise<void> {
+    const safeFilename = basename(filename);
+    const documentUrl = `/drivers/documents/${safeFilename}`;
+
+    const canAccess = await this.driversService.canAccessDocument(user, documentUrl);
+    if (!canAccess) {
+      throw new ForbiddenException('You do not have access to this document');
+    }
+
+    res.sendFile(safeFilename, { root: uploadRoot });
   }
 
   @Get(':id')

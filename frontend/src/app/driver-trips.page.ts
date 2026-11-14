@@ -17,10 +17,10 @@ type TripFilter = DriverTripStatus;
   template: `
     <ion-content class="stitch-auth-page driver-trips-page" fullscreen>
       <header class="driver-trips-topbar">
-        <h1>رحلاتي</h1>
         <button type="button" class="stitch-icon-button" aria-label="رجوع" (click)="goBack()">
           <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
+        <h1>رحلاتي</h1>
       </header>
 
       <main class="driver-trips-layout">
@@ -149,23 +149,12 @@ export class DriverTripsPage {
       availableSeats: trip.availableSeats,
       totalSeats: trip.totalSeats,
       pricePerSeat: trip.pricePerSeat,
-      driverLabel: this.statusLabel(trip.status),
-      status: trip.status === 'open' ? 'open' : trip.status
+      status: trip.status
     };
   }
 
   routeName(routeId: string): string {
     return this.routes.find((route) => route.id === routeId)?.name ?? 'مسار غير معروف';
-  }
-
-  statusLabel(status: DriverTripStatus): string {
-    const labels: Record<DriverTripStatus, string> = {
-      open: 'مفتوحة',
-      started: 'قيد التنفيذ',
-      completed: 'منتهية',
-      cancelled: 'ملغية'
-    };
-    return labels[status];
   }
 
   tripDateLabel(value: string): string {

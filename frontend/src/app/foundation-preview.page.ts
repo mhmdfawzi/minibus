@@ -10,6 +10,7 @@ import {
 } from '@ionic/angular/standalone';
 import { boatOutline, chevronBackOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { AvatarComponent } from './shared/avatar.component';
 import { EmptyStateComponent } from './shared/empty-state.component';
 import { LoadingSkeletonComponent } from './shared/loading-skeleton.component';
 import { StarRatingComponent } from './shared/star-rating.component';
@@ -20,6 +21,7 @@ import { TripCardComponent, TripCardViewModel } from './shared/trip-card.compone
   selector: 'app-foundation-preview',
   standalone: true,
   imports: [
+    AvatarComponent,
     EmptyStateComponent,
     IonBackButton,
     IonButtons,
@@ -54,6 +56,12 @@ import { TripCardComponent, TripCardViewModel } from './shared/trip-card.compone
       </section>
 
       <app-trip-card [trip]="sampleTrip" actionLabel="طلب الحجز" />
+
+      <section class="foundation-row" aria-label="الصور الرمزية">
+        <app-avatar name="QA Driver" size="sm" />
+        <app-avatar name="سائق" size="md" />
+        <app-avatar icon="person" size="lg" />
+      </section>
 
       <section class="foundation-row" aria-label="حالات الحجز">
         <app-status-badge status="pending" />

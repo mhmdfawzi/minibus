@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { EmptyStateComponent } from './shared/empty-state.component';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
@@ -16,7 +17,7 @@ interface SearchTripResult {
 @Component({
   selector: 'app-passenger-trip-results',
   standalone: true,
-  imports: [EmptyStateComponent, IonContent, IonSpinner, NotificationBadgeComponent],
+  imports: [AvatarComponent, EmptyStateComponent, IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-results-stitch" fullscreen>
       <header class="results-topbar">
@@ -29,9 +30,7 @@ interface SearchTripResult {
             <p>{{ displayDate }} • {{ passengerCountLabel }}</p>
           </div>
         </div>
-        <button type="button" aria-label="فلترة">
-          <span class="material-symbols-outlined">tune</span>
-        </button>
+        <div class="stitch-top-spacer"></div>
       </header>
 
       <main class="results-canvas">
@@ -65,7 +64,7 @@ interface SearchTripResult {
                 </div>
 
                 <div class="results-driver-row">
-                  <img [src]="driverImage(index)" alt="" />
+                  <app-avatar [name]="result.driver?.fullName" size="md" />
                   <div class="results-driver-copy">
                     <div>
                       <strong>{{ result.driver?.fullName || 'سائق معتمد' }}</strong>
@@ -109,11 +108,11 @@ interface SearchTripResult {
       </main>
 
       <nav class="passenger-bottom-nav" aria-label="تنقل الراكب">
-        <button type="button" (click)="goBack()">
+        <button class="is-active" type="button" (click)="goBack()">
           <span class="material-symbols-outlined">home</span>
           <small>الرئيسية</small>
         </button>
-        <button class="is-active" type="button">
+        <button type="button" (click)="openMyBookings()">
           <span class="material-symbols-outlined">directions_bus</span>
           <small>رحلاتي</small>
         </button>
@@ -138,11 +137,6 @@ export class PassengerTripResultsPage {
   errorMessage = '';
   activeSort = 'الأسرع';
   readonly sortFilters = ['الأسرع', 'الأقل سعراً', 'المغادرة مبكراً'];
-  readonly driverImages = [
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuB96XQkgFuS7X2J9ufHv1Dmz80jppARpNFs0OZY7nGelIpF5puGJX_BvyRway-2PfnNV_Nm5pdeuCYaGAVJASHEMu9iN-l4lXidb0cjF_vh-YLNNziAhSf7hlPd54maWBlQfAwvH3feqsdsaBXEKnCH3ZS_2CIzuOLULqwlPZy3P-lu-UnIX5FJRq2ltXnlCfHmShVwD5auSaTBFx6dKwIGFfi6F-KGUwuYOo2bplYc7U7k7XbXBjmFZQ',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuB4Ma17aBCvAMYBLNrasjXH2OlaaQ8nIkMvo5PagqGJnHxK6XlYXuVvGens1DYYMDQ98jiJnXeaFfj1QDzZBguVHh6yjZsPyINDNu8XDWdXjTKtoxE2YoRfaLQmm2Tb4Aj7HKHD-QMUxnbWIbo0KlMWih8FLFuXudK4kel_Eo7uJoiZbXK4bo9EN_sn9v8UROVJCnPQpvX0y6kRVHT4ZS-gxfNZZCnywhnKz96wcoYCxDxHkjY_9a04XQ',
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuCqNkLPBmH7qh6RzxkbX4SFNFXoyzpXmTZax85g6DShcbQr6Fp4w3Bl2p6lTYRC6Dw0Rq8Hs4EPnaHcMW3byRx8iOgm2SbIHsj9iRVehAMSvWjSMDgkllEuDpZrWMU1NTm6f3YSUIogZAwnU6vSdQ7RFqAwbvNUSzaWxjE_cATfSd7ddNlG7Tphx8ZHpccqVRvUXD1AwdtLrYRK8M3frQiHfCvpoXIA3EmSC3blGVLYUPTCcLMFCMhhBw'
-  ];
 
   constructor(
     private readonly driversService: DriversService,
@@ -229,6 +223,10 @@ export class PassengerTripResultsPage {
     void this.router.navigateByUrl('/passenger/home');
   }
 
+  openMyBookings(): void {
+    void this.router.navigateByUrl('/passenger/bookings');
+  }
+
   openNotifications(): void {
     void this.router.navigateByUrl('/notifications');
   }
@@ -260,10 +258,6 @@ export class PassengerTripResultsPage {
 
   seatsLabel(seats: number): string {
     return seats <= 1 ? 'مقعد واحد فقط!' : `${seats} مقاعد شاغرة`;
-  }
-
-  driverImage(index: number): string {
-    return this.driverImages[index % this.driverImages.length];
   }
 
   private async loadDriver(driverId: string): Promise<PublicDriverProfile | null> {

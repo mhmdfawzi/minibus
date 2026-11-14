@@ -134,14 +134,16 @@ interface DriverDocumentSlot {
               </div>
               <div>
                 <label for="car-color">لون السيارة</label>
-                <select id="car-color" name="carColor" [(ngModel)]="form.carColor" required>
-                  <option value="">اختر اللون</option>
-                  <option value="أبيض">أبيض</option>
-                  <option value="فضي">فضي</option>
-                  <option value="أسود">أسود</option>
-                  <option value="أزرق">أزرق</option>
-                  <option value="أحمر">أحمر</option>
-                </select>
+                <div class="app-select">
+                  <select id="car-color" name="carColor" [(ngModel)]="form.carColor" required>
+                    <option value="">اختر اللون</option>
+                    <option value="أبيض">أبيض</option>
+                    <option value="فضي">فضي</option>
+                    <option value="أسود">أسود</option>
+                    <option value="أزرق">أزرق</option>
+                    <option value="أحمر">أحمر</option>
+                  </select>
+                </div>
               </div>
             </div>
           </section>

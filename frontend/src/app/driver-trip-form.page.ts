@@ -49,6 +49,7 @@ import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
                     <option [value]="route.id">{{ route.name }}</option>
                   }
                 </select>
+                <span class="select-chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
               </div>
               <small>{{ selectedRouteLabel }}</small>
             </div>

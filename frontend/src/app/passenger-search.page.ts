@@ -11,155 +11,140 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
   standalone: true,
   imports: [FormsModule, IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
-    <ion-content class="stitch-auth-page passenger-home-stitch" fullscreen>
-      <header class="passenger-home-topbar">
-        <div>
-          <h1>مسار دمياط</h1>
+    <ion-content class="stitch-auth-page passenger-home-stitch mobility-home" fullscreen>
+      <section class="mobility-hero">
+        <header class="mobility-topbar">
+          <div class="mobility-brand" aria-label="مسار دمياط">
+            <span class="material-symbols-outlined">directions_bus</span>
+            <strong>مسار</strong>
+          </div>
+          <button class="mobility-alert-button notification-nav-button" type="button" aria-label="التنبيهات" (click)="openNotifications()">
+            <span class="material-symbols-outlined">notifications</span>
+            <app-notification-badge />
+          </button>
+        </header>
+
+        <div class="mobility-welcome">
+          <span class="mobility-eyebrow">رحلات يومية داخل دمياط</span>
+          <h1>رايح فين؟</h1>
+          <p>احجز مقعدك في أقرب رحلة خلال دقائق.</p>
         </div>
-        <button type="button" aria-label="القائمة">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
-      </header>
 
-      <main class="passenger-home-canvas">
-        <section class="passenger-home-hero">
-          <div></div>
-          <p>خطط لرحلتك القادمة في دمياط</p>
-        </section>
+        <div class="mobility-road" aria-hidden="true">
+          <span></span><i></i><span></span><i></i><span></span>
+          <b class="material-symbols-outlined">airport_shuttle</b>
+        </div>
+      </section>
 
-        <form class="passenger-search-grid" (ngSubmit)="searchTrips()">
-          <section class="trip-form-card passenger-search-card">
-            <label>خط الرحلة</label>
-            <div class="passenger-route-stack">
-              <label>
-                <span>
-                  <span class="material-symbols-outlined">route</span>
-                  الخط
-                </span>
-                <div class="trip-input-shell passenger-select-shell">
-                  <span class="material-symbols-outlined route-origin-icon">alt_route</span>
-                  <select
-                    name="routeId"
-                    [ngModel]="routeId"
-                    (ngModelChange)="selectRoute($event)"
-                    required
-                  >
-                    <option disabled value="">اختر الخط المناسب</option>
-                    @for (route of routes; track route.id) {
-                      <option [value]="route.id">{{ route.name }}</option>
-                    }
-                  </select>
-                </div>
-              </label>
-
-              <label>
-                <span>
-                  <span class="material-symbols-outlined">location_on</span>
-                  من
-                </span>
-                <div class="trip-input-shell passenger-select-shell">
-                  <span class="material-symbols-outlined route-origin-icon">location_on</span>
-                  <select
-                    name="pickupStopId"
-                    [ngModel]="pickupStopId"
-                    (ngModelChange)="selectPickupStop($event)"
-                    [disabled]="stops.length < 2"
-                    required
-                  >
-                    <option disabled value="">اختر نقطة الانطلاق</option>
-                    @for (stop of pickupStops; track stop.id) {
-                      <option [value]="stop.id">{{ stop.name }}</option>
-                    }
-                  </select>
-                </div>
-              </label>
-
-              <label>
-                <span>
-                  <span class="material-symbols-outlined">near_me</span>
-                  إلى
-                </span>
-                <div class="trip-input-shell passenger-select-shell">
-                  <span class="material-symbols-outlined route-destination-icon">flag</span>
-                  <select
-                    name="dropoffStopId"
-                    [(ngModel)]="dropoffStopId"
-                    [disabled]="dropoffStops.length === 0"
-                    required
-                  >
-                    <option disabled value="">اختر وجهتك</option>
-                    @for (stop of dropoffStops; track stop.id) {
-                      <option [value]="stop.id">{{ stop.name }}</option>
-                    }
-                  </select>
-                </div>
-              </label>
+      <main class="mobility-canvas">
+        <form class="mobility-search-sheet" (ngSubmit)="searchTrips()">
+          <div class="mobility-sheet-heading">
+            <div>
+              <span>خطط لرحلتك</span>
+              <h2>اختار نقطة الركوب والوصول</h2>
             </div>
-          </section>
+            <span class="material-symbols-outlined">route</span>
+          </div>
 
-          <section class="trip-form-card passenger-search-card">
-            <div class="home-date-heading">
-              <span class="material-symbols-outlined">calendar_month</span>
-              <span>يوم الرحلة</span>
+          <div class="mobility-route-picker">
+            <div class="mobility-route-rail" aria-hidden="true">
+              <span></span><i></i><span></span>
             </div>
-            <div class="trip-choice-grid trip-date-choice-grid" role="group" aria-label="اختيار يوم الرحلة">
-              @for (dateOption of dateOptions; track dateOption.value) {
-                <button
-                  type="button"
-                  [class.is-active]="date === dateOption.value"
-                  (click)="date = dateOption.value"
-                >
-                  <strong>{{ dateOption.label }}</strong>
-                  <small>{{ dateOption.dateLabel }}</small>
-                </button>
-              }
-            </div>
-          </section>
+
+            <label class="mobility-place-field">
+              <small>الركوب من</small>
+              <select
+                name="pickupStopId"
+                [ngModel]="pickupStopId"
+                (ngModelChange)="selectPickupStop($event)"
+                [disabled]="stops.length < 2"
+                required
+              >
+                <option disabled value="">اختار نقطة الركوب</option>
+                @for (stop of pickupStops; track stop.id) {
+                  <option [value]="stop.id">{{ stop.name }}</option>
+                }
+              </select>
+              <span class="mobility-select-chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
+            </label>
+
+            <label class="mobility-place-field">
+              <small>الوصول إلى</small>
+              <select
+                name="dropoffStopId"
+                [(ngModel)]="dropoffStopId"
+                [disabled]="dropoffStops.length === 0"
+                required
+              >
+                <option disabled value="">اختار وجهتك</option>
+                @for (stop of dropoffStops; track stop.id) {
+                  <option [value]="stop.id">{{ stop.name }}</option>
+                }
+              </select>
+              <span class="mobility-select-chevron material-symbols-outlined" aria-hidden="true">expand_more</span>
+            </label>
+          </div>
+
+          <label class="mobility-line-field">
+            <span class="material-symbols-outlined">alt_route</span>
+            <span>
+              <small>الخط</small>
+              <select name="routeId" [ngModel]="routeId" (ngModelChange)="selectRoute($event)" required>
+                <option disabled value="">اختار الخط المناسب</option>
+                @for (route of routes; track route.id) {
+                  <option [value]="route.id">{{ route.name }}</option>
+                }
+              </select>
+            </span>
+            <span class="material-symbols-outlined">expand_more</span>
+          </label>
+
+          <div class="mobility-date-row" role="group" aria-label="اختيار يوم الرحلة">
+            @for (dateOption of dateOptions; track dateOption.value) {
+              <button
+                type="button"
+                [class.is-active]="date === dateOption.value"
+                (click)="date = dateOption.value"
+              >
+                <strong>{{ dateOption.label }}</strong>
+                <small>{{ dateOption.dateLabel }}</small>
+              </button>
+            }
+          </div>
 
           @if (errorMessage) {
-            <p class="stitch-error">{{ errorMessage }}</p>
+            <p class="mobility-error" role="alert">{{ errorMessage }}</p>
           }
 
-          <button class="home-search-button" type="submit" [disabled]="isLoading || !canSearch">
+          <button class="mobility-search-button" type="submit" [disabled]="isLoading || !canSearch">
             @if (isLoading) {
               <ion-spinner name="crescent" />
             } @else {
-              <span class="material-symbols-outlined">search</span>
-              بحث عن رحلات
+              <span>اعرض الرحلات</span>
+              <span class="material-symbols-outlined">arrow_back</span>
             }
           </button>
         </form>
 
-        <section class="home-section">
-          <h2>البحث الأخير</h2>
-          <button class="home-recent-card" type="button" (click)="searchTrips()">
-            <div>
-              <span class="material-symbols-outlined">history</span>
-            </div>
-            <div>
-              <p>{{ recentSearchLabel }}</p>
-              <small>أمس، الساعة 09:30 ص</small>
-            </div>
-            <span class="material-symbols-outlined chevron">arrow_back_ios</span>
+        <section class="mobility-section">
+          <div class="mobility-section-title">
+            <h2>رحلتك الأخيرة</h2>
+            <span>احجزها مرة ثانية</span>
+          </div>
+          <button class="mobility-recent-card" type="button" [disabled]="!canSearch" (click)="searchTrips()">
+            <span class="mobility-recent-icon material-symbols-outlined">history</span>
+            <span class="mobility-recent-copy">
+              <strong>{{ recentSearchLabel }}</strong>
+              <small>نفس الخط والمحطات المختارة</small>
+            </span>
+            <span class="material-symbols-outlined mobility-recent-arrow">arrow_back</span>
           </button>
         </section>
 
-        <section class="home-section">
-          <h2>اكتشف وجهاتنا</h2>
-          <div class="home-destination-grid">
-            <article class="wide">
-              <div class="ras-elbar"></div>
-              <span>رأس البر</span>
-            </article>
-            <article>
-              <div class="damietta-square"></div>
-              <span>ميدان دمياط</span>
-            </article>
-            <article>
-              <div class="new-damietta"></div>
-              <span>دمياط الجديدة</span>
-            </article>
-          </div>
+        <section class="mobility-promise" aria-label="مزايا الخدمة">
+          <div><span class="material-symbols-outlined">verified_user</span><strong>رحلات موثوقة</strong></div>
+          <div><span class="material-symbols-outlined">event_seat</span><strong>مقعد مضمون</strong></div>
+          <div><span class="material-symbols-outlined">payments</span><strong>سعر واضح</strong></div>
         </section>
       </main>
 

@@ -14,13 +14,14 @@ import {
   RouteStop,
   RouteSummary
 } from './pilot-api.service';
+import { StatusBadgeComponent } from './shared/status-badge.component';
 
 type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonContent, IonSpinner],
+  imports: [CommonModule, FormsModule, IonContent, IonSpinner, StatusBadgeComponent],
   template: `
     <ion-content class="admin-web-page" fullscreen>
       <main class="admin-web-shell">
@@ -84,14 +85,16 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
                 </div>
                 <label>
                   اسم الخط
-                  <input name="routeName" [(ngModel)]="routeForm.name" placeholder="الخلفية → دمياط الجديدة" required />
+                  <input name="routeName" [(ngModel)]="routeForm.name" placeholder="الخلفية ← دمياط الجديدة" required />
                 </label>
                 <label>
                   الاتجاه
-                  <select name="routeDirection" [(ngModel)]="routeForm.direction">
-                    <option value="outbound">ذهاب</option>
-                    <option value="return">عودة</option>
-                  </select>
+                  <span class="app-select">
+                    <select name="routeDirection" [(ngModel)]="routeForm.direction">
+                      <option value="outbound">ذهاب</option>
+                      <option value="return">عودة</option>
+                    </select>
+                  </span>
                 </label>
                 <label class="admin-check-row">
                   <input name="routeActive" type="checkbox" [(ngModel)]="routeForm.isActive" />
@@ -110,10 +113,12 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
                     <article class="admin-list-item" [class.is-muted]="!route.isActive">
                       <div class="admin-inline-form">
                         <input [(ngModel)]="route.name" [name]="'route-name-' + route.id" />
-                        <select [(ngModel)]="route.direction" [name]="'route-direction-' + route.id">
-                          <option value="outbound">ذهاب</option>
-                          <option value="return">عودة</option>
-                        </select>
+                        <span class="app-select">
+                          <select [(ngModel)]="route.direction" [name]="'route-direction-' + route.id">
+                            <option value="outbound">ذهاب</option>
+                            <option value="return">عودة</option>
+                          </select>
+                        </span>
                       </div>
                       <div class="admin-row-actions">
                         <button type="button" class="admin-secondary-button" (click)="selectRoute(route.id)">
@@ -140,11 +145,13 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
                 </div>
                 <label>
                   الخط
-                  <select name="stopRoute" [(ngModel)]="selectedRouteId" (change)="loadStops()">
-                    @for (route of routes; track route.id) {
-                      <option [value]="route.id">{{ route.name }}</option>
-                    }
-                  </select>
+                  <span class="app-select">
+                    <select name="stopRoute" [(ngModel)]="selectedRouteId" (change)="loadStops()">
+                      @for (route of routes; track route.id) {
+                        <option [value]="route.id">{{ route.name }}</option>
+                      }
+                    </select>
+                  </span>
                 </label>
                 <label>
                   اسم المحطة
@@ -264,22 +271,16 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
                 <h2>الرحلات</h2>
                 <span>{{ adminTrips.length }}</span>
               </div>
-              <div class="admin-table">
-                <div class="admin-table-row heading">
-                  <span>الخط</span>
-                  <span>السائق</span>
-                  <span>التاريخ</span>
-                  <span>الحجوزات</span>
-                  <span>الحالة</span>
-                </div>
+              <div class="admin-list">
                 @for (trip of adminTrips; track trip.id) {
-                  <div class="admin-table-row">
-                    <span>{{ trip.route?.name || routeName(trip.routeId) }}</span>
-                    <span>{{ trip.driver?.fullName || trip.driver?.phone || 'سائق' }}</span>
-                    <span>{{ trip.tripDate | slice:0:10 }} · {{ trip.startTime | slice:0:5 }}</span>
-                    <span>{{ trip.bookingCount }}</span>
-                    <span>{{ trip.status }}</span>
-                  </div>
+                  <article class="admin-list-item">
+                    <div class="admin-list-item-heading">
+                      <h3>{{ trip.route?.name || routeName(trip.routeId) }}</h3>
+                      <app-status-badge [status]="trip.status" />
+                    </div>
+                    <p>{{ trip.driver?.fullName || trip.driver?.phone || 'سائق' }}</p>
+                    <p>{{ trip.tripDate | slice:0:10 }} · {{ trip.startTime | slice:0:5 }} · {{ trip.bookingCount }} حجز</p>
+                  </article>
                 } @empty {
                   <p class="admin-empty">لا توجد رحلات.</p>
                 }
@@ -293,22 +294,16 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
                 <h2>الحجوزات</h2>
                 <span>{{ adminBookings.length }}</span>
               </div>
-              <div class="admin-table bookings">
-                <div class="admin-table-row heading">
-                  <span>الراكب</span>
-                  <span>الرحلة</span>
-                  <span>المقاعد</span>
-                  <span>السعر</span>
-                  <span>الحالة</span>
-                </div>
+              <div class="admin-list">
                 @for (booking of adminBookings; track booking.id) {
-                  <div class="admin-table-row">
-                    <span>{{ booking.passenger?.fullName || booking.passenger?.phone || 'راكب' }}</span>
-                    <span>{{ booking.trip?.routeName || 'رحلة' }}</span>
-                    <span>{{ booking.seatsCount }}</span>
-                    <span>{{ booking.price }} ج.م</span>
-                    <span>{{ booking.status }}</span>
-                  </div>
+                  <article class="admin-list-item">
+                    <div class="admin-list-item-heading">
+                      <h3>{{ booking.passenger?.fullName || booking.passenger?.phone || 'راكب' }}</h3>
+                      <app-status-badge [status]="booking.status" />
+                    </div>
+                    <p>{{ booking.trip?.routeName || 'رحلة' }}</p>
+                    <p>{{ booking.seatsCount }} مقعد · {{ booking.price }} ج.م</p>
+                  </article>
                 } @empty {
                   <p class="admin-empty">لا توجد حجوزات.</p>
                 }
@@ -321,12 +316,12 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
   `,
   styles: [`
     .admin-web-page {
-      --background: #f7f5f0;
+      --background: var(--app-color-background);
       --padding-bottom: 32px;
       --padding-end: 24px;
       --padding-start: 24px;
       --padding-top: 24px;
-      color: #102f67;
+      color: var(--app-color-primary-strong);
     }
 
     .admin-web-shell {
@@ -360,7 +355,7 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
     }
 
     .admin-web-header p {
-      color: #6d7380;
+      color: var(--app-color-text-muted);
       font-weight: 700;
     }
 
@@ -371,7 +366,7 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
 
     .admin-tabs {
       background: #fff;
-      border: 1px solid #ebe7df;
+      border: 1px solid var(--app-color-surface-strong);
       border-radius: 8px;
       overflow-x: auto;
       padding: 6px;
@@ -390,18 +385,18 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
       font-weight: 800;
       gap: 8px;
       justify-content: center;
-      min-height: 42px;
+      min-height: var(--app-touch-target);
       padding: 0 14px;
       white-space: nowrap;
     }
 
     .admin-tabs button {
       background: transparent;
-      color: #5f6673;
+      color: var(--app-color-text-muted);
     }
 
     .admin-tabs button.is-active {
-      background: #102f67;
+      background: var(--app-color-primary-strong);
       color: #fff;
     }
 
@@ -416,9 +411,9 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
 
     .admin-panel {
       background: #fff;
-      border: 1px solid #ebe7df;
+      border: 1px solid var(--app-color-surface-strong);
       border-radius: 8px;
-      box-shadow: 0 18px 40px rgba(16, 47, 103, 0.08);
+      box-shadow: 0 18px 40px rgba(2, 62, 138, 0.08);
       display: grid;
       gap: 14px;
       padding: 18px;
@@ -433,7 +428,7 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
     }
 
     .admin-panel label {
-      color: #4f5663;
+      color: var(--app-color-text-muted);
       display: grid;
       font-size: 13px;
       font-weight: 800;
@@ -442,12 +437,12 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
 
     .admin-panel input,
     .admin-panel select {
-      background: #f4f1eb;
-      border: 1px solid #e5e0d8;
+      background: var(--app-color-surface-container);
+      border: 1px solid var(--app-color-surface-strong);
       border-radius: 8px;
-      color: #172033;
+      color: var(--app-color-text);
       font: inherit;
-      min-height: 44px;
+      min-height: var(--app-touch-target);
       padding: 0 12px;
       width: 100%;
     }
@@ -469,8 +464,8 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
     }
 
     .admin-primary-button {
-      background: #f9c72f;
-      color: #102f67;
+      background: var(--app-color-accent);
+      color: var(--app-color-primary-strong);
     }
 
     .admin-primary-button.compact {
@@ -479,13 +474,13 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
 
     .admin-secondary-button,
     .admin-icon-button {
-      background: #eef1f6;
-      color: #102f67;
+      background: var(--app-color-secondary-container);
+      color: var(--app-color-primary-strong);
     }
 
     .admin-icon-button {
       padding: 0;
-      width: 44px;
+      width: var(--app-touch-target);
     }
 
     .admin-list {
@@ -494,7 +489,7 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
     }
 
     .admin-list-item {
-      border: 1px solid #eee9df;
+      border: 1px solid var(--app-color-surface-strong);
       border-radius: 8px;
       display: grid;
       gap: 10px;
@@ -520,37 +515,22 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
       justify-content: flex-end;
     }
 
-    .admin-table {
-      display: grid;
-      gap: 8px;
-      overflow-x: auto;
-    }
-
-    .admin-table-row {
+    .admin-list-item-heading {
       align-items: center;
-      border-bottom: 1px solid #eee9df;
-      display: grid;
-      gap: 12px;
-      grid-template-columns: 1.2fr 1fr 1fr 88px 100px;
-      min-width: 760px;
-      padding: 12px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
     }
 
-    .admin-table.bookings .admin-table-row {
-      grid-template-columns: 1fr 1.2fr 80px 90px 100px;
-    }
-
-    .admin-table-row.heading {
-      color: #6d7380;
-      font-size: 13px;
-      font-weight: 800;
+    .admin-list-item-heading h3 {
+      font-size: 14px;
     }
 
     .admin-alert {
-      background: #fff2f2;
-      border: 1px solid #ffd0d0;
+      background: var(--app-color-rejected-bg);
+      border: 1px solid rgba(186, 26, 26, 0.25);
       border-radius: 8px;
-      color: #b42318;
+      color: var(--app-color-rejected);
       font-weight: 800;
       margin: 0;
       padding: 12px 14px;
@@ -558,7 +538,7 @@ type AdminTab = 'routes' | 'drivers' | 'trips' | 'bookings';
 
     .admin-empty,
     .admin-loading {
-      color: #6d7380;
+      color: var(--app-color-text-muted);
       margin: 0;
       padding: 16px 0;
       text-align: center;

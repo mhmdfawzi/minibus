@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiBaseUrl: "http://localhost:3000",
-  nativeApiBaseUrl: "http://10.0.2.2:3000",
+  apiBaseUrl: "https://minibus-backend-production.up.railway.app",
+  nativeApiBaseUrl: "https://minibus-backend-production.up.railway.app",
   firebase: {
     apiKey: "AIzaSyCwlA2v1m0lL0pYzmA0ejX24m3egRDcM_w",
     authDomain: "mircobus-f5166.firebaseapp.com",

@@ -49,10 +49,12 @@ import { PushNotificationsService } from './push-notifications.service';
                 [name]="'otp-' + $index"
                 type="text"
                 inputmode="numeric"
+                autocomplete="one-time-code"
                 maxlength="1"
                 [value]="digit"
                 (input)="onOtpInput($event, $index)"
                 (keydown)="onOtpKeydown($event, $index)"
+                (paste)="onOtpPaste($event)"
               />
             }
           </div>
@@ -127,6 +129,22 @@ export class OtpVerificationPage {
     }
   }
 
+  onOtpPaste(event: ClipboardEvent): void {
+    const code = event.clipboardData?.getData('text').replace(/[^0-9]/g, '').slice(0, 6) || '';
+    if (!code) return;
+
+    event.preventDefault();
+    this.otpDigits = Array.from({ length: 6 }, (_, index) => code[index] || '');
+
+    requestAnimationFrame(() => {
+      const inputs = document.querySelectorAll<HTMLInputElement>('.otp-input');
+      inputs.forEach((input, index) => {
+        input.value = this.otpDigits[index];
+      });
+      inputs.item(Math.min(code.length, 6) - 1)?.focus();
+    });
+  }
+
   async verifyCode(): Promise<void> {
     this.errorMessage = '';
     if (this.otpCode.length !== 6) {
@@ -149,6 +167,8 @@ export class OtpVerificationPage {
   }
 
   async resendCode(): Promise<void> {
+    if (this.isLoading) return;
+
     this.errorMessage = '';
     if (!this.phoneNumber) {
       this.errorMessage = 'ارجع وأدخل رقم الهاتف مرة أخرى';

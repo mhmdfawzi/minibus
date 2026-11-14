@@ -31,8 +31,8 @@ import { IonContent } from '@ionic/angular/standalone';
             <span>المتابعة برقم الهاتف</span>
           </button>
           <p>
-            بالاستمرار، أنت توافق على <a href="#">شروط الخدمة</a> و
-            <a href="#">سياسة الخصوصية</a>
+            بالاستمرار، أنت توافق على <span class="legal-link">شروط الخدمة</span> و
+            <span class="legal-link">سياسة الخصوصية</span>
           </p>
         </div>
       </main>

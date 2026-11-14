@@ -4,12 +4,13 @@ import { IonContent, IonSpinner } from '@ionic/angular/standalone';
 import { firstValueFrom } from 'rxjs';
 import { BookingView, BookingsService } from './api/bookings.service';
 import { AuthApiService, AuthUser } from './auth-api.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
 
 @Component({
   selector: 'app-passenger-profile',
   standalone: true,
-  imports: [IonContent, IonSpinner, NotificationBadgeComponent],
+  imports: [AvatarComponent, IonContent, IonSpinner, NotificationBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page driver-profile-stitch" fullscreen>
       <header class="driver-profile-topbar">
@@ -30,8 +31,7 @@ import { NotificationBadgeComponent } from './shared/notification-badge.componen
         <main class="driver-profile-canvas">
           <section class="driver-profile-hero">
             <div class="driver-profile-avatar">
-              <span class="material-symbols-outlined">person</span>
-              <i></i>
+              <app-avatar [name]="user.fullName" size="lg" />
             </div>
             <h2>{{ user.fullName || 'راكب' }}</h2>
             <p>{{ user.phone || 'رقم الهاتف غير متاح' }}</p>

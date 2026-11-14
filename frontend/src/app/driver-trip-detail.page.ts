@@ -17,7 +17,7 @@ import { StatusBadgeComponent } from './shared/status-badge.component';
         <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
           <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
         </button>
-        <h1>مسار دمياط</h1>
+        <h1>{{ trip ? routeName(trip.routeId) : 'تفاصيل الرحلة' }}</h1>
         <div class="stitch-top-spacer"></div>
       </header>
 

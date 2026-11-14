@@ -6,6 +6,7 @@ import { BookingUiStatus, BookingView, BookingsService } from './api/bookings.se
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
+import { StatusBadgeComponent } from './shared/status-badge.component';
 
 interface PassengerBookingRow {
   booking: BookingView;
@@ -17,17 +18,17 @@ type BookingFilter = 'all' | 'pending' | 'accepted' | 'completed';
 @Component({
   selector: 'app-passenger-bookings',
   standalone: true,
-  imports: [IonContent, IonSpinner, NotificationBadgeComponent],
+  imports: [IonContent, IonSpinner, NotificationBadgeComponent, StatusBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-flow-page my-bookings-stitch" fullscreen>
       <header class="my-bookings-topbar">
+        <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
+          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
+        </button>
         <div class="my-bookings-brand">
           <span class="material-symbols-outlined">directions_bus</span>
           <h1>مسار دمياط</h1>
         </div>
-        <button class="stitch-icon-button" type="button" aria-label="رجوع" (click)="goBack()">
-          <span class="material-symbols-outlined rtl-back-icon">arrow_back</span>
-        </button>
       </header>
 
       <main class="my-bookings-canvas">
@@ -53,9 +54,7 @@ type BookingFilter = 'all' | 'pending' | 'accepted' | 'completed';
                 <button class="booking-card-tap-area" type="button" (click)="openBooking(row.booking.id)" aria-label="فتح تفاصيل الحجز"></button>
 
                 <div class="booking-card-header">
-                  <span class="booking-status-pill" [attr.data-status]="statusTone(row.booking.status)">
-                    {{ statusLabel(row.booking.status) }}
-                  </span>
+                  <app-status-badge [status]="row.booking.status" />
                   <div class="booking-card-price">
                     <p>{{ row.booking.price }} ج.م</p>
                     <small>#{{ bookingCode(row.booking.id) }}</small>
@@ -247,25 +246,6 @@ export class PassengerBookingsPage implements OnDestroy {
 
   bookingCode(bookingId: string): string {
     return `TR-${bookingId.slice(0, 4).toUpperCase()}`;
-  }
-
-  statusLabel(status: BookingUiStatus): string {
-    const labels: Record<BookingUiStatus, string> = {
-      pending: 'قيد الانتظار',
-      accepted: 'مقبول',
-      rejected: 'مرفوض',
-      cancelled: 'ملغي',
-      completed: 'مكتمل',
-      expired: 'منتهي'
-    };
-    return labels[status];
-  }
-
-  statusTone(status: BookingUiStatus): 'accepted' | 'pending' | 'completed' | 'rejected' {
-    if (status === 'accepted') return 'accepted';
-    if (status === 'pending') return 'pending';
-    if (status === 'completed') return 'completed';
-    return 'rejected';
   }
 
   actionLabel(status: BookingUiStatus): string {

@@ -7,13 +7,14 @@ import { PublicDriverProfile, DriversService } from './api/drivers.service';
 import { RatingView, RatingsService } from './api/ratings.service';
 import { DriverTrip, TripsService } from './api/trips.service';
 import { PilotApiService, RouteStop, RouteSummary } from './pilot-api.service';
+import { AvatarComponent } from './shared/avatar.component';
 import { NotificationBadgeComponent } from './shared/notification-badge.component';
 import { StatusBadgeComponent } from './shared/status-badge.component';
 
 @Component({
   selector: 'app-passenger-booking-detail',
   standalone: true,
-  imports: [IonContent, IonSpinner, NotificationBadgeComponent, StatusBadgeComponent],
+  imports: [AvatarComponent, IonContent, IonSpinner, NotificationBadgeComponent, StatusBadgeComponent],
   template: `
     <ion-content class="stitch-auth-page passenger-flow-page" fullscreen>
       <header class="passenger-topbar">
@@ -61,7 +62,7 @@ import { StatusBadgeComponent } from './shared/status-badge.component';
           </section>
 
           <button class="driver-mini-card driver-profile-link" type="button" (click)="openDriverProfile()">
-            <span class="material-symbols-outlined">account_circle</span>
+            <app-avatar [name]="driver?.fullName" size="sm" />
             <div>
               <small>السائق والسيارة</small>
               <strong>{{ driver?.fullName || 'سائق معتمد' }}</strong>
