@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'Transport MVP',
   webDir: 'www',
   server: {
-    hostname: 'localhost',
-    androidScheme: 'http',
+    hostname: 'minibus-frontend-production.up.railway.app',
+    androidScheme: 'https',
     iosScheme: 'https',
     cleartext: true
   },
