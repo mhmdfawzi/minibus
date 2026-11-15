@@ -13,6 +13,10 @@ const config: CapacitorConfig = {
   plugins: {
     Keyboard: {
       resize: 'body'
+    },
+    FirebaseAuthentication: {
+      skipNativeAuth: false,
+      providers: ['phone']
     }
   }
 };

@@ -19,7 +19,9 @@ frontend/android/app/google-services.json
 frontend/ios/App/Pods
 frontend/ios/App/App/public
 frontend/ios/App/GoogleService-Info.plist
+frontend/ios/App/App/GoogleService-Info.plist
 frontend/ios/App/*.xcworkspace/xcuserdata
 frontend/ios/App/App.xcodeproj/xcuserdata
+frontend/ios/App/build_out
 .DS_Store
 .idea

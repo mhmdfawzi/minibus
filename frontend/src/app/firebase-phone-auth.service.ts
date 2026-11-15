@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, PluginListenerHandle } from '@capacitor/core';
 import {
   Auth,
   ConfirmationResult,
@@ -8,22 +8,29 @@ import {
   signInWithPhoneNumber
 } from 'firebase/auth';
 import { FirebaseApp, getApp, getApps, initializeApp } from 'firebase/app';
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class FirebasePhoneAuthService {
-  private readonly app: FirebaseApp;
-  private readonly auth: Auth;
+  private readonly isNative = Capacitor.isNativePlatform();
+  private app: FirebaseApp | null = null;
+  private auth: Auth | null = null;
   private verifier: RecaptchaVerifier | null = null;
   private verifierContainerId: string | null = null;
   private confirmation: ConfirmationResult | null = null;
   private isSending = false;
 
+  private nativeVerificationId: string | null = null;
+  private nativeListeners: PluginListenerHandle[] = [];
+
   constructor() {
-    this.ensureFirebaseConfig();
-    this.app = getApps().length ? getApp() : initializeApp(environment.firebase);
-    this.auth = getAuth(this.app);
-    this.auth.languageCode = 'ar';
+    if (!this.isNative) {
+      this.ensureFirebaseConfig();
+      this.app = getApps().length ? getApp() : initializeApp(environment.firebase);
+      this.auth = getAuth(this.app);
+      this.auth.languageCode = 'ar';
+    }
   }
 
   async sendOtp(phoneNumber: string, recaptchaContainerId: string): Promise<void> {
@@ -32,41 +39,100 @@ export class FirebasePhoneAuthService {
     }
 
     this.isSending = true;
-    this.clearVerifier();
-
-    const container = document.getElementById(recaptchaContainerId);
-    if (!container) {
-      this.isSending = false;
-      throw new Error(`reCAPTCHA container "${recaptchaContainerId}" was not found`);
-    }
-
-    container.replaceChildren();
-    const verifierSize = Capacitor.isNativePlatform() ? 'invisible' : 'normal';
-    const verifier = new RecaptchaVerifier(this.auth, container, {
-      size: verifierSize
-    });
-
-    this.verifier = verifier;
-    this.verifierContainerId = recaptchaContainerId;
-
     try {
-      await verifier.render();
-      this.confirmation = await signInWithPhoneNumber(this.auth, phoneNumber, verifier);
-    } catch (error) {
-      this.clearVerifier();
-      throw error;
+      if (this.isNative) {
+        await this.sendOtpNative(phoneNumber);
+      } else {
+        await this.sendOtpWeb(phoneNumber, recaptchaContainerId);
+      }
     } finally {
       this.isSending = false;
     }
   }
 
   async confirmOtp(code: string): Promise<string> {
+    if (this.isNative) {
+      return this.confirmOtpNative(code);
+    }
+
     if (!this.confirmation) {
       throw new Error('OTP confirmation has not been started');
     }
 
     const credential = await this.confirmation.confirm(code);
     return credential.user.getIdToken();
+  }
+
+  private async sendOtpNative(phoneNumber: string): Promise<void> {
+    await this.clearNativeListeners();
+    this.nativeVerificationId = null;
+
+    const verificationId = await new Promise<string>((resolve, reject) => {
+      void (async () => {
+        const sentHandle = await FirebaseAuthentication.addListener('phoneCodeSent', (event) => {
+          resolve(event.verificationId);
+        });
+        const failedHandle = await FirebaseAuthentication.addListener('phoneVerificationFailed', (event) => {
+          reject(new Error(event.message));
+        });
+        this.nativeListeners.push(sentHandle, failedHandle);
+
+        try {
+          await FirebaseAuthentication.signInWithPhoneNumber({ phoneNumber });
+        } catch (error) {
+          reject(error);
+        }
+      })();
+    });
+
+    this.nativeVerificationId = verificationId;
+    await this.clearNativeListeners();
+  }
+
+  private async confirmOtpNative(code: string): Promise<string> {
+    if (!this.nativeVerificationId) {
+      throw new Error('OTP confirmation has not been started');
+    }
+
+    const result = await FirebaseAuthentication.confirmVerificationCode({
+      verificationId: this.nativeVerificationId,
+      verificationCode: code
+    });
+
+    if (!result.user) {
+      throw new Error('Sign-in failed');
+    }
+
+    const { token } = await FirebaseAuthentication.getIdToken();
+    return token;
+  }
+
+  private async clearNativeListeners(): Promise<void> {
+    await Promise.all(this.nativeListeners.map((handle) => handle.remove()));
+    this.nativeListeners = [];
+  }
+
+  private async sendOtpWeb(phoneNumber: string, recaptchaContainerId: string): Promise<void> {
+    this.clearVerifier();
+
+    const container = document.getElementById(recaptchaContainerId);
+    if (!container) {
+      throw new Error(`reCAPTCHA container "${recaptchaContainerId}" was not found`);
+    }
+
+    container.replaceChildren();
+    const verifier = new RecaptchaVerifier(this.auth!, container, { size: 'normal' });
+
+    this.verifier = verifier;
+    this.verifierContainerId = recaptchaContainerId;
+
+    try {
+      await verifier.render();
+      this.confirmation = await signInWithPhoneNumber(this.auth!, phoneNumber, verifier);
+    } catch (error) {
+      this.clearVerifier();
+      throw error;
+    }
   }
 
   errorText(error: unknown, fallback: string): string {
